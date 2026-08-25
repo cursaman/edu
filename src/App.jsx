@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
 import Header from './components/Header.jsx'
+import ApplicationPage from './pages/ApplicationPage.jsx'
 import CategoriesPage from './pages/CategoriesPage.jsx'
 import HomePage from './pages/HomePage.jsx'
-import InformationPage from './pages/InformationPage.jsx'
 import LessonDetailPage from './pages/LessonDetailPage.jsx'
 import LessonsPage from './pages/LessonsPage.jsx'
+import NoticeDetailPage from './pages/NoticeDetailPage.jsx'
+import NoticesPage from './pages/NoticesPage.jsx'
+import NotFoundPage from './pages/NotFoundPage.jsx'
 import ProgramDetailPage from './pages/ProgramDetailPage.jsx'
 import ProgramsPage from './pages/ProgramsPage.jsx'
 
@@ -39,7 +42,9 @@ export default function App() {
 
   let page
 
-  if (route.pathname === '/categories') {
+  if (route.pathname === '/') {
+    page = <HomePage />
+  } else if (route.pathname === '/categories') {
     page = <CategoriesPage />
   } else if (route.pathname === '/programs') {
     page = <ProgramsPage selectedCategory={route.searchParams.get('category') || 'all'} />
@@ -49,10 +54,14 @@ export default function App() {
     page = <LessonsPage selectedCategory={route.searchParams.get('category') || 'all'} />
   } else if (route.pathname.startsWith('/lessons/')) {
     page = <LessonDetailPage key={route.pathname} lessonId={route.pathname.split('/')[2]} />
-  } else if (route.pathname === '/notice' || route.pathname === '/application') {
-    page = <InformationPage kind={route.pathname.slice(1)} />
+  } else if (route.pathname === '/notice') {
+    page = <NoticesPage />
+  } else if (route.pathname.startsWith('/notice/')) {
+    page = <NoticeDetailPage noticeId={route.pathname.split('/')[2]} />
+  } else if (route.pathname === '/application') {
+    page = <ApplicationPage />
   } else {
-    page = <HomePage />
+    page = <NotFoundPage />
   }
 
   return (

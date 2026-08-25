@@ -8,6 +8,8 @@ const navigationItems = [
 ]
 
 export default function Header({ currentPath }) {
+  const [menuOpen, setMenuOpen] = useState(false)
+
   return (
     <header className="site-header">
       <div className="header-inner page-shell">
@@ -18,13 +20,25 @@ export default function Header({ currentPath }) {
           <span className="brand-name">EDU</span>
         </a>
 
-        <nav className="main-navigation" aria-label="주요 메뉴">
+        <button
+          aria-controls="main-navigation"
+          aria-expanded={menuOpen}
+          aria-label={menuOpen ? '메뉴 닫기' : '메뉴 열기'}
+          className="mobile-menu-toggle"
+          onClick={() => setMenuOpen((current) => !current)}
+          type="button"
+        >
+          {menuOpen ? '닫기 ×' : '메뉴 ☰'}
+        </button>
+
+        <nav className={`main-navigation${menuOpen ? ' main-navigation-open' : ''}`} id="main-navigation" aria-label="주요 메뉴">
           {navigationItems.map((item) => (
             <a
               aria-current={currentPath === item.path || (item.path !== '/' && currentPath.startsWith(`${item.path}/`)) ? 'page' : undefined}
               className={item.label === '수강 신청' ? 'nav-link nav-link-accent' : 'nav-link'}
               href={item.href}
               key={item.label}
+              onClick={() => setMenuOpen(false)}
             >
               {item.label}
             </a>
@@ -34,3 +48,4 @@ export default function Header({ currentPath }) {
     </header>
   )
 }
+import { useState } from 'react'

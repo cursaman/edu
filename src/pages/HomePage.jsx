@@ -1,6 +1,8 @@
 import CategoryCard from '../components/CategoryCard.jsx'
 import ProgramCard from '../components/ProgramCard.jsx'
 import { categories, learningSteps, programs } from '../data/catalog.js'
+import { readCompletedLessons } from '../data/learningProgress.js'
+import { lessons } from '../data/lessons.js'
 
 function SectionHeading({ eyebrow, title, description }) {
   return (
@@ -13,6 +15,8 @@ function SectionHeading({ eyebrow, title, description }) {
 }
 
 export default function HomePage() {
+  const completedCount = readCompletedLessons().length
+
   return (
     <>
       <section className="hero page-shell" aria-labelledby="hero-title">
@@ -37,8 +41,8 @@ export default function HomePage() {
             <a className="button button-primary" href="#/programs">
               교육 프로그램 보기 <span aria-hidden="true">→</span>
             </a>
-            <a className="button button-secondary" href="#/categories">
-              어떤 것을 배우나요?
+            <a className="button button-secondary" href="#/lessons">
+              교육자료 바로가기
             </a>
           </div>
 
@@ -78,6 +82,13 @@ export default function HomePage() {
             <span className="preview-chip preview-chip-codex">Codex</span>
           </div>
         </aside>
+      </section>
+
+      <section className="home-overview page-shell" aria-label="교육 플랫폼 이용 현황">
+        <article><span>교육 프로그램</span><strong>{programs.length}개</strong></article>
+        <article><span>제공 교육자료</span><strong>{lessons.length}개</strong></article>
+        <article><span>내 학습 진행</span><strong>{completedCount} / {lessons.length}개 완료</strong></article>
+        <a className="button button-secondary" href="#/lessons">교육자료 보러 가기 →</a>
       </section>
 
       <section className="learning-strip" aria-label="학습 진행 방식">
@@ -127,16 +138,16 @@ export default function HomePage() {
       <section className="bottom-sections page-shell">
         <article className="notice-card">
           <span className="section-eyebrow">NOTICE</span>
-          <h2>첫 번째 교육 소식을 준비하고 있어요.</h2>
-          <p>프로그램 일정과 준비물 안내는 다음 단계에서 차근차근 추가됩니다.</p>
+          <h2>교육 일정과 준비물을 확인하세요.</h2>
+          <p>모집 안내, 수업 준비물, 홈페이지 공개 소식을 공지사항에서 확인합니다.</p>
           <a className="information-link" href="#/notice">공지사항 안내 보기 →</a>
         </article>
 
         <article className="application-card">
           <span className="section-eyebrow">START WITH EDU</span>
           <h2>처음이라서 더 잘 배울 수 있어요.</h2>
-          <p>수강 신청 기능은 이후 개발 단계에서 안전하게 연결할 예정입니다.</p>
-          <a className="information-link" href="#/application">수강 신청 안내 보기 →</a>
+          <p>실제 개인정보 없이 현재 브라우저에서만 수강 신청 과정을 체험해 보세요.</p>
+          <a className="information-link" href="#/application">수강 신청 체험하기 →</a>
         </article>
       </section>
     </>
