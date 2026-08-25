@@ -1,4 +1,5 @@
 import { programs } from '../data/catalog.js'
+import { lessons } from '../data/lessons.js'
 
 export default function ProgramDetailPage({ programId }) {
   const program = programs.find((item) => item.id === programId)
@@ -12,6 +13,8 @@ export default function ProgramDetailPage({ programId }) {
       </section>
     )
   }
+
+  const relatedLessons = lessons.filter((lesson) => lesson.categoryId === program.categoryId)
 
   return (
     <article className="content-page page-shell" aria-labelledby="program-detail-title">
@@ -58,6 +61,19 @@ export default function ProgramDetailPage({ programId }) {
               ))}
             </ol>
           </section>
+
+          {relatedLessons.length > 0 && (
+            <section className="detail-section">
+              <h2>함께 보면 좋은 교육자료</h2>
+              <ul className="related-lesson-list">
+                {relatedLessons.map((lesson) => (
+                  <li key={lesson.id}>
+                    <a href={`#/lessons/${lesson.id}`}>{lesson.title} <span>약 {lesson.duration}</span></a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
         </div>
 
         <aside className="preparation-card">

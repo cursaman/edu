@@ -3,6 +3,8 @@ import Header from './components/Header.jsx'
 import CategoriesPage from './pages/CategoriesPage.jsx'
 import HomePage from './pages/HomePage.jsx'
 import InformationPage from './pages/InformationPage.jsx'
+import LessonDetailPage from './pages/LessonDetailPage.jsx'
+import LessonsPage from './pages/LessonsPage.jsx'
 import ProgramDetailPage from './pages/ProgramDetailPage.jsx'
 import ProgramsPage from './pages/ProgramsPage.jsx'
 
@@ -11,6 +13,7 @@ function readCurrentRoute() {
     home: '/',
     categories: '/categories',
     programs: '/programs',
+    lessons: '/lessons',
     notice: '/notice',
     application: '/application',
   }
@@ -42,6 +45,10 @@ export default function App() {
     page = <ProgramsPage selectedCategory={route.searchParams.get('category') || 'all'} />
   } else if (route.pathname.startsWith('/programs/')) {
     page = <ProgramDetailPage programId={route.pathname.split('/')[2]} />
+  } else if (route.pathname === '/lessons') {
+    page = <LessonsPage selectedCategory={route.searchParams.get('category') || 'all'} />
+  } else if (route.pathname.startsWith('/lessons/')) {
+    page = <LessonDetailPage key={route.pathname} lessonId={route.pathname.split('/')[2]} />
   } else if (route.pathname === '/notice' || route.pathname === '/application') {
     page = <InformationPage kind={route.pathname.slice(1)} />
   } else {
