@@ -24,9 +24,14 @@ create table if not exists public.edu_programs (
   status text not null default '모집 예정',
   color text not null default 'violet',
   display_number text not null default '01',
+  image_url text not null default '',
+  image_alt text not null default '',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table public.edu_programs add column if not exists image_url text not null default '';
+alter table public.edu_programs add column if not exists image_alt text not null default '';
 
 create table if not exists public.edu_lessons (
   id text primary key,
@@ -176,3 +181,4 @@ using (public.is_edu_admin());
 -- insert into public.admin_profiles (user_id, is_admin)
 -- values ('여기에-관리자-사용자-UUID-입력', true)
 -- on conflict (user_id) do update set is_admin = excluded.is_admin;
+

@@ -2,6 +2,7 @@ import { findManagedProgram, readManagedContent } from '../data/contentStorage.j
 
 export default function ProgramDetailPage({ programId }) {
   const program = findManagedProgram(programId)
+  const fallbackImage = `${import.meta.env.BASE_URL}images/edu-hero.webp`
 
   if (!program) {
     return (
@@ -25,6 +26,15 @@ export default function ProgramDetailPage({ programId }) {
       <a className="back-link" href={`#/programs?category=${program.categoryId}`}>← 교육 프로그램 목록</a>
 
       <header className="program-detail-header">
+        <img
+          alt={program.imageAlt || `${program.title} 교육 프로그램 대표 이미지`}
+          className="program-detail-image"
+          onError={(event) => {
+            event.currentTarget.onerror = null
+            event.currentTarget.src = fallbackImage
+          }}
+          src={program.image || fallbackImage}
+        />
         <span className="section-eyebrow">{program.category} · {program.level}</span>
         <h1 id="program-detail-title">{program.title}</h1>
         <p>{program.description}</p>
@@ -91,3 +101,4 @@ export default function ProgramDetailPage({ programId }) {
     </article>
   )
 }
+

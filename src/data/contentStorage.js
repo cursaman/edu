@@ -15,7 +15,7 @@ function fromDatabase(type, row) {
       introduction: row.introduction, audience: row.audience || [], goals: row.goals || [],
       curriculum: row.curriculum || [], preparations: row.preparations || [],
       relatedLessonIds: row.related_lesson_ids || [], status: row.status,
-      color: row.color, number: row.display_number,
+      color: row.color, number: row.display_number, image: row.image_url, imageAlt: row.image_alt,
     }
   }
 
@@ -41,6 +41,7 @@ function toDatabase(type, item) {
       curriculum: item.curriculum || [], preparations: item.preparations || [],
       related_lesson_ids: item.relatedLessonIds || [], status: item.status || '모집 예정',
       color: item.color || 'violet', display_number: item.number || '01',
+      image_url: item.image || '', image_alt: item.imageAlt || '',
     }
   }
 
@@ -136,3 +137,4 @@ export async function restoreSharedContent(type) {
   if (error) return { error }
   return loadSharedContent(type)
 }
+

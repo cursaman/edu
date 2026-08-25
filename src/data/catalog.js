@@ -72,6 +72,8 @@ export const programs = [
     goals: ['React 화면의 기본 구조를 이해합니다.', '교육 프로그램 카드를 직접 만들고 수정합니다.', 'PC와 모바일에서 읽기 좋은 화면을 완성합니다.'],
     curriculum: ['개발 환경 확인과 첫 화면 실행', '화면 구성 요소와 교육 분야 카드 만들기', '프로그램 목록과 상세 화면 연결', '화면 점검과 완성 결과 발표'],
     preparations: ['인터넷에 연결되는 노트북', 'Node.js와 npm 설치', '웹브라우저와 편집 도구'],
+    image: `${import.meta.env.BASE_URL}images/program-react.webp`,
+    imageAlt: '데스크톱과 태블릿, 스마트폰에서 같은 교육 홈페이지가 열려 있는 모습',
   },
   {
     id: 'codex-first-service',
@@ -89,6 +91,8 @@ export const programs = [
     goals: ['개발 요청을 구체적이고 짧게 작성합니다.', '실행 결과와 오류 메시지를 직접 확인합니다.', 'AI에게 수정을 요청하며 첫 웹서비스 화면을 완성합니다.'],
     curriculum: ['Codex 사용법과 첫 작업 요청', '서비스 화면과 메뉴 구성', '교육 프로그램 데이터 연결', '결과 검토와 다음 개발 계획 정리'],
     preparations: ['인터넷에 연결되는 노트북', 'Codex 사용 환경', 'Node.js와 npm 설치'],
+    image: `${import.meta.env.BASE_URL}images/program-codex.webp`,
+    imageAlt: '학습자가 AI에게 개발을 요청하고 완성된 웹사이트 화면을 확인하는 모습',
   },
   {
     id: 'github-vercel',
@@ -106,6 +110,8 @@ export const programs = [
     goals: ['Git과 GitHub의 역할을 구분합니다.', '프로젝트를 GitHub 저장소에 안전하게 보관합니다.', 'Vercel에 연결하고 실제 접속 주소를 확인합니다.'],
     curriculum: ['소스 저장의 필요성과 GitHub 가입', 'Git 저장소 만들기와 첫 커밋', 'GitHub와 Vercel 연결하기', '실제 접속 주소 점검과 수정 반영'],
     preparations: ['인터넷에 연결되는 노트북', 'GitHub 계정', 'Vercel 계정', '실행 가능한 React 프로젝트'],
+    image: `${import.meta.env.BASE_URL}images/program-deployment.webp`,
+    imageAlt: '노트북의 소스가 온라인 저장소와 배포 과정을 거쳐 홈페이지로 공개되는 흐름',
   },
 ]
 
@@ -126,3 +132,4 @@ export const learningSteps = [
     description: '궁금한 점을 고치며 나만의 웹사이트를 만듭니다.',
   },
 ]
+

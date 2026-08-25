@@ -1,6 +1,18 @@
 export default function ProgramCard({ program }) {
+  const fallbackImage = `${import.meta.env.BASE_URL}images/edu-hero.webp`
+
   return (
     <article className={`program-card program-card-${program.color}`}>
+      <img
+        alt={program.imageAlt || `${program.title} 교육 프로그램 대표 이미지`}
+        className="program-card-image"
+        loading="lazy"
+        onError={(event) => {
+          event.currentTarget.onerror = null
+          event.currentTarget.src = fallbackImage
+        }}
+        src={program.image || fallbackImage}
+      />
       <div className="program-card-heading">
         <span className="program-number" aria-hidden="true">
           {program.number}
@@ -24,3 +36,4 @@ export default function ProgramCard({ program }) {
     </article>
   )
 }
+

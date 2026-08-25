@@ -6,7 +6,7 @@ import { readCompletedLessons } from '../data/learningProgress.js'
 
 const emptyLesson = { title: '', categoryId: '', level: '입문', duration: '20분', description: '', explanation: '', steps: '', code: '', prompt: '' }
 const emptyNotice = { title: '', date: new Date().toLocaleDateString('ko-KR').replace(/\s/g, '').replace(/\.$/, ''), summary: '', content: '' }
-const emptyProgram = { title: '', categoryId: '', level: '입문', duration: '4주 · 토요일', status: '모집 예정', description: '', introduction: '', audience: '', goals: '', curriculum: '', preparations: '', relatedLessonIds: [] }
+const emptyProgram = { title: '', categoryId: '', level: '입문', duration: '4주 · 토요일', status: '모집 예정', description: '', introduction: '', audience: '', goals: '', curriculum: '', preparations: '', relatedLessonIds: [], image: '', imageAlt: '' }
 
 function linesToList(value) {
   return value.split('\n').map((line) => line.trim()).filter(Boolean)
@@ -73,6 +73,8 @@ function ProgramForm({ editing, lessons, onCancel, onSave }) {
       <label>모집 상태 <select onChange={(event) => updateField('status', event.target.value)} value={form.status}><option>모집 예정</option><option>모집 중</option><option>모집 마감</option><option>운영 중</option></select></label>
       <label>카드에 표시할 짧은 소개 <textarea onChange={(event) => updateField('description', event.target.value)} required value={form.description} /></label>
       <label>프로그램 상세 소개 <textarea onChange={(event) => updateField('introduction', event.target.value)} required value={form.introduction} /></label>
+      <label>이미지 주소 <input onChange={(event) => updateField('image', event.target.value)} placeholder="예: /edu/images/program-react.webp 또는 https://..." value={form.image} /></label>
+      <label>이미지 대체 설명 <textarea onChange={(event) => updateField('imageAlt', event.target.value)} placeholder="이미지를 보지 못해도 내용을 이해할 수 있게 설명해 주세요." value={form.imageAlt} /></label>
       <label>학습 대상: 한 줄에 한 항목 <textarea onChange={(event) => updateField('audience', event.target.value)} placeholder="웹개발을 처음 시작하는 분" required value={form.audience} /></label>
       <label>학습 목표: 한 줄에 한 항목 <textarea onChange={(event) => updateField('goals', event.target.value)} placeholder="React 화면의 기본 구조를 이해합니다." required value={form.goals} /></label>
       <label>회차별 교육 과정: 한 줄에 한 회차 <textarea onChange={(event) => updateField('curriculum', event.target.value)} placeholder="1회차에 배울 내용을 작성하세요." required value={form.curriculum} /></label>
@@ -207,3 +209,4 @@ export default function AdminPage({ session = null, onLogout }) {
     </section>
   )
 }
+

@@ -55,34 +55,12 @@ export default function HomePage() {
           </div>
         </div>
 
-        <aside className="hero-preview" aria-label="교육 과정 미리보기">
-          <div className="preview-header">
-            <span className="preview-dots" aria-hidden="true">
-              <i />
-              <i />
-              <i />
-            </span>
-            <span>my-first-website.edu</span>
-          </div>
-
-          <div className="preview-canvas">
-            <span className="preview-label">TODAY'S LEARNING</span>
-            <strong>
-              처음이어도
-              <br />
-              괜찮습니다.
-            </strong>
-
-            <div className="preview-progress">
-              <span>오늘의 첫 번째 목표</span>
-              <b>첫 화면 만들기</b>
-            </div>
-
-            <div className="preview-orbit preview-orbit-one" aria-hidden="true" />
-            <div className="preview-orbit preview-orbit-two" aria-hidden="true" />
-            <span className="preview-chip preview-chip-react">React</span>
-            <span className="preview-chip preview-chip-codex">Codex</span>
-          </div>
+        <aside className="hero-preview">
+          <img
+            alt="일반인 학습자들이 AI의 도움을 받아 노트북으로 웹사이트를 만드는 모습"
+            className="hero-image"
+            src={`${import.meta.env.BASE_URL}images/edu-hero.webp`}
+          />
         </aside>
       </section>
 
@@ -155,3 +133,4 @@ export default function HomePage() {
     </>
   )
 }
+

@@ -3,7 +3,7 @@
 insert into public.edu_programs (
   id, title, category_id, category, level, duration, description, introduction,
   audience, goals, curriculum, preparations, related_lesson_ids,
-  status, color, display_number
+  status, color, display_number, image_url, image_alt
 ) values
 (
   'react-website', 'React 웹사이트 만들기', 'frontend', '프런트엔드', '입문', '4주 · 토요일',
@@ -13,7 +13,8 @@ insert into public.edu_programs (
   '["React 화면의 기본 구조를 이해합니다.", "교육 프로그램 카드를 직접 만들고 수정합니다.", "PC와 모바일에서 읽기 좋은 화면을 완성합니다."]'::jsonb,
   '["개발 환경 확인과 첫 화면 실행", "화면 구성 요소와 교육 분야 카드 만들기", "프로그램 목록과 상세 화면 연결", "화면 점검과 완성 결과 발표"]'::jsonb,
   '["인터넷에 연결되는 노트북", "Node.js와 npm 설치", "웹브라우저와 편집 도구"]'::jsonb,
-  '["react-components", "javascript-basics"]'::jsonb, '모집 예정', 'violet', '01'
+  '["react-components", "javascript-basics"]'::jsonb, '모집 예정', 'violet', '01',
+  '/edu/images/program-react.webp', '데스크톱과 태블릿, 스마트폰에서 같은 교육 홈페이지가 열려 있는 모습'
 ),
 (
   'codex-first-service', 'Codex로 첫 웹서비스 만들기', 'ai-development', 'AI 활용 개발', '기초', '4주 · 토요일',
@@ -23,7 +24,8 @@ insert into public.edu_programs (
   '["개발 요청을 구체적으로 작성합니다.", "실행 결과와 오류를 직접 확인합니다.", "첫 웹서비스 화면을 완성합니다."]'::jsonb,
   '["Codex 사용법과 첫 작업 요청", "서비스 화면과 메뉴 구성", "교육 프로그램 데이터 연결", "결과 검토와 다음 개발 계획 정리"]'::jsonb,
   '["인터넷에 연결되는 노트북", "Codex 사용 환경", "Node.js와 npm 설치"]'::jsonb,
-  '["codex-request", "html-first-page"]'::jsonb, '모집 예정', 'coral', '02'
+  '["codex-request", "html-first-page"]'::jsonb, '모집 예정', 'coral', '02',
+  '/edu/images/program-codex.webp', '학습자가 AI에게 개발을 요청하고 완성된 웹사이트 화면을 확인하는 모습'
 ),
 (
   'github-vercel', 'GitHub와 Vercel 배포 입문', 'deployment', '배포 및 운영', '입문', '4주 · 토요일',
@@ -33,9 +35,12 @@ insert into public.edu_programs (
   '["Git과 GitHub의 역할을 구분합니다.", "프로젝트를 GitHub에 안전하게 보관합니다.", "실제 접속 주소를 확인합니다."]'::jsonb,
   '["소스 저장의 필요성과 GitHub 가입", "Git 저장소 만들기와 첫 커밋", "GitHub와 Vercel 연결하기", "실제 접속 주소 점검"]'::jsonb,
   '["인터넷에 연결되는 노트북", "GitHub 계정", "Vercel 계정", "실행 가능한 React 프로젝트"]'::jsonb,
-  '["github-first-push", "github-pages-publish"]'::jsonb, '모집 예정', 'mint', '03'
+  '["github-first-push", "github-pages-publish"]'::jsonb, '모집 예정', 'mint', '03',
+  '/edu/images/program-deployment.webp', '노트북의 소스가 온라인 저장소와 배포 과정을 거쳐 홈페이지로 공개되는 흐름'
 )
-on conflict (id) do nothing;
+on conflict (id) do update set
+  image_url = excluded.image_url,
+  image_alt = excluded.image_alt;
 
 insert into public.edu_lessons (
   id, title, category_id, category, level, duration, description, explanation,
@@ -133,3 +138,4 @@ insert into public.edu_notices (id, title, display_date, summary, content, check
   '["자동 배포 성공 확인", "홈페이지 첫 화면 확인", "메뉴 이동 확인"]'::jsonb
 )
 on conflict (id) do nothing;
+
