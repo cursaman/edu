@@ -18,7 +18,7 @@ export default function ProgramCard({ program }) {
         <span>{program.duration}</span>
       </div>
 
-      <a className="program-link" href="#application">
+      <a className="program-link" href={`#/programs/${program.id}`}>
         프로그램 안내 보기 <span aria-hidden="true">↗</span>
       </a>
     </article>
