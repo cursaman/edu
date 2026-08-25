@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { readTrialApplication, removeTrialApplication } from '../data/applicationStorage.js'
 import { categories, programs } from '../data/catalog.js'
-import { readManagedContent, restoreManagedContent, saveManagedContent } from '../data/contentStorage.js'
+import { deleteSharedItem, loadSharedContent, readManagedContent, restoreManagedContent, restoreSharedContent, saveManagedContent, saveSharedItem } from '../data/contentStorage.js'
 import { readCompletedLessons } from '../data/learningProgress.js'
 
 const emptyLesson = { title: '', categoryId: '', level: '입문', duration: '20분', description: '', explanation: '', steps: '', code: '', prompt: '' }
@@ -48,27 +48,57 @@ function ContentForm({ type, editing, onCancel, onSave }) {
   )
 }
 
-export default function AdminPage() {
+export default function AdminPage({ session = null, onLogout }) {
   const [section, setSection] = useState('overview')
   const [managedLessons, setManagedLessons] = useState(() => readManagedContent('lessons'))
   const [managedNotices, setManagedNotices] = useState(() => readManagedContent('notices'))
   const [application, setApplication] = useState(readTrialApplication)
   const [editing, setEditing] = useState(null)
   const [showForm, setShowForm] = useState(false)
+  const [message, setMessage] = useState('')
+  const connected = Boolean(session)
   const items = section === 'lessons' ? managedLessons : managedNotices
 
-  function changeSection(next) { setSection(next); setEditing(null); setShowForm(false) }
-  function saveItem(item) {
+  useEffect(() => {
+    if (!connected) return
+    void loadSharedContent('lessons').then(({ items: next }) => setManagedLessons(next))
+    void loadSharedContent('notices').then(({ items: next }) => setManagedNotices(next))
+  }, [connected])
+
+  function changeSection(next) { setSection(next); setEditing(null); setShowForm(false); setMessage('') }
+  async function saveItem(item) {
+    if (connected) {
+      const result = await saveSharedItem(section, item)
+      if (result.error) return setMessage('저장하지 못했습니다. 관리자 권한과 Supabase 테이블 설정을 확인해 주세요.')
+      ;(section === 'lessons' ? setManagedLessons : setManagedNotices)(result.items)
+      setEditing(null); setShowForm(false); setMessage('변경 내용을 공동 저장소에 저장했습니다.')
+      return
+    }
     const next = editing ? items.map((existing) => existing.id === item.id ? item : existing) : [...items, item]
     if (saveManagedContent(section, next)) { (section === 'lessons' ? setManagedLessons : setManagedNotices)(next); setEditing(null); setShowForm(false) }
   }
-  function deleteItem(item) {
+  async function deleteItem(item) {
     if (!window.confirm(`"${item.title}" 항목을 삭제할까요?`)) return
+    if (connected) {
+      const result = await deleteSharedItem(section, item.id)
+      if (result.error) return setMessage('삭제하지 못했습니다. 관리자 권한을 확인해 주세요.')
+      ;(section === 'lessons' ? setManagedLessons : setManagedNotices)(result.items)
+      setMessage('선택한 내용을 공동 저장소에서 삭제했습니다.')
+      return
+    }
     const next = items.filter((existing) => existing.id !== item.id)
     if (saveManagedContent(section, next)) (section === 'lessons' ? setManagedLessons : setManagedNotices)(next)
   }
-  function restore(type) {
-    if (!window.confirm('브라우저에서 수정한 내용을 지우고 기본 자료로 복원할까요?')) return
+  async function restore(type) {
+    const warning = connected ? '공동 저장소의 내용을 기본 자료로 복원할까요? 모든 사용자에게 반영됩니다.' : '브라우저에서 수정한 내용을 지우고 기본 자료로 복원할까요?'
+    if (!window.confirm(warning)) return
+    if (connected) {
+      const result = await restoreSharedContent(type)
+      if (result.error) return setMessage('기본 자료로 복원하지 못했습니다. 관리자 권한을 확인해 주세요.')
+      ;(type === 'lessons' ? setManagedLessons : setManagedNotices)(result.items)
+      setShowForm(false); setEditing(null); setMessage('공동 저장소를 기본 자료로 복원했습니다.')
+      return
+    }
     const restored = restoreManagedContent(type)
     ;(type === 'lessons' ? setManagedLessons : setManagedNotices)(restored)
     setShowForm(false); setEditing(null)
@@ -76,8 +106,9 @@ export default function AdminPage() {
 
   return (
     <section className="content-page page-shell admin-page" aria-labelledby="admin-title">
-      <div className="page-introduction"><span className="section-eyebrow">ADMIN EXPERIENCE</span><h1 id="admin-title">관리자 기능 체험</h1><p>운영 화면의 흐름을 살펴보는 교육용 체험입니다.</p></div>
-      <div className="privacy-warning"><strong>관리자 기능 체험 화면입니다.</strong><p>실제 보안이나 접근 제한 기능은 없습니다. 변경 내용은 현재 브라우저에만 저장되며 다른 사용자에게 공유되지 않습니다. 실제 개인정보나 비밀번호를 입력하지 마세요.</p></div>
+      <div className="page-introduction"><span className="section-eyebrow">{connected ? 'ADMIN DASHBOARD' : 'ADMIN EXPERIENCE'}</span><h1 id="admin-title">{connected ? '교육 플랫폼 관리자' : '관리자 기능 체험'}</h1><p>{connected ? '인증된 관리자만 교육자료와 공지사항을 공동 저장소에서 관리합니다.' : '운영 화면의 흐름을 살펴보는 교육용 체험입니다.'}</p>{connected && <button className="button button-secondary" onClick={onLogout} type="button">로그아웃</button>}</div>
+      <div className="privacy-warning"><strong>{connected ? '관리자 권한이 확인되었습니다.' : '관리자 기능 체험 화면입니다.'}</strong><p>{connected ? '교육자료와 공지사항 변경은 다른 브라우저에도 반영됩니다. 수강 신청 체험은 현재 브라우저에만 저장됩니다. 실제 개인정보를 입력하지 마세요.' : 'Supabase 연결 정보가 없어 기존 체험 화면을 표시합니다. 실제 접근 제한 기능은 없으며 변경 내용은 현재 브라우저에만 저장됩니다. 실제 개인정보나 비밀번호를 입력하지 마세요.'}</p></div>
+      {message && <p className="form-message" role="status">{message}</p>}
       <nav className="admin-navigation" aria-label="관리자 메뉴">{[['overview','운영 현황'],['lessons','교육자료 관리'],['notices','공지사항 관리'],['applications','체험 신청 확인']].map(([key,label]) => <button key={key} className={`filter-chip${section === key ? ' filter-chip-active' : ''}`} onClick={() => changeSection(key)} type="button">{label}</button>)}</nav>
       {section === 'overview' && <div className="admin-stats">{[['교육 분야', categories.length + '개'],['교육 프로그램', programs.length + '개'],['교육자료', managedLessons.length + '개'],['공지사항', managedNotices.length + '개'],['완료한 학습', readCompletedLessons().length + '개'],['체험 신청', application ? '저장됨' : '없음']].map(([title,value]) => <article key={title}><span>{title}</span><strong>{value}</strong></article>)}</div>}
       {(section === 'lessons' || section === 'notices') && <div className="admin-content"><div className="admin-toolbar"><h2>{section === 'lessons' ? '교육자료 관리' : '공지사항 관리'} <span>{items.length}개</span></h2><div className="admin-actions"><button className="button button-primary" onClick={() => { setEditing(null); setShowForm(true) }} type="button">새로 등록</button><button className="button button-secondary" onClick={() => restore(section)} type="button">기본 자료로 복원</button></div></div>{showForm && <ContentForm key={`${section}-${editing?.id || 'new'}`} type={section} editing={editing} onCancel={() => { setEditing(null); setShowForm(false) }} onSave={saveItem} />}<div className="admin-item-list">{items.map((item) => <article className="admin-item" key={item.id}><div><strong>{item.title}</strong><span>{section === 'lessons' ? `${item.category} · ${item.level} · ${item.duration}` : `${item.date} · ${item.summary}`}</span></div><div className="admin-actions"><a className="button button-secondary" href={`#/${section === 'lessons' ? 'lessons' : 'notice'}/${item.id}`}>보기</a><button className="button button-secondary" onClick={() => { setEditing(item); setShowForm(true) }} type="button">수정</button><button className="button button-danger" onClick={() => deleteItem(item)} type="button">삭제</button></div></article>)}</div></div>}

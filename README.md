@@ -6,7 +6,7 @@
 
 - 홈페이지: https://cursaman.github.io/edu/
 - 교육자료: https://cursaman.github.io/edu/#/lessons
-- 관리자 체험: https://cursaman.github.io/edu/#/admin
+- 관리자 화면: https://cursaman.github.io/edu/#/admin
 - GitHub 저장소: https://github.com/cursaman/edu
 
 ## 사용 기술
@@ -15,6 +15,7 @@
 - Vite: 개발 화면을 실행하고 배포용 파일을 만듭니다.
 - JavaScript: 메뉴 이동, 검색, 필터와 버튼 동작을 작성합니다.
 - Node.js 22와 npm: 프로젝트에 필요한 도구를 설치하고 실행합니다.
+- Supabase: 교육자료와 공지사항을 공동 저장하고 관리자 로그인을 확인합니다.
 - localStorage: 학습 완료와 신청 체험 내용을 현재 브라우저에만 저장합니다.
 - GitHub Actions: 소스 변경 시 빌드와 배포를 자동으로 실행합니다.
 - GitHub Pages: 완성된 화면을 실제 인터넷 주소로 공개합니다.
@@ -54,8 +55,12 @@ npm run build
 ```text
 app/
 ├─ .github/workflows/deploy-pages.yml   GitHub Pages 자동 배포
+├─ .env.example                        필요한 공개 환경변수 이름 안내
+├─ .env.local                          내 컴퓨터의 연결 정보: Git 업로드 금지
 ├─ index.html                          화면이 시작되는 HTML
 ├─ package.json                        프로젝트 실행 명령과 도구 목록
+├─ supabase/schema.sql                 테이블과 관리자 권한 정책 생성
+├─ supabase/seed.sql                   교육자료 7개와 공지사항 3개 등록
 ├─ vite.config.js                      GitHub Pages /edu/ 경로 설정
 └─ src/
    ├─ App.jsx                          화면 주소와 페이지 연결
@@ -70,8 +75,10 @@ app/
    │  ├─ lessons.js                    초보자용 교육자료
    │  ├─ learningProgress.js           학습 완료 저장
    │  ├─ notices.js                    공지사항 예시
-   │  ├─ contentStorage.js             교육자료·공지사항 브라우저 관리
+   │  ├─ contentStorage.js             교육자료·공지사항 공동 저장 연결
    │  └─ applicationStorage.js         수강 신청 체험 저장
+   ├─ lib/supabase.js                  Supabase 공개 키 연결과 관리자 확인
+   ├─ pages/AdminLoginPage.jsx         관리자 이메일·비밀번호 로그인
    ├─ pages/                           홈, 목록, 상세, 신청 화면
    └─ styles/global.css                PC·모바일 디자인
 ```
@@ -88,18 +95,76 @@ app/
 - 수강 신청 입력 검증, 브라우저 저장과 삭제 체험
 - 잘못된 주소에 대한 페이지 찾을 수 없음 안내
 - GitHub Actions 자동 빌드와 GitHub Pages 배포
-- 관리자 체험 화면, 교육자료·공지 등록·수정·삭제·기본값 복원
+- Supabase 관리자 로그인과 관리자 권한 확인
+- 교육자료·공지 등록·수정·삭제·기본값 복원 및 다른 브라우저와 공유
+- 모든 공개 테이블의 행 수준 보안(RLS: 자료마다 접근 권한을 검사하는 정책)
 
-## 관리자 체험 화면과 보안 주의사항
+## Supabase 가입과 프로젝트 연결
 
-관리자 화면 주소는 `#/admin`입니다. 이 화면은 운영 기능을 이해하기 위한 체험용이며 실제 관리자 인증이나 접근 제한 기능이 아닙니다.
+1. https://supabase.com/ 에서 계정을 만들고 로그인합니다.
+2. `New project`를 선택해 프로젝트를 생성합니다.
+3. 프로젝트의 `Settings` 또는 `Connect` 화면에서 프로젝트 주소와 `publishable key`를 확인합니다.
+4. 프로젝트 폴더의 `.env.example`을 참고해 `.env.local`을 준비합니다.
 
-- 누구나 관리자 체험 주소에 접속할 수 있습니다.
-- 교육자료와 공지사항 변경은 현재 사용 중인 브라우저에만 저장됩니다.
-- 다른 사용자나 다른 컴퓨터에 변경 사항이 공유되지 않습니다.
-- 기본 자료로 복원하면 해당 브라우저의 변경 기록만 삭제됩니다.
+```text
+VITE_SUPABASE_URL=여기에_프로젝트_주소
+VITE_SUPABASE_PUBLISHABLE_KEY=여기에_브라우저용_공개_키
+```
+
+5. 개발 서버가 실행 중이었다면 중지한 다음 `npm run dev`를 다시 실행합니다.
+
+`VITE_`로 시작하는 값은 완성된 브라우저 화면에 포함됩니다. 따라서 프로젝트 주소와 `publishable key`만 넣어야 합니다. `service_role` 키, 비밀 키, 관리자 비밀번호는 절대 넣지 않습니다. `.env.local`은 `.gitignore`에 등록되어 GitHub에 올라가지 않습니다.
+
+## 테이블 생성과 기본 자료 등록
+
+1. Supabase 프로젝트 화면에서 `SQL Editor`를 엽니다.
+2. `supabase/schema.sql`의 전체 내용을 복사해 새 쿼리에 붙여 넣고 `Run`을 누릅니다.
+3. 실행에 성공하면 `supabase/seed.sql`도 같은 방법으로 실행합니다.
+4. `Table Editor`에서 `edu_lessons` 7개와 `edu_notices` 3개를 확인합니다.
+5. `admin_profiles` 테이블은 관리자 권한을 지정하는 곳이며 처음에는 비어 있습니다.
+
+RLS(Row Level Security: 데이터 한 줄마다 읽기·쓰기 권한을 검사하는 장치)는 세 테이블 모두에 적용됩니다. 교육자료와 공지사항은 누구나 읽을 수 있지만 등록, 수정, 삭제는 관리자만 가능합니다. 일반 사용자는 관리자 권한을 스스로 추가하거나 변경할 수 없습니다.
+
+## 관리자 계정과 권한 등록
+
+1. Supabase의 `Authentication` → `Users`에서 `Add user`를 선택합니다.
+2. 운영 담당자가 관리자 이메일과 비밀번호를 직접 입력해 계정을 만듭니다.
+3. 생성된 사용자의 `User UID`를 복사합니다.
+4. `SQL Editor`에서 아래 예시의 UUID만 실제 사용자 UUID로 바꾸어 실행합니다.
+
+```sql
+insert into public.admin_profiles (user_id, is_admin)
+values ('여기에-관리자-사용자-UUID-입력', true)
+on conflict (user_id) do update set is_admin = excluded.is_admin;
+```
+
+5. `#/admin` 주소에서 관리자 이메일과 비밀번호로 로그인합니다.
+6. 로그인에 성공해도 `admin_profiles`에 관리자 권한이 없다면 관리자 화면에 들어갈 수 없습니다.
+7. 작업이 끝나면 관리자 화면의 `로그아웃`을 누릅니다.
+
+관리자 이메일과 비밀번호는 코드, SQL 파일, GitHub 저장소, localStorage에 직접 작성하지 않습니다. 로그인은 Supabase Auth가 처리합니다.
+
+## GitHub Pages에서 Supabase 연결하기
+
+GitHub 저장소의 `Settings` → `Secrets and variables` → `Actions` → `Variables`에서 다음 저장소 변수를 추가합니다.
+
+- `VITE_SUPABASE_URL`: Supabase 프로젝트 주소
+- `VITE_SUPABASE_PUBLISHABLE_KEY`: 브라우저에서 사용 가능한 publishable key
+
+GitHub Actions는 배포용 화면을 만들 때 이 두 변수를 사용합니다. 공개용 키는 브라우저에서 사용할 수 있도록 만들어진 값이지만, 실제 접근 권한은 반드시 RLS로 제한해야 합니다. `service_role` 키와 관리자 비밀번호는 저장소 변수나 브라우저 코드에 입력하면 안 됩니다.
+
+GitHub 변수가 준비되지 않았다면 공개 홈페이지는 기존 기본 자료와 브라우저 체험 화면으로 동작하므로 백지 화면이 되지 않습니다. 공동 저장과 실제 관리자 로그인은 연결 변수를 설정하고 다시 배포한 후 사용할 수 있습니다.
+
+## 관리자 화면과 보안 주의사항
+
+관리자 화면 주소는 `#/admin`입니다. Supabase가 연결되면 로그인한 사용자 중 관리자 권한이 등록된 계정만 접근할 수 있습니다.
+
+- Supabase 연결 시 교육자료와 공지사항 변경이 다른 브라우저와 컴퓨터에도 공유됩니다.
+- 공동 저장 상태에서 기본 자료로 복원하면 모든 사용자에게 변경 내용이 반영됩니다.
+- 학습 완료와 수강 신청 체험은 현재 브라우저의 localStorage에만 저장됩니다.
+- Supabase 연결 정보가 없는 경우에는 기존 브라우저 전용 관리자 체험 화면이 표시됩니다.
 - 체험 신청에는 실제 이름, 실제 전화번호, 비밀번호를 입력하면 안 됩니다.
-- 실제 서비스 운영에는 별도의 관리자 인증, 서버, 권한 관리, 데이터베이스가 필요합니다.
+- 브라우저 코드와 GitHub에는 `service_role` 키, 비밀 키, 관리자 계정 정보를 저장하지 않습니다.
 
 ## localStorage의 의미와 한계
 
@@ -113,8 +178,8 @@ localStorage는 웹브라우저 안에 간단한 내용을 보관하는 작은 �
 
 ## 구현하지 않은 기능
 
-- 실제 데이터베이스와 서버, 백엔드
-- 관리자 로그인, 회원가입, 사용자 인증
+- 일반 사용자 회원가입과 로그인
+- 학습 완료 기록의 서버 저장
 - 실제 수강 신청 접수와 개인정보 수집
 - 결제, 이메일 발송, 문자 발송
 - 외부 API와 교육자료 API

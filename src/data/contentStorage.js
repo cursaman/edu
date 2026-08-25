@@ -1,8 +1,38 @@
 import { lessons as defaultLessons } from './lessons.js'
 import { notices as defaultNotices } from './notices.js'
+import { supabase } from '../lib/supabase.js'
 
 const storageKeys = { lessons: 'edu-managed-lessons', notices: 'edu-managed-notices' }
 const defaults = { lessons: defaultLessons, notices: defaultNotices }
+const tableNames = { lessons: 'edu_lessons', notices: 'edu_notices' }
+
+function fromDatabase(type, row) {
+  if (type === 'notices') {
+    return { id: row.id, title: row.title, date: row.display_date, summary: row.summary, content: row.content, checklist: row.checklist }
+  }
+
+  return {
+    id: row.id, title: row.title, categoryId: row.category_id, category: row.category,
+    level: row.level, duration: row.duration, description: row.description,
+    explanation: row.explanation, goals: row.goals, steps: row.steps,
+    codeLanguage: row.code_language, code: row.code, prompt: row.prompt,
+    checklist: row.checklist, nextLessonId: row.next_lesson_id,
+  }
+}
+
+function toDatabase(type, item) {
+  if (type === 'notices') {
+    return { id: item.id, title: item.title, display_date: item.date, summary: item.summary, content: item.content || [], checklist: item.checklist || [] }
+  }
+
+  return {
+    id: item.id, title: item.title, category_id: item.categoryId, category: item.category,
+    level: item.level, duration: item.duration, description: item.description,
+    explanation: item.explanation, goals: item.goals || [], steps: item.steps || [],
+    code_language: item.codeLanguage || 'JavaScript', code: item.code || '',
+    prompt: item.prompt || '', checklist: item.checklist || [], next_lesson_id: item.nextLessonId || null,
+  }
+}
 
 export function readManagedContent(type) {
   try {
@@ -39,4 +69,43 @@ export function findManagedLesson(id) {
 
 export function findManagedNotice(id) {
   return readManagedContent('notices').find((item) => item.id === id)
+}
+
+export async function loadSharedContent(type) {
+  if (!supabase) return { items: readManagedContent(type), error: null }
+
+  const { data, error } = await supabase.from(tableNames[type]).select('*').order('created_at')
+  if (error) return { items: readManagedContent(type), error }
+
+  const items = data.map((row) => fromDatabase(type, row))
+  saveManagedContent(type, items)
+  window.dispatchEvent(new CustomEvent('edu-content-updated', { detail: { type } }))
+  return { items, error: null }
+}
+
+export async function saveSharedItem(type, item) {
+  if (!supabase) return { error: new Error('Supabase 연결 정보가 없습니다.') }
+
+  const { error } = await supabase.from(tableNames[type]).upsert(toDatabase(type, item))
+  if (error) return { error }
+  return loadSharedContent(type)
+}
+
+export async function deleteSharedItem(type, id) {
+  if (!supabase) return { error: new Error('Supabase 연결 정보가 없습니다.') }
+
+  const { error } = await supabase.from(tableNames[type]).delete().eq('id', id)
+  if (error) return { error }
+  return loadSharedContent(type)
+}
+
+export async function restoreSharedContent(type) {
+  if (!supabase) return { error: new Error('Supabase 연결 정보가 없습니다.') }
+
+  const { error: deletionError } = await supabase.from(tableNames[type]).delete().neq('id', '')
+  if (deletionError) return { error: deletionError }
+
+  const { error } = await supabase.from(tableNames[type]).upsert(defaults[type].map((item) => toDatabase(type, item)))
+  if (error) return { error }
+  return loadSharedContent(type)
 }

@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
 import Header from './components/Header.jsx'
+import { loadSharedContent } from './data/contentStorage.js'
+import { checkAdminAccess, isSupabaseConfigured, supabase } from './lib/supabase.js'
+import AdminLoginPage from './pages/AdminLoginPage.jsx'
 import AdminPage from './pages/AdminPage.jsx'
 import ApplicationPage from './pages/ApplicationPage.jsx'
 import CategoriesPage from './pages/CategoriesPage.jsx'
@@ -30,6 +33,10 @@ function readCurrentRoute() {
 
 export default function App() {
   const [route, setRoute] = useState(readCurrentRoute)
+  const [session, setSession] = useState(null)
+  const [adminAccess, setAdminAccess] = useState(false)
+  const [checkingAccess, setCheckingAccess] = useState(isSupabaseConfigured)
+  const [, setContentVersion] = useState(0)
 
   useEffect(() => {
     function handleHashChange() {
@@ -39,6 +46,46 @@ export default function App() {
 
     window.addEventListener('hashchange', handleHashChange)
     return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [])
+
+  useEffect(() => {
+    function refreshPages() {
+      setContentVersion((current) => current + 1)
+    }
+
+    window.addEventListener('edu-content-updated', refreshPages)
+    if (isSupabaseConfigured) {
+      void loadSharedContent('lessons')
+      void loadSharedContent('notices')
+    }
+
+    return () => window.removeEventListener('edu-content-updated', refreshPages)
+  }, [])
+
+  useEffect(() => {
+    if (!supabase) return undefined
+
+    let active = true
+
+    async function updateSession(nextSession) {
+      if (!active) return
+      setSession(nextSession)
+      setCheckingAccess(true)
+      const allowed = await checkAdminAccess(nextSession?.user)
+      if (!active) return
+      setAdminAccess(allowed)
+      setCheckingAccess(false)
+    }
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      // 권한 조회는 인증 상태 처리 직후 별도 순서에서 실행합니다.
+      window.setTimeout(() => void updateSession(nextSession), 0)
+    })
+
+    return () => {
+      active = false
+      subscription.unsubscribe()
+    }
   }, [])
 
   let page
@@ -62,7 +109,17 @@ export default function App() {
   } else if (route.pathname === '/application') {
     page = <ApplicationPage />
   } else if (route.pathname === '/admin') {
-    page = <AdminPage />
+    if (!isSupabaseConfigured) {
+      page = <AdminPage />
+    } else if (checkingAccess) {
+      page = <section className="content-page page-shell"><p role="status">관리자 권한을 확인하고 있습니다...</p></section>
+    } else if (!session || !adminAccess) {
+      page = <AdminLoginPage denied={Boolean(session && !adminAccess)} />
+    } else {
+      page = <AdminPage session={session} onLogout={() => supabase.auth.signOut()} />
+    }
+  } else if (route.pathname === '/admin/login' && isSupabaseConfigured) {
+    page = <AdminLoginPage denied={Boolean(session && !adminAccess)} />
   } else {
     page = <NotFoundPage />
   }
@@ -78,7 +135,7 @@ export default function App() {
             <strong>EDU</strong>
             <span>AI와 함께 배우는 실전 웹개발 교육</span>
           </div>
-          <div className="footer-links"><span>한 번에 한 단계씩, 직접 만들고 확인합니다.</span><a href="#/admin">관리자 체험</a></div>
+          <div className="footer-links"><span>한 번에 한 단계씩, 직접 만들고 확인합니다.</span><a href="#/admin">{isSupabaseConfigured ? '관리자 로그인' : '관리자 체험'}</a></div>
         </div>
       </footer>
     </>
