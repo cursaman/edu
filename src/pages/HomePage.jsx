@@ -1,6 +1,6 @@
 import CategoryCard from '../components/CategoryCard.jsx'
 import ProgramCard from '../components/ProgramCard.jsx'
-import { categories, learningSteps, programs } from '../data/catalog.js'
+import { categories, learningSteps } from '../data/catalog.js'
 import { readCompletedLessons } from '../data/learningProgress.js'
 import { readManagedContent } from '../data/contentStorage.js'
 
@@ -15,6 +15,7 @@ function SectionHeading({ eyebrow, title, description }) {
 }
 
 export default function HomePage() {
+  const programs = readManagedContent('programs')
   const lessons = readManagedContent('lessons')
   const completedCount = readCompletedLessons().length
 

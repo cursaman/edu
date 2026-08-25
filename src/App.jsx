@@ -55,6 +55,7 @@ export default function App() {
 
     window.addEventListener('edu-content-updated', refreshPages)
     if (isSupabaseConfigured) {
+      void loadSharedContent('programs')
       void loadSharedContent('lessons')
       void loadSharedContent('notices')
     }

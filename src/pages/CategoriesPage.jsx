@@ -1,7 +1,10 @@
 import CategoryCard from '../components/CategoryCard.jsx'
-import { categories, programs } from '../data/catalog.js'
+import { categories } from '../data/catalog.js'
+import { readManagedContent } from '../data/contentStorage.js'
 
 export default function CategoriesPage() {
+  const programs = readManagedContent('programs')
+
   return (
     <section className="content-page page-shell" aria-labelledby="categories-title">
       <div className="page-introduction">

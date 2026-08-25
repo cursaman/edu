@@ -1,5 +1,42 @@
 -- schema.sql을 먼저 실행한 뒤 이 파일 전체를 SQL Editor에서 실행합니다.
 
+insert into public.edu_programs (
+  id, title, category_id, category, level, duration, description, introduction,
+  audience, goals, curriculum, preparations, related_lesson_ids,
+  status, color, display_number
+) values
+(
+  'react-website', 'React 웹사이트 만들기', 'frontend', '프런트엔드', '입문', '4주 · 토요일',
+  '화면을 작은 부품으로 나누고, 나만의 첫 웹사이트를 완성합니다.',
+  '웹사이트 화면을 작은 구성 요소로 나누어 만들고 첫 React 웹사이트를 완성하는 입문 과정입니다.',
+  '["코딩 경험이 거의 없지만 웹사이트를 만들어 보고 싶은 분", "화면을 수정하면서 결과를 확인하고 싶은 분"]'::jsonb,
+  '["React 화면의 기본 구조를 이해합니다.", "교육 프로그램 카드를 직접 만들고 수정합니다.", "PC와 모바일에서 읽기 좋은 화면을 완성합니다."]'::jsonb,
+  '["개발 환경 확인과 첫 화면 실행", "화면 구성 요소와 교육 분야 카드 만들기", "프로그램 목록과 상세 화면 연결", "화면 점검과 완성 결과 발표"]'::jsonb,
+  '["인터넷에 연결되는 노트북", "Node.js와 npm 설치", "웹브라우저와 편집 도구"]'::jsonb,
+  '["react-components", "javascript-basics"]'::jsonb, '모집 예정', 'violet', '01'
+),
+(
+  'codex-first-service', 'Codex로 첫 웹서비스 만들기', 'ai-development', 'AI 활용 개발', '기초', '4주 · 토요일',
+  'AI에게 작은 작업을 요청하고 직접 실행하며 실전 개발을 경험합니다.',
+  'Codex에게 오늘 할 작업을 요청하고 실행 결과를 확인하며 웹서비스 제작 흐름을 익힙니다.',
+  '["AI와 함께 개발을 시작해 보고 싶은 분", "작은 작업부터 차근차근 완성하고 싶은 분"]'::jsonb,
+  '["개발 요청을 구체적으로 작성합니다.", "실행 결과와 오류를 직접 확인합니다.", "첫 웹서비스 화면을 완성합니다."]'::jsonb,
+  '["Codex 사용법과 첫 작업 요청", "서비스 화면과 메뉴 구성", "교육 프로그램 데이터 연결", "결과 검토와 다음 개발 계획 정리"]'::jsonb,
+  '["인터넷에 연결되는 노트북", "Codex 사용 환경", "Node.js와 npm 설치"]'::jsonb,
+  '["codex-request", "html-first-page"]'::jsonb, '모집 예정', 'coral', '02'
+),
+(
+  'github-vercel', 'GitHub와 Vercel 배포 입문', 'deployment', '배포 및 운영', '입문', '4주 · 토요일',
+  '코드를 안전하게 저장하고 실제 접속 가능한 웹주소를 만듭니다.',
+  '웹사이트 소스를 GitHub에 보관하고 Vercel에 연결해 다른 사람도 접속할 수 있는 주소를 만듭니다.',
+  '["완성한 웹사이트를 다른 사람에게 보여 주고 싶은 분", "소스 저장과 배포 흐름을 처음 배우는 분"]'::jsonb,
+  '["Git과 GitHub의 역할을 구분합니다.", "프로젝트를 GitHub에 안전하게 보관합니다.", "실제 접속 주소를 확인합니다."]'::jsonb,
+  '["소스 저장의 필요성과 GitHub 가입", "Git 저장소 만들기와 첫 커밋", "GitHub와 Vercel 연결하기", "실제 접속 주소 점검"]'::jsonb,
+  '["인터넷에 연결되는 노트북", "GitHub 계정", "Vercel 계정", "실행 가능한 React 프로젝트"]'::jsonb,
+  '["github-first-push", "github-pages-publish"]'::jsonb, '모집 예정', 'mint', '03'
+)
+on conflict (id) do nothing;
+
 insert into public.edu_lessons (
   id, title, category_id, category, level, duration, description, explanation,
   goals, steps, code_language, code, prompt, checklist, next_lesson_id

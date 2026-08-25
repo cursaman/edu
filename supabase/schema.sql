@@ -7,6 +7,27 @@ create table if not exists public.admin_profiles (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.edu_programs (
+  id text primary key,
+  title text not null,
+  category_id text not null,
+  category text not null,
+  level text not null,
+  duration text not null,
+  description text not null,
+  introduction text not null,
+  audience jsonb not null default '[]'::jsonb,
+  goals jsonb not null default '[]'::jsonb,
+  curriculum jsonb not null default '[]'::jsonb,
+  preparations jsonb not null default '[]'::jsonb,
+  related_lesson_ids jsonb not null default '[]'::jsonb,
+  status text not null default '모집 예정',
+  color text not null default 'violet',
+  display_number text not null default '01',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 create table if not exists public.edu_lessons (
   id text primary key,
   title text not null,
@@ -49,6 +70,11 @@ begin
 end;
 $$;
 
+drop trigger if exists set_edu_programs_updated_at on public.edu_programs;
+create trigger set_edu_programs_updated_at
+before update on public.edu_programs
+for each row execute function public.set_edu_updated_at();
+
 drop trigger if exists set_edu_lessons_updated_at on public.edu_lessons;
 create trigger set_edu_lessons_updated_at
 before update on public.edu_lessons
@@ -76,6 +102,7 @@ revoke all on function public.is_edu_admin() from public;
 grant execute on function public.is_edu_admin() to authenticated;
 
 alter table public.admin_profiles enable row level security;
+alter table public.edu_programs enable row level security;
 alter table public.edu_lessons enable row level security;
 alter table public.edu_notices enable row level security;
 
@@ -86,6 +113,25 @@ using (auth.uid() = user_id);
 
 -- 관리자 권한 테이블에는 INSERT·UPDATE·DELETE 정책을 만들지 않습니다.
 -- 따라서 브라우저 사용자는 자신에게 관리자 권한을 추가하거나 변경할 수 없습니다.
+
+drop policy if exists "edu_programs_public_read" on public.edu_programs;
+create policy "edu_programs_public_read"
+on public.edu_programs for select to anon, authenticated using (true);
+
+drop policy if exists "edu_programs_admin_insert" on public.edu_programs;
+create policy "edu_programs_admin_insert"
+on public.edu_programs for insert to authenticated
+with check (public.is_edu_admin());
+
+drop policy if exists "edu_programs_admin_update" on public.edu_programs;
+create policy "edu_programs_admin_update"
+on public.edu_programs for update to authenticated
+using (public.is_edu_admin()) with check (public.is_edu_admin());
+
+drop policy if exists "edu_programs_admin_delete" on public.edu_programs;
+create policy "edu_programs_admin_delete"
+on public.edu_programs for delete to authenticated
+using (public.is_edu_admin());
 
 drop policy if exists "edu_lessons_public_read" on public.edu_lessons;
 create policy "edu_lessons_public_read"

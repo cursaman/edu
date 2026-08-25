@@ -1,7 +1,9 @@
 import ProgramCard from '../components/ProgramCard.jsx'
-import { categories, programs } from '../data/catalog.js'
+import { categories } from '../data/catalog.js'
+import { readManagedContent } from '../data/contentStorage.js'
 
 export default function ProgramsPage({ selectedCategory }) {
+  const programs = readManagedContent('programs')
   const activeCategory = categories.some((category) => category.id === selectedCategory)
     ? selectedCategory
     : 'all'

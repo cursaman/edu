@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { readTrialApplication, removeTrialApplication, saveTrialApplication } from '../data/applicationStorage.js'
-import { programs } from '../data/catalog.js'
+import { readManagedContent } from '../data/contentStorage.js'
 
 const emptyForm = { name: '', contact: '', programId: '', motivation: '', privacyAgreed: false }
 
@@ -15,6 +15,7 @@ function validateApplication(form) {
 }
 
 export default function ApplicationPage() {
+  const programs = readManagedContent('programs')
   const [form, setForm] = useState(emptyForm)
   const [errors, setErrors] = useState({})
   const [savedApplication, setSavedApplication] = useState(readTrialApplication)

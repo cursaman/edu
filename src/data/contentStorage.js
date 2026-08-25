@@ -1,12 +1,24 @@
 import { lessons as defaultLessons } from './lessons.js'
 import { notices as defaultNotices } from './notices.js'
+import { programs as defaultPrograms } from './catalog.js'
 import { supabase } from '../lib/supabase.js'
 
-const storageKeys = { lessons: 'edu-managed-lessons', notices: 'edu-managed-notices' }
-const defaults = { lessons: defaultLessons, notices: defaultNotices }
-const tableNames = { lessons: 'edu_lessons', notices: 'edu_notices' }
+const storageKeys = { programs: 'edu-managed-programs', lessons: 'edu-managed-lessons', notices: 'edu-managed-notices' }
+const defaults = { programs: defaultPrograms, lessons: defaultLessons, notices: defaultNotices }
+const tableNames = { programs: 'edu_programs', lessons: 'edu_lessons', notices: 'edu_notices' }
 
 function fromDatabase(type, row) {
+  if (type === 'programs') {
+    return {
+      id: row.id, title: row.title, categoryId: row.category_id, category: row.category,
+      level: row.level, duration: row.duration, description: row.description,
+      introduction: row.introduction, audience: row.audience || [], goals: row.goals || [],
+      curriculum: row.curriculum || [], preparations: row.preparations || [],
+      relatedLessonIds: row.related_lesson_ids || [], status: row.status,
+      color: row.color, number: row.display_number,
+    }
+  }
+
   if (type === 'notices') {
     return { id: row.id, title: row.title, date: row.display_date, summary: row.summary, content: row.content, checklist: row.checklist }
   }
@@ -21,6 +33,17 @@ function fromDatabase(type, row) {
 }
 
 function toDatabase(type, item) {
+  if (type === 'programs') {
+    return {
+      id: item.id, title: item.title, category_id: item.categoryId, category: item.category,
+      level: item.level, duration: item.duration, description: item.description,
+      introduction: item.introduction, audience: item.audience || [], goals: item.goals || [],
+      curriculum: item.curriculum || [], preparations: item.preparations || [],
+      related_lesson_ids: item.relatedLessonIds || [], status: item.status || '모집 예정',
+      color: item.color || 'violet', display_number: item.number || '01',
+    }
+  }
+
   if (type === 'notices') {
     return { id: item.id, title: item.title, display_date: item.date, summary: item.summary, content: item.content || [], checklist: item.checklist || [] }
   }
@@ -65,6 +88,10 @@ export function restoreManagedContent(type) {
 
 export function findManagedLesson(id) {
   return readManagedContent('lessons').find((item) => item.id === id)
+}
+
+export function findManagedProgram(id) {
+  return readManagedContent('programs').find((item) => item.id === id)
 }
 
 export function findManagedNotice(id) {

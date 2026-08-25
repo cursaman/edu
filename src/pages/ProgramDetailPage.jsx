@@ -1,8 +1,7 @@
-import { programs } from '../data/catalog.js'
-import { readManagedContent } from '../data/contentStorage.js'
+import { findManagedProgram, readManagedContent } from '../data/contentStorage.js'
 
 export default function ProgramDetailPage({ programId }) {
-  const program = programs.find((item) => item.id === programId)
+  const program = findManagedProgram(programId)
 
   if (!program) {
     return (
@@ -14,7 +13,12 @@ export default function ProgramDetailPage({ programId }) {
     )
   }
 
-  const relatedLessons = readManagedContent('lessons').filter((lesson) => lesson.categoryId === program.categoryId)
+  const selectedLessonIds = program.relatedLessonIds || []
+  const relatedLessons = readManagedContent('lessons').filter((lesson) => (
+    selectedLessonIds.length > 0
+      ? selectedLessonIds.includes(lesson.id)
+      : lesson.categoryId === program.categoryId
+  ))
 
   return (
     <article className="content-page page-shell" aria-labelledby="program-detail-title">
@@ -51,11 +55,11 @@ export default function ProgramDetailPage({ programId }) {
           </section>
 
           <section className="detail-section">
-            <h2>주차별 교육 과정</h2>
+            <h2>회차별 교육 과정</h2>
             <ol className="curriculum-list">
               {program.curriculum.map((item, index) => (
                 <li key={item}>
-                  <span>{index + 1}주차</span>
+                  <span>{index + 1}회차</span>
                   <strong>{item}</strong>
                 </li>
               ))}
