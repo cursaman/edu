@@ -1,5 +1,5 @@
 import { programs } from '../data/catalog.js'
-import { lessons } from '../data/lessons.js'
+import { readManagedContent } from '../data/contentStorage.js'
 
 export default function ProgramDetailPage({ programId }) {
   const program = programs.find((item) => item.id === programId)
@@ -14,7 +14,7 @@ export default function ProgramDetailPage({ programId }) {
     )
   }
 
-  const relatedLessons = lessons.filter((lesson) => lesson.categoryId === program.categoryId)
+  const relatedLessons = readManagedContent('lessons').filter((lesson) => lesson.categoryId === program.categoryId)
 
   return (
     <article className="content-page page-shell" aria-labelledby="program-detail-title">

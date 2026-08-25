@@ -1,6 +1,7 @@
-import { notices } from '../data/notices.js'
+import { readManagedContent } from '../data/contentStorage.js'
 
 export default function NoticesPage() {
+  const notices = readManagedContent('notices')
   return (
     <section className="content-page page-shell" aria-labelledby="notices-title">
       <div className="page-introduction">

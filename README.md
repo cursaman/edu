@@ -6,6 +6,7 @@
 
 - 홈페이지: https://cursaman.github.io/edu/
 - 교육자료: https://cursaman.github.io/edu/#/lessons
+- 관리자 체험: https://cursaman.github.io/edu/#/admin
 - GitHub 저장소: https://github.com/cursaman/edu
 
 ## 사용 기술
@@ -69,6 +70,7 @@ app/
    │  ├─ lessons.js                    초보자용 교육자료
    │  ├─ learningProgress.js           학습 완료 저장
    │  ├─ notices.js                    공지사항 예시
+   │  ├─ contentStorage.js             교육자료·공지사항 브라우저 관리
    │  └─ applicationStorage.js         수강 신청 체험 저장
    ├─ pages/                           홈, 목록, 상세, 신청 화면
    └─ styles/global.css                PC·모바일 디자인
@@ -86,6 +88,18 @@ app/
 - 수강 신청 입력 검증, 브라우저 저장과 삭제 체험
 - 잘못된 주소에 대한 페이지 찾을 수 없음 안내
 - GitHub Actions 자동 빌드와 GitHub Pages 배포
+- 관리자 체험 화면, 교육자료·공지 등록·수정·삭제·기본값 복원
+
+## 관리자 체험 화면과 보안 주의사항
+
+관리자 화면 주소는 `#/admin`입니다. 이 화면은 운영 기능을 이해하기 위한 체험용이며 실제 관리자 인증이나 접근 제한 기능이 아닙니다.
+
+- 누구나 관리자 체험 주소에 접속할 수 있습니다.
+- 교육자료와 공지사항 변경은 현재 사용 중인 브라우저에만 저장됩니다.
+- 다른 사용자나 다른 컴퓨터에 변경 사항이 공유되지 않습니다.
+- 기본 자료로 복원하면 해당 브라우저의 변경 기록만 삭제됩니다.
+- 체험 신청에는 실제 이름, 실제 전화번호, 비밀번호를 입력하면 안 됩니다.
+- 실제 서비스 운영에는 별도의 관리자 인증, 서버, 권한 관리, 데이터베이스가 필요합니다.
 
 ## localStorage의 의미와 한계
 

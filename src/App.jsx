@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Header from './components/Header.jsx'
+import AdminPage from './pages/AdminPage.jsx'
 import ApplicationPage from './pages/ApplicationPage.jsx'
 import CategoriesPage from './pages/CategoriesPage.jsx'
 import HomePage from './pages/HomePage.jsx'
@@ -60,6 +61,8 @@ export default function App() {
     page = <NoticeDetailPage noticeId={route.pathname.split('/')[2]} />
   } else if (route.pathname === '/application') {
     page = <ApplicationPage />
+  } else if (route.pathname === '/admin') {
+    page = <AdminPage />
   } else {
     page = <NotFoundPage />
   }
@@ -75,7 +78,7 @@ export default function App() {
             <strong>EDU</strong>
             <span>AI와 함께 배우는 실전 웹개발 교육</span>
           </div>
-          <span>한 번에 한 단계씩, 직접 만들고 확인합니다.</span>
+          <div className="footer-links"><span>한 번에 한 단계씩, 직접 만들고 확인합니다.</span><a href="#/admin">관리자 체험</a></div>
         </div>
       </footer>
     </>

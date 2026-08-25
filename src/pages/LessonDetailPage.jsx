@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { readCompletedLessons, updateLessonCompletion } from '../data/learningProgress.js'
-import { findLesson } from '../data/lessons.js'
+import { findManagedLesson } from '../data/contentStorage.js'
 
 export default function LessonDetailPage({ lessonId }) {
-  const lesson = findLesson(lessonId)
+  const lesson = findManagedLesson(lessonId)
   const [completedLessons, setCompletedLessons] = useState(readCompletedLessons)
 
   if (!lesson) {
@@ -17,7 +17,7 @@ export default function LessonDetailPage({ lessonId }) {
   }
 
   const completed = completedLessons.includes(lesson.id)
-  const nextLesson = lesson.nextLessonId ? findLesson(lesson.nextLessonId) : null
+  const nextLesson = lesson.nextLessonId ? findManagedLesson(lesson.nextLessonId) : null
 
   function toggleCompletion() {
     setCompletedLessons(updateLessonCompletion(lesson.id, !completed))

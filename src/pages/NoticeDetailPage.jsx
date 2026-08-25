@@ -1,7 +1,7 @@
-import { findNotice } from '../data/notices.js'
+import { findManagedNotice } from '../data/contentStorage.js'
 
 export default function NoticeDetailPage({ noticeId }) {
-  const notice = findNotice(noticeId)
+  const notice = findManagedNotice(noticeId)
 
   if (!notice) {
     return <section className="content-page page-shell empty-state"><strong>공지사항을 찾지 못했습니다.</strong><a className="button button-primary" href="#/notice">공지사항 목록으로</a></section>

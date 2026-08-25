@@ -2,9 +2,10 @@ import { useState } from 'react'
 import LessonCard from '../components/LessonCard.jsx'
 import { categories } from '../data/catalog.js'
 import { readCompletedLessons } from '../data/learningProgress.js'
-import { lessons } from '../data/lessons.js'
+import { readManagedContent } from '../data/contentStorage.js'
 
 export default function LessonsPage({ selectedCategory }) {
+  const lessons = readManagedContent('lessons')
   const [searchText, setSearchText] = useState('')
   const [completedLessons] = useState(readCompletedLessons)
   const activeCategory = categories.some((category) => category.id === selectedCategory)
