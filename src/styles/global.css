@@ -1590,7 +1590,9 @@ button:focus-visible {
 }
 
 .home-learning-soft {
+  width: 100%;
   max-width: none;
+  margin-inline: 0;
   padding-inline: max(24px, calc((100% - var(--shell)) / 2));
   background: #f8f8ff;
 }
