@@ -1,8 +1,11 @@
+import { useState } from 'react'
 import CategoryCard from '../components/CategoryCard.jsx'
+import LessonCard from '../components/LessonCard.jsx'
 import ProgramCard from '../components/ProgramCard.jsx'
 import { categories, learningSteps } from '../data/catalog.js'
 import { readCompletedLessons } from '../data/learningProgress.js'
 import { readManagedContent } from '../data/contentStorage.js'
+import { readFavoriteLessons, toggleFavoriteLesson } from '../data/lessonActivity.js'
 
 function SectionHeading({ eyebrow, title, description }) {
   return (
@@ -18,6 +21,12 @@ export default function HomePage() {
   const programs = readManagedContent('programs')
   const lessons = readManagedContent('lessons')
   const completedCount = readCompletedLessons().length
+  const [favoriteLessons, setFavoriteLessons] = useState(readFavoriteLessons)
+  const todayLesson = lessons.find((lesson) => lesson.featured) || lessons[0]
+  const popularLessons = lessons.filter((lesson) => lesson.popular).slice(0, 3)
+  const newLessons = [...lessons].sort((a, b) => String(b.publishedAt || '').localeCompare(String(a.publishedAt || ''))).slice(0, 3)
+  const categoryRecommendations = categories.map((category) => lessons.find((lesson) => lesson.categoryId === category.id && lesson.featured) || lessons.find((lesson) => lesson.categoryId === category.id)).filter(Boolean)
+  const lessonCard = (lesson) => <LessonCard favorite={favoriteLessons.includes(lesson.id)} key={lesson.id} lesson={lesson} onToggleFavorite={(id) => setFavoriteLessons(toggleFavoriteLesson(id))} />
 
   return (
     <>
@@ -83,6 +92,32 @@ export default function HomePage() {
             </article>
           ))}
         </div>
+      </section>
+
+      {todayLesson && (
+        <section className="section page-shell home-learning-section">
+          <SectionHeading eyebrow="TODAY'S 10 MINUTES" title="오늘의 10분 실습" description="짧게 하나만 따라 해도 웹개발 감각이 쌓입니다." />
+          <article className="today-practice-card">
+            <div><span className="section-eyebrow">{todayLesson.category} · 약 10분</span><h3>{todayLesson.title}</h3><p>{todayLesson.steps[0]} 그리고 결과가 어떻게 달라지는지 직접 확인해 보세요.</p></div>
+            <a className="button button-primary" href={`#/lessons/${todayLesson.id}`}>10분 실습 시작하기 →</a>
+          </article>
+        </section>
+      )}
+
+      <section className="section page-shell home-learning-section">
+        <SectionHeading eyebrow="POPULAR LESSONS" title="많이 찾는 인기 교육자료" description="처음 배우는 분들이 가장 자주 찾는 핵심 주제입니다." />
+        <div className="lesson-grid">{popularLessons.map(lessonCard)}</div>
+      </section>
+
+      <section className="section page-shell home-learning-section home-learning-soft">
+        <SectionHeading eyebrow="NEW LESSONS" title="새로 추가된 교육자료" description="최근 보강한 실습을 골라 바로 시작해 보세요." />
+        <div className="lesson-grid">{newLessons.map(lessonCard)}</div>
+      </section>
+
+      <section className="section page-shell home-learning-section">
+        <SectionHeading eyebrow="RECOMMENDED BY FIELD" title="분야별 추천 자료" description="여섯 분야에서 하나씩 골라 전체 개발 흐름을 살펴보세요." />
+        <div className="lesson-grid">{categoryRecommendations.map(lessonCard)}</div>
+        <a className="home-lessons-link" href="#/lessons">교육자료 18개 모두 보기 →</a>
       </section>
 
       <section className="section page-shell">

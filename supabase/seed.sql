@@ -1,4 +1,6 @@
+-- EDU 웹개발 교육 플랫폼 최신 초기 데이터 (2026-08-26)
 -- schema.sql을 먼저 실행한 뒤 이 파일 전체를 SQL Editor에서 실행합니다.
+-- 같은 파일을 다시 실행해도 id를 기준으로 갱신되며 중복 행은 생기지 않습니다.
 
 insert into public.edu_programs (
   id, title, category_id, category, level, duration, description, introduction,
@@ -164,7 +166,44 @@ insert into public.edu_lessons (
   'GitHub Pages 배포 설정과 배포 후 확인할 항목을 초보자 눈높이로 설명해줘.',
   '["공개 주소에서 첫 화면과 메뉴가 정상적으로 열리나요?"]'::jsonb, null
 )
-on conflict (id) do nothing;
+on conflict (id) do update set
+  title=excluded.title, category_id=excluded.category_id, category=excluded.category,
+  level=excluded.level, duration=excluded.duration, description=excluded.description,
+  explanation=excluded.explanation, goals=excluded.goals, steps=excluded.steps,
+  code_language=excluded.code_language, code=excluded.code, prompt=excluded.prompt,
+  checklist=excluded.checklist, next_lesson_id=excluded.next_lesson_id;
+
+-- 재방문용 신규 교육자료 11개를 추가합니다. 기존 7개와 합쳐 분야별 3개, 총 18개가 됩니다.
+insert into public.edu_lessons (
+  id, title, category_id, category, level, duration, description, explanation,
+  goals, steps, code_language, code, prompt, checklist, next_lesson_id,
+  related_program_id, is_featured, is_popular, published_at
+) values
+('react-state-filter','React 상태로 분야 필터 만들기','frontend','프런트엔드','기초','30분','선택한 분야의 카드만 보여주는 필터를 만듭니다.','상태는 화면이 기억하는 현재 값입니다.','["상태의 역할을 이해합니다.","filter로 자료를 구분합니다."]','["분야 상태를 만듭니다.","버튼을 연결합니다.","filter로 자료를 고릅니다.","전체 버튼을 확인합니다."]','React JSX',E'const [category, setCategory] = useState(\'all\')\nconst visible = items.filter(item => category === \'all\' || item.category === category)','React 목록에 전체와 분야별 필터 버튼을 만들어줘.','["선택 버튼이 구분되나요?","전체 자료도 나오나요?"]','responsive-layout','react-website',true,false,'2026-08-28'),
+('responsive-layout','모바일 반응형 화면 점검하기','frontend','프런트엔드','기초','25분','PC의 여러 열 카드를 모바일에서는 한 열로 정리합니다.','반응형 화면은 기기 너비에 맞춰 배치를 바꾸는 방식입니다.','["PC와 모바일 배치를 구분합니다.","카드 그리드를 한 열로 바꿉니다."]','["모바일 보기를 엽니다.","잘림을 확인합니다.","680px 조건을 넣습니다.","버튼 크기를 확인합니다."]','CSS',E'@media (max-width: 680px) {\n  .lesson-grid { grid-template-columns: 1fr; }\n}','교육자료 카드가 680px 이하에서 한 줄에 하나씩 보이게 해줘.','["가로 스크롤이 없나요?","버튼을 누르기 쉬운가요?"]','node-request-response','react-website',false,false,'2026-08-26'),
+('node-request-response','서버의 요청과 응답 이해하기','backend','백엔드','입문','25분','식당 주문에 비유해 브라우저와 서버의 대화를 이해합니다.','브라우저 요청은 손님의 주문이고 서버 응답은 주방에서 내보내는 음식과 같습니다.','["요청과 응답 순서를 설명합니다.","GET 요청을 이해합니다."]','["API 주소를 엽니다.","Network 창을 봅니다.","상태와 JSON을 찾습니다.","잘못된 주소도 확인합니다."]','JavaScript',E'fetch(\'/api/lessons\')\n  .then(response => response.json())','브라우저와 서버의 요청과 응답을 식당 주문에 비유해 설명해줘.','["요청과 응답 주체를 구분하나요?","응답 상태를 봤나요?"]','node-json-api','node-backend',true,false,'2026-08-29'),
+('node-json-api','Node.js JSON API 만들기','backend','백엔드','기초','30분','교육자료 목록을 JSON으로 돌려주는 작은 API를 만듭니다.','API는 프로그램끼리 자료를 주고받는 창구이고 JSON은 읽기 쉬운 자료 형식입니다.','["API와 JSON을 이해합니다.","목록 응답을 만듭니다."]','["서버 파일을 만듭니다.","주소를 정합니다.","배열을 응답합니다.","브라우저에서 봅니다."]','JavaScript',E'app.get(\'/api/lessons\', (req, res) => {\n  res.json([{ id: 1, title: \'HTML 시작\' }])\n})','Express에서 교육자료 두 개를 JSON으로 반환하는 API를 만들어줘.','["JSON이 보이나요?","자료를 하나 추가했나요?"]','api-validation','node-backend',false,true,'2026-08-26'),
+('api-validation','API 입력값 안전하게 확인하기','backend','백엔드','기초','25분','비어 있거나 너무 긴 입력을 서버에서 막습니다.','입력 검증은 택배를 보내기 전 주소를 확인하는 일과 같습니다.','["입력 검증의 이유를 압니다.","필수값과 길이를 검사합니다."]','["title을 읽습니다.","빈 값을 봅니다.","100자를 제한합니다.","오류 문장을 응답합니다."]','JavaScript',E'if (!title || title.trim().length > 100) {\n  return res.status(400).json({ message: \'제목을 확인해 주세요.\' })\n}','교육자료 제목을 필수로 받고 100자로 제한하는 코드를 작성해줘.','["빈 값이 막히나요?","오류 문장이 쉬운가요?"]','database-table-basics','node-backend',false,false,'2026-08-26'),
+('database-table-basics','데이터베이스 표 구조 이해하기','database','데이터베이스','입문','25분','교육자료 표를 만들며 테이블·행·열을 이해합니다.','데이터베이스 테이블은 엑셀 표와 비슷하며 id는 각 행의 번호표입니다.','["테이블·행·열을 구분합니다.","필요한 열을 정합니다."]','["자료 표를 그립니다.","id·제목·분야 열을 적습니다.","세 행을 적습니다.","id 중복을 봅니다."]','SQL',E'create table edu_lessons (\n  id text primary key,\n  title text not null\n);','교육자료 표를 만들고 테이블, 행, 열, 기본키를 설명해줘.','["한 행의 뜻을 아나요?","id가 중복되면 안 되는 이유를 아나요?"]','supabase-crud','supabase-database',true,false,'2026-08-30'),
+('supabase-crud','Supabase 자료 저장하고 불러오기','database','데이터베이스','기초','30분','교육자료를 저장하고 목록으로 다시 불러옵니다.','CRUD는 등록·조회·수정·삭제이며 주소록을 관리하는 과정과 같습니다.','["CRUD를 이해합니다.","자료를 조회하고 등록합니다."]','["기존 자료를 조회합니다.","제목을 입력합니다.","한 건을 등록합니다.","목록을 다시 읽습니다."]','JavaScript',E'const { data } = await supabase.from(\'edu_lessons\').select(\'*\')','Supabase에서 교육자료를 조회하고 한 건 등록하는 예제를 만들어줘.','["새 자료가 조회되나요?","error도 확인했나요?"]','supabase-rls','supabase-database',false,true,'2026-08-26'),
+('supabase-rls','RLS로 자료 안전하게 보호하기','database','데이터베이스','기초','30분','누구나 읽되 관리자만 수정하는 규칙을 이해합니다.','RLS는 건물 출입 규칙처럼 데이터베이스에서 권한을 검사합니다.','["화면 숨김과 데이터 보호를 구분합니다.","조회와 수정 정책을 구분합니다."]','["RLS를 켭니다.","조회 정책을 봅니다.","관리자 수정 정책을 봅니다.","일반 사용자로 시험합니다."]','SQL',E'alter table edu_lessons enable row level security;\ncreate policy "public read" on edu_lessons for select using (true);','RLS를 건물 출입 규칙에 비유하고 공개 조회 정책을 설명해줘.','["RLS가 켜졌나요?","일반 수정이 차단되나요?"]','codex-request','supabase-database',false,false,'2026-08-26'),
+('codex-error-request','오류 화면을 Codex와 해결하기','ai-development','AI 활용 개발','기초','25분','오류 문장과 재현 순서를 전달해 원인을 좁힙니다.','오류 해결은 아픈 곳을 의사에게 설명하는 일과 같습니다.','["오류 메시지를 전달합니다.","재현 순서를 씁니다."]','["오류를 다시 만듭니다.","첫 오류를 복사합니다.","명령과 주소를 적습니다.","최소 수정을 요청합니다."]','요청문',E'npm run dev 후 화면이 백지입니다.\n콘솔 첫 오류는 ... 입니다.','오류 원인을 초보자에게 설명하고 최소 수정을 찾아줘.','["오류를 생략하지 않았나요?","재현 순서를 적었나요?"]','codex-review','codex-first-service',true,false,'2026-08-31'),
+('codex-review','Codex 결과를 직접 검토하기','ai-development','AI 활용 개발','기초','25분','변경 파일과 테스트 결과를 확인하고 안전하게 마무리합니다.','AI 결과도 변경 파일, 화면, 빌드와 비밀정보를 사람이 확인해야 합니다.','["변경 파일을 확인합니다.","빌드와 화면을 시험합니다."]','["git status를 봅니다.","불필요한 파일을 찾습니다.","빌드합니다.","PC와 모바일을 봅니다."]','터미널',E'git status\ngit diff --stat\nnpm run build','변경 사항에서 범위 이탈, 보안 위험, 테스트 누락을 찾아줘.','["파일을 설명할 수 있나요?","비밀 키가 없고 빌드가 성공했나요?"]','github-first-push','codex-first-service',false,false,'2026-08-26'),
+('github-actions-check','GitHub Actions 배포 확인하기','deployment','배포 및 운영','기초','20분','자동 배포 진행 상태와 오류 위치를 확인합니다.','Actions는 정해 둔 일을 실행하는 자동 작업자입니다.','["실행 상태를 구분합니다.","첫 오류를 찾습니다."]','["Actions를 엽니다.","최근 실행을 고릅니다.","Build와 Deploy를 봅니다.","첫 오류를 읽습니다."]','터미널',E'npm install\nnpm run build','최신 Actions 배포 실패 원인을 로그에서 찾고 복구 순서를 알려줘.','["최신 실행을 봤나요?","Build와 Deploy가 성공인가요?"]','github-pages-publish','github-vercel',false,false,'2026-08-26')
+on conflict (id) do update set
+  title=excluded.title, category_id=excluded.category_id, category=excluded.category,
+  level=excluded.level, duration=excluded.duration, description=excluded.description,
+  explanation=excluded.explanation, goals=excluded.goals, steps=excluded.steps,
+  code_language=excluded.code_language, code=excluded.code, prompt=excluded.prompt,
+  checklist=excluded.checklist, next_lesson_id=excluded.next_lesson_id,
+  related_program_id=excluded.related_program_id, is_featured=excluded.is_featured,
+  is_popular=excluded.is_popular, published_at=excluded.published_at;
+
+-- 기존 7개 자료에도 관련 프로그램과 홈 추천 정보를 연결합니다.
+update public.edu_lessons set related_program_id='web-foundation', is_popular=(id='html-first-page'), is_featured=(id='css-first-style') where id in ('html-first-page','css-first-style','javascript-basics');
+update public.edu_lessons set related_program_id='react-website', is_popular=true where id='react-components';
+update public.edu_lessons set related_program_id='codex-first-service', is_popular=true where id='codex-request';
+update public.edu_lessons set related_program_id='github-vercel', is_popular=(id='github-first-push'), is_featured=(id='github-pages-publish') where id in ('github-first-push','github-pages-publish');
 
 insert into public.edu_notices (id, title, display_date, summary, content, checklist) values
 (
@@ -185,5 +224,20 @@ insert into public.edu_notices (id, title, display_date, summary, content, check
   '["GitHub Actions가 배포용 파일을 만든 뒤 GitHub Pages에 공개합니다.", "배포가 끝나면 공개 주소에서 변경 사항을 확인합니다."]'::jsonb,
   '["자동 배포 성공 확인", "홈페이지 첫 화면 확인", "메뉴 이동 확인"]'::jsonb
 )
-on conflict (id) do nothing;
+on conflict (id) do update set
+  title=excluded.title, display_date=excluded.display_date, summary=excluded.summary,
+  content=excluded.content, checklist=excluded.checklist;
+
+-- 실행 결과 확인: 프로그램 6개, 교육자료 18개, 공지사항 3개가 정상입니다.
+select '교육 프로그램' as item, count(*) as saved_count from public.edu_programs
+union all
+select '교육자료', count(*) from public.edu_lessons
+union all
+select '공지사항', count(*) from public.edu_notices;
+
+-- 분야별 교육자료가 각각 3개인지 확인합니다.
+select category, count(*) as lesson_count
+from public.edu_lessons
+group by category
+order by category;
 

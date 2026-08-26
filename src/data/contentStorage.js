@@ -29,6 +29,8 @@ function fromDatabase(type, row) {
     explanation: row.explanation, goals: row.goals, steps: row.steps,
     codeLanguage: row.code_language, code: row.code, prompt: row.prompt,
     checklist: row.checklist, nextLessonId: row.next_lesson_id,
+    relatedProgramId: row.related_program_id, featured: row.is_featured,
+    popular: row.is_popular, publishedAt: row.published_at,
   }
 }
 
@@ -55,6 +57,8 @@ function toDatabase(type, item) {
     explanation: item.explanation, goals: item.goals || [], steps: item.steps || [],
     code_language: item.codeLanguage || 'JavaScript', code: item.code || '',
     prompt: item.prompt || '', checklist: item.checklist || [], next_lesson_id: item.nextLessonId || null,
+    related_program_id: item.relatedProgramId || null, is_featured: Boolean(item.featured),
+    is_popular: Boolean(item.popular), published_at: item.publishedAt || new Date().toISOString().slice(0, 10),
   }
 }
 

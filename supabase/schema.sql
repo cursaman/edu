@@ -1,3 +1,4 @@
+-- EDU 웹개발 교육 플랫폼 최신 데이터베이스 구조 (2026-08-26)
 -- Supabase 대시보드 → SQL Editor에서 이 파일 전체를 먼저 실행합니다.
 -- 로그인 계정 생성과 최초 관리자 등록은 대시보드 운영자가 직접 진행합니다.
 
@@ -49,9 +50,25 @@ create table if not exists public.edu_lessons (
   prompt text not null default '',
   checklist jsonb not null default '[]'::jsonb,
   next_lesson_id text,
+  related_program_id text,
+  is_featured boolean not null default false,
+  is_popular boolean not null default false,
+  published_at date not null default current_date,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table public.edu_lessons add column if not exists related_program_id text;
+alter table public.edu_lessons add column if not exists is_featured boolean not null default false;
+alter table public.edu_lessons add column if not exists is_popular boolean not null default false;
+alter table public.edu_lessons add column if not exists published_at date not null default current_date;
+
+-- 교육자료 목록과 홈 추천 영역에서 자주 사용하는 조회를 빠르게 합니다.
+create index if not exists edu_programs_category_id_idx on public.edu_programs (category_id);
+create index if not exists edu_lessons_category_id_idx on public.edu_lessons (category_id);
+create index if not exists edu_lessons_published_at_idx on public.edu_lessons (published_at desc);
+create index if not exists edu_lessons_featured_idx on public.edu_lessons (is_featured) where is_featured = true;
+create index if not exists edu_lessons_popular_idx on public.edu_lessons (is_popular) where is_popular = true;
 
 create table if not exists public.edu_notices (
   id text primary key,

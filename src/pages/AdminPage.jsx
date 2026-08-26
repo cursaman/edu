@@ -4,7 +4,7 @@ import { categories } from '../data/catalog.js'
 import { deleteSharedItem, loadSharedContent, readManagedContent, restoreManagedContent, restoreSharedContent, saveManagedContent, saveSharedItem } from '../data/contentStorage.js'
 import { readCompletedLessons } from '../data/learningProgress.js'
 
-const emptyLesson = { title: '', categoryId: '', level: '입문', duration: '20분', description: '', explanation: '', steps: '', code: '', prompt: '' }
+const emptyLesson = { title: '', categoryId: '', level: '입문', duration: '20분', description: '', explanation: '', goals: '', steps: '', codeLanguage: 'JavaScript', code: '', prompt: '', checklist: '', relatedProgramId: '', featured: false, popular: false, publishedAt: new Date().toISOString().slice(0, 10) }
 const emptyNotice = { title: '', date: new Date().toLocaleDateString('ko-KR').replace(/\s/g, '').replace(/\.$/, ''), summary: '', content: '' }
 const emptyProgram = { title: '', categoryId: '', level: '입문', duration: '4주 · 토요일', status: '모집 예정', description: '', introduction: '', audience: '', goals: '', curriculum: '', preparations: '', relatedLessonIds: [], image: '', imageAlt: '' }
 
@@ -94,19 +94,19 @@ function ProgramForm({ editing, lessons, onCancel, onSave }) {
   )
 }
 
-function ContentForm({ type, editing, onCancel, onSave }) {
+function ContentForm({ type, editing, programs, onCancel, onSave }) {
   const isLesson = type === 'lessons'
-  const initial = editing ? { ...editing, steps: editing.steps?.join('\n') || '', content: editing.content?.join('\n') || '' } : isLesson ? emptyLesson : emptyNotice
+  const initial = editing ? { ...editing, goals: editing.goals?.join('\n') || '', steps: editing.steps?.join('\n') || '', checklist: editing.checklist?.join('\n') || '', content: editing.content?.join('\n') || '' } : isLesson ? emptyLesson : emptyNotice
   const [form, setForm] = useState(initial)
   const [error, setError] = useState('')
 
   function submit(event) {
     event.preventDefault()
-    const required = isLesson ? ['title', 'categoryId', 'duration', 'description', 'explanation'] : ['title', 'date', 'summary', 'content']
+    const required = isLesson ? ['title', 'categoryId', 'duration', 'description', 'explanation', 'goals', 'steps', 'checklist'] : ['title', 'date', 'summary', 'content']
     if (required.some((key) => !form[key]?.trim())) return setError('필수 입력 항목을 모두 작성해 주세요.')
     const category = categories.find((item) => item.id === form.categoryId)
     const item = isLesson
-      ? { ...editing, ...form, id: editing?.id || `lesson-${Date.now()}`, category: category.title, goals: editing?.goals || [form.title + '의 기본 내용을 이해합니다.'], steps: form.steps.split('\n').map((step) => step.trim()).filter(Boolean), codeLanguage: editing?.codeLanguage || 'JavaScript', checklist: editing?.checklist || ['예제를 직접 실행하고 결과를 확인했나요?'], nextLessonId: editing?.nextLessonId || null }
+      ? { ...editing, ...form, id: editing?.id || `lesson-${Date.now()}`, category: category.title, goals: linesToList(form.goals), steps: linesToList(form.steps), checklist: linesToList(form.checklist), nextLessonId: editing?.nextLessonId || null }
       : { ...editing, ...form, id: editing?.id || `notice-${Date.now()}`, content: form.content.split('\n').map((paragraph) => paragraph.trim()).filter(Boolean), checklist: editing?.checklist || ['안내 내용을 확인해 주세요.'] }
     onSave(item)
   }
@@ -121,9 +121,16 @@ function ContentForm({ type, editing, onCancel, onSave }) {
         <label>학습 시간 <input value={form.duration} onChange={(e) => setForm({ ...form, duration: e.target.value })} required /></label>
         <label>간단한 설명 <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} required /></label>
         <label>쉬운 개념 설명 <textarea value={form.explanation} onChange={(e) => setForm({ ...form, explanation: e.target.value })} required /></label>
-        <label>실습 순서: 한 줄에 한 단계 <textarea value={form.steps} onChange={(e) => setForm({ ...form, steps: e.target.value })} /></label>
+        <label>학습 목표: 한 줄에 한 항목 <textarea value={form.goals} onChange={(e) => setForm({ ...form, goals: e.target.value })} required /></label>
+        <label>10분 실습 순서: 한 줄에 한 단계 <textarea value={form.steps} onChange={(e) => setForm({ ...form, steps: e.target.value })} required /></label>
+        <label>코드 종류 <input value={form.codeLanguage} onChange={(e) => setForm({ ...form, codeLanguage: e.target.value })} /></label>
         <label>예제 코드 <textarea value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} /></label>
         <label>Codex 요청 예시 <textarea value={form.prompt} onChange={(e) => setForm({ ...form, prompt: e.target.value })} /></label>
+        <label>확인 문제: 한 줄에 한 항목 <textarea value={form.checklist} onChange={(e) => setForm({ ...form, checklist: e.target.value })} required /></label>
+        <label>관련 프로그램 <select value={form.relatedProgramId} onChange={(e) => setForm({ ...form, relatedProgramId: e.target.value })}><option value="">선택 안 함</option>{programs.map((program) => <option key={program.id} value={program.id}>{program.title}</option>)}</select></label>
+        <label>게시일 <input type="date" value={form.publishedAt} onChange={(e) => setForm({ ...form, publishedAt: e.target.value })} /></label>
+        <label><input checked={Boolean(form.featured)} onChange={(e) => setForm({ ...form, featured: e.target.checked })} type="checkbox" /> 분야별 추천 자료로 표시</label>
+        <label><input checked={Boolean(form.popular)} onChange={(e) => setForm({ ...form, popular: e.target.checked })} type="checkbox" /> 인기 자료로 표시</label>
       </> : <>
         <label>작성일 <input value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} required /></label>
         <label>요약 <textarea value={form.summary} onChange={(e) => setForm({ ...form, summary: e.target.value })} required /></label>
@@ -204,7 +211,7 @@ export default function AdminPage({ session = null, onLogout }) {
       {message && <p className="form-message" role="status">{message}</p>}
       <nav className="admin-navigation" aria-label="관리자 메뉴">{[['overview','운영 현황'],['programs','교육 프로그램 관리'],['lessons','교육자료 관리'],['notices','공지사항 관리'],['applications','체험 신청 확인']].map(([key,label]) => <button key={key} className={`filter-chip${section === key ? ' filter-chip-active' : ''}`} onClick={() => changeSection(key)} type="button">{label}</button>)}</nav>
       {section === 'overview' && <div className="admin-stats">{[['교육 분야', categories.length + '개'],['교육 프로그램', managedPrograms.length + '개'],['교육자료', managedLessons.length + '개'],['공지사항', managedNotices.length + '개'],['완료한 학습', readCompletedLessons().length + '개'],['체험 신청', application ? '저장됨' : '없음']].map(([title,value]) => <article key={title}><span>{title}</span><strong>{value}</strong></article>)}</div>}
-      {['programs', 'lessons', 'notices'].includes(section) && <div className="admin-content"><div className="admin-toolbar"><h2>{section === 'programs' ? '교육 프로그램 관리' : section === 'lessons' ? '교육자료 관리' : '공지사항 관리'} <span>{items.length}개</span></h2><div className="admin-actions"><button className="button button-primary" onClick={() => { setEditing(null); setShowForm(true) }} type="button">새로 등록</button><button className="button button-secondary" onClick={() => restore(section)} type="button">기본 자료로 복원</button></div></div>{showForm && (section === 'programs' ? <ProgramForm key={`${section}-${editing?.id || 'new'}`} editing={editing} lessons={managedLessons} onCancel={() => { setEditing(null); setShowForm(false) }} onSave={saveItem} /> : <ContentForm key={`${section}-${editing?.id || 'new'}`} type={section} editing={editing} onCancel={() => { setEditing(null); setShowForm(false) }} onSave={saveItem} />)}<div className="admin-item-list">{items.map((item) => <article className="admin-item" key={item.id}><div><strong>{item.title}</strong><span>{section === 'notices' ? `${item.date} · ${item.summary}` : `${item.category} · ${item.level} · ${item.duration}`}</span></div><div className="admin-actions"><a className="button button-secondary" href={`#/${section === 'programs' ? 'programs' : section === 'lessons' ? 'lessons' : 'notice'}/${item.id}`}>보기</a><button className="button button-secondary" onClick={() => { setEditing(item); setShowForm(true) }} type="button">수정</button><button className="button button-danger" onClick={() => deleteItem(item)} type="button">삭제</button></div></article>)}</div></div>}
+      {['programs', 'lessons', 'notices'].includes(section) && <div className="admin-content"><div className="admin-toolbar"><h2>{section === 'programs' ? '교육 프로그램 관리' : section === 'lessons' ? '교육자료 관리' : '공지사항 관리'} <span>{items.length}개</span></h2><div className="admin-actions"><button className="button button-primary" onClick={() => { setEditing(null); setShowForm(true) }} type="button">새로 등록</button><button className="button button-secondary" onClick={() => restore(section)} type="button">기본 자료로 복원</button></div></div>{showForm && (section === 'programs' ? <ProgramForm key={`${section}-${editing?.id || 'new'}`} editing={editing} lessons={managedLessons} onCancel={() => { setEditing(null); setShowForm(false) }} onSave={saveItem} /> : <ContentForm key={`${section}-${editing?.id || 'new'}`} type={section} editing={editing} programs={managedPrograms} onCancel={() => { setEditing(null); setShowForm(false) }} onSave={saveItem} />)}<div className="admin-item-list">{items.map((item) => <article className="admin-item" key={item.id}><div><strong>{item.title}</strong><span>{section === 'notices' ? `${item.date} · ${item.summary}` : `${item.category} · ${item.level} · ${item.duration}`}</span></div><div className="admin-actions"><a className="button button-secondary" href={`#/${section === 'programs' ? 'programs' : section === 'lessons' ? 'lessons' : 'notice'}/${item.id}`}>보기</a><button className="button button-secondary" onClick={() => { setEditing(item); setShowForm(true) }} type="button">수정</button><button className="button button-danger" onClick={() => deleteItem(item)} type="button">삭제</button></div></article>)}</div></div>}
       {section === 'applications' && <div className="admin-application"><h2>브라우저에 저장된 체험 신청</h2>{application ? <><dl><div><dt>연습용 이름</dt><dd>{application.name}</dd></div><div><dt>연습용 연락처</dt><dd>{application.contact}</dd></div><div><dt>선택 프로그램</dt><dd>{managedPrograms.find((program) => program.id === application.programId)?.title || '선택한 프로그램'}</dd></div></dl><button className="button button-danger" onClick={() => { if(window.confirm('저장된 체험 신청을 삭제할까요?') && removeTrialApplication()) setApplication(null) }} type="button">체험 신청 삭제하기</button></> : <p>현재 브라우저에 저장된 체험 신청이 없습니다.</p>}</div>}
     </section>
   )

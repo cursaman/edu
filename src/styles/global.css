@@ -1494,6 +1494,32 @@ button:focus-visible {
   gap: 8px;
 }
 
+.lesson-card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.lesson-popular-badge,
+.lesson-featured-badge {
+  display: inline-flex;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.lesson-popular-badge {
+  background: #fff0ed;
+  color: #b55343;
+}
+
+.lesson-featured-badge {
+  background: #efedff;
+  color: #5d55bc;
+}
+
 .lesson-category {
   color: var(--violet);
   font-size: 12px;
@@ -1530,6 +1556,83 @@ button:focus-visible {
   margin-top: 16px;
   color: #687283;
   font-size: 12px;
+}
+
+.lesson-favorite-button {
+  width: fit-content;
+  margin: 14px 0 8px;
+  padding: 7px 10px;
+  border: 1px solid #e0e3ed;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #687283;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+}
+
+.lesson-favorite-button-active {
+  border-color: #f0cbc5;
+  background: #fff5f3;
+  color: #b55343;
+}
+
+.lesson-collection-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-bottom: 18px;
+}
+
+.home-learning-section {
+  padding-top: 74px;
+  padding-bottom: 74px;
+}
+
+.home-learning-soft {
+  max-width: none;
+  padding-inline: max(24px, calc((100% - var(--shell)) / 2));
+  background: #f8f8ff;
+}
+
+.today-practice-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 36px;
+  padding: 34px;
+  border: 1px solid #e2e4fb;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #f4f2ff, #effbf7 58%, #fff3f0);
+}
+
+.today-practice-card h3 {
+  margin: 12px 0 9px;
+  font-size: clamp(24px, 3vw, 34px);
+  letter-spacing: -0.05em;
+}
+
+.today-practice-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.today-practice-card .button {
+  flex: 0 0 auto;
+}
+
+.home-lessons-link {
+  display: inline-flex;
+  margin-top: 27px;
+  color: var(--violet);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.related-program-panel {
+  border-color: #cfe9df;
+  background: #f4fbf8;
 }
 
 .lesson-card-link {
@@ -1907,6 +2010,21 @@ button:focus-visible {
 
   .lesson-card {
     min-height: 235px;
+  }
+
+  .today-practice-card {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 24px;
+  }
+
+  .today-practice-card .button {
+    width: 100%;
+  }
+
+  .home-learning-section {
+    padding-top: 58px;
+    padding-bottom: 58px;
   }
 
   .lesson-code-block pre {

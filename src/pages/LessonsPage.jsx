@@ -1,13 +1,17 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import LessonCard from '../components/LessonCard.jsx'
 import { categories } from '../data/catalog.js'
 import { readCompletedLessons } from '../data/learningProgress.js'
 import { readManagedContent } from '../data/contentStorage.js'
+import { readFavoriteLessons, readRecentLessons, toggleFavoriteLesson } from '../data/lessonActivity.js'
 
 export default function LessonsPage({ selectedCategory }) {
   const lessons = readManagedContent('lessons')
   const [searchText, setSearchText] = useState('')
   const [completedLessons] = useState(readCompletedLessons)
+  const [favoriteLessons, setFavoriteLessons] = useState(readFavoriteLessons)
+  const [recentLessons, setRecentLessons] = useState(readRecentLessons)
+  const [collection, setCollection] = useState('all')
   const activeCategory = categories.some((category) => category.id === selectedCategory)
     ? selectedCategory
     : 'all'
@@ -18,8 +22,17 @@ export default function LessonsPage({ selectedCategory }) {
       .toLocaleLowerCase()
       .includes(normalizedSearch)
 
-    return categoryMatches && searchMatches
+    const collectionMatches = collection === 'all'
+      || (collection === 'favorites' && favoriteLessons.includes(lesson.id))
+      || (collection === 'recent' && recentLessons.includes(lesson.id))
+    return categoryMatches && searchMatches && collectionMatches
   })
+
+  useEffect(() => {
+    const refresh = () => { setFavoriteLessons(readFavoriteLessons()); setRecentLessons(readRecentLessons()) }
+    window.addEventListener('edu-lesson-activity-updated', refresh)
+    return () => window.removeEventListener('edu-lesson-activity-updated', refresh)
+  }, [])
 
   return (
     <section className="content-page page-shell" aria-labelledby="lessons-title">
@@ -48,6 +61,12 @@ export default function LessonsPage({ selectedCategory }) {
         />
       </label>
 
+      <div className="lesson-collection-tabs" aria-label="내 교육자료 모음">
+        <button className={`filter-chip${collection === 'all' ? ' filter-chip-active' : ''}`} onClick={() => setCollection('all')} type="button">전체 자료</button>
+        <button className={`filter-chip${collection === 'favorites' ? ' filter-chip-active' : ''}`} onClick={() => setCollection('favorites')} type="button">찜한 자료 {favoriteLessons.length}</button>
+        <button className={`filter-chip${collection === 'recent' ? ' filter-chip-active' : ''}`} onClick={() => setCollection('recent')} type="button">최근 본 자료 {recentLessons.length}</button>
+      </div>
+
       <nav className="program-filters" aria-label="교육 분야별 자료 선택">
         <a
           aria-current={activeCategory === 'all' ? 'page' : undefined}
@@ -74,7 +93,7 @@ export default function LessonsPage({ selectedCategory }) {
       {visibleLessons.length > 0 ? (
         <div className="lesson-grid">
           {visibleLessons.map((lesson) => (
-            <LessonCard completed={completedLessons.includes(lesson.id)} key={lesson.id} lesson={lesson} />
+            <LessonCard completed={completedLessons.includes(lesson.id)} favorite={favoriteLessons.includes(lesson.id)} key={lesson.id} lesson={lesson} onToggleFavorite={(id) => setFavoriteLessons(toggleFavoriteLesson(id))} />
           ))}
         </div>
       ) : (
@@ -87,3 +106,4 @@ export default function LessonsPage({ selectedCategory }) {
     </section>
   )
 }
+

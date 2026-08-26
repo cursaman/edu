@@ -1,10 +1,17 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { readCompletedLessons, updateLessonCompletion } from '../data/learningProgress.js'
 import { findManagedLesson } from '../data/contentStorage.js'
+import { findManagedProgram } from '../data/contentStorage.js'
+import { readFavoriteLessons, recordRecentLesson, toggleFavoriteLesson } from '../data/lessonActivity.js'
 
 export default function LessonDetailPage({ lessonId }) {
   const lesson = findManagedLesson(lessonId)
   const [completedLessons, setCompletedLessons] = useState(readCompletedLessons)
+  const [favoriteLessons, setFavoriteLessons] = useState(readFavoriteLessons)
+
+  useEffect(() => {
+    if (lessonId) recordRecentLesson(lessonId)
+  }, [lessonId])
 
   if (!lesson) {
     return (
@@ -18,6 +25,8 @@ export default function LessonDetailPage({ lessonId }) {
 
   const completed = completedLessons.includes(lesson.id)
   const nextLesson = lesson.nextLessonId ? findManagedLesson(lesson.nextLessonId) : null
+  const relatedProgram = lesson.relatedProgramId ? findManagedProgram(lesson.relatedProgramId) : null
+  const favorite = favoriteLessons.includes(lesson.id)
 
   function toggleCompletion() {
     setCompletedLessons(updateLessonCompletion(lesson.id, !completed))
@@ -53,7 +62,8 @@ export default function LessonDetailPage({ lessonId }) {
           </section>
 
           <section className="detail-section">
-            <h2>차근차근 따라 하기</h2>
+            <h2>오늘의 10분 실습</h2>
+            <p>전부 외우지 말고 아래 순서대로 한 단계씩 실행해 보세요.</p>
             <ol className="curriculum-list lesson-step-list">
               {lesson.steps.map((step, index) => (
                 <li key={step}><span>{index + 1}단계</span><strong>{step}</strong></li>
@@ -86,6 +96,14 @@ export default function LessonDetailPage({ lessonId }) {
               <a href={`#/lessons/${nextLesson.id}`}>{nextLesson.title} <span aria-hidden="true">→</span></a>
             </section>
           )}
+
+          {relatedProgram && (
+            <section className="next-lesson related-program-panel">
+              <span className="section-eyebrow">RELATED PROGRAM</span>
+              <h2>이 자료와 연결된 교육 프로그램</h2>
+              <a href={`#/programs/${relatedProgram.id}`}>{relatedProgram.title} <span aria-hidden="true">→</span></a>
+            </section>
+          )}
         </div>
 
         <aside className="preparation-card lesson-completion-card">
@@ -100,9 +118,13 @@ export default function LessonDetailPage({ lessonId }) {
           >
             {completed ? '학습 완료 취소' : '학습 완료 표시하기'}
           </button>
+          <button aria-pressed={favorite} className="button button-secondary" onClick={() => setFavoriteLessons(toggleFavoriteLesson(lesson.id))} type="button">
+            {favorite ? '♥ 찜한 자료에서 빼기' : '♡ 나중에 볼 자료로 찜하기'}
+          </button>
           <p className="preparation-note">다른 컴퓨터나 브라우저에는 완료 기록이 자동으로 옮겨지지 않습니다.</p>
         </aside>
       </div>
     </article>
   )
 }
+
