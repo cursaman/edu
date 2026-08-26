@@ -64,7 +64,7 @@ insert into public.edu_programs (
   '학습자가 AI 개발 도구와 코드 화면을 함께 보며 풀스택 웹서비스를 만드는 모습'
 ),
 (
-  'github-vercel', 'GitHub와 Vercel 배포 입문', 'deployment', '배포 및 운영', '입문', '4주 · 토요일',
+  'github-vercel', 'GitHub와 Vercel 배포 입문', 'deployment', '테스트·배포·운영', '입문', '4주 · 토요일',
   '코드를 안전하게 저장하고 실제 접속 가능한 웹주소를 만듭니다.',
   '웹사이트 소스를 GitHub에 보관하고 Vercel에 연결해 다른 사람도 접속할 수 있는 주소를 만듭니다.',
   '["완성한 웹사이트를 다른 사람에게 보여 주고 싶은 분", "소스 저장과 배포 흐름을 처음 배우는 분"]'::jsonb,
@@ -92,6 +92,17 @@ on conflict (id) do update set
   display_number = excluded.display_number,
   image_url = excluded.image_url,
   image_alt = excluded.image_alt;
+
+insert into public.edu_programs (
+  id, title, category_id, category, level, duration, description, introduction,
+  audience, goals, curriculum, preparations, related_lesson_ids,
+  status, color, display_number, image_url, image_alt
+) values
+('service-planning-basic','아이디어를 웹서비스 기획서로 만들기','service-planning','서비스 기획','입문','4주 · 주 1회','사용자 문제부터 MVP 기능과 화면 흐름까지 한 장의 기획서로 정리합니다.','사용자 문제를 정의하고 꼭 필요한 기능과 화면 흐름, 개발 요청서를 완성합니다.','["웹서비스 아이디어를 정리하고 싶은 분","개발 전에 만들 범위를 정하고 싶은 분"]','["사용자 문제를 정의합니다.","MVP 우선순위를 정합니다.","개발 요청서를 완성합니다."]','["사용자와 문제 찾기","MVP 기능 우선순위","화면 흐름과 요구사항","기획 발표와 개발 요청서"]','["인터넷 노트북","메모 도구","Codex"]','["codex-request","codex-review"]','모집 예정','coral','07','/edu/images/program-foundation.webp','아이디어 카드로 웹서비스 흐름을 정리하는 모습'),
+('uiux-figma-basic','Figma로 웹서비스 화면 설계하기','uiux-design','UI·UX 웹디자인','입문','4주 · 주 1회','색상·글자·여백 원칙을 익히고 PC와 모바일 화면을 설계합니다.','Figma 기본 도구와 디자인 시스템, 반응형 화면을 거쳐 React로 옮길 시안을 완성합니다.','["웹디자인을 처음 배우는 분","개발 전에 화면을 설계하고 싶은 분"]','["읽기 좋은 색상과 글자를 선택합니다.","Figma로 주요 화면을 설계합니다.","PC와 모바일 시안을 완성합니다."]','["디자인 기본과 Figma","메인 화면·메뉴·카드","모바일과 디자인 시스템","Figma 시안을 React로 구현"]','["인터넷 노트북","Figma 계정","웹브라우저"]','["css-first-style","responsive-layout","react-components"]','모집 예정','violet','08','/edu/images/program-react.webp','여러 화면 크기의 웹서비스 디자인을 설계하는 모습'),
+('web-security-infra-basic','웹서비스 보안과 클라우드 인프라 입문','security-infrastructure','보안·네트워크·인프라','기초','4주 · 주 1회','비밀 키·인증·HTTPS·DNS·방화벽과 클라우드 연결을 안전하게 익힙니다.','환경변수, 입력 검증, 인증·권한, HTTPS, DNS와 방화벽을 익혀 서비스를 안전하게 점검합니다.','["배포한 서비스를 안전하게 운영하고 싶은 분","네트워크와 보안을 쉽게 배우고 싶은 분"]','["비밀정보를 안전하게 관리합니다.","인증과 권한을 구분합니다.","서버 연결 흐름을 설명합니다."]','["환경변수와 비밀 키","입력 검증과 웹 공격 기초","인증·권한·HTTPS","DNS·포트·방화벽 점검"]','["인터넷 노트북","GitHub 계정","연습 프로젝트"]','["api-validation","supabase-rls","github-pages-publish"]','모집 예정','mint','09','/edu/images/program-database.webp','보안이 적용된 서버와 데이터베이스를 점검하는 모습'),
+('content-analytics-basic','웹 콘텐츠 운영과 데이터 분석 기초','content-analytics','콘텐츠·데이터 분석','입문','4주 · 주 1회','교육 콘텐츠를 기획하고 검색·클릭 데이터를 바탕으로 개선합니다.','콘텐츠 구조, SEO, 이미지 저작권, 방문 지표와 개선 기록을 익혀 운영 계획을 완성합니다.','["홈페이지 콘텐츠를 꾸준히 운영하고 싶은 분","방문자 반응으로 글과 화면을 개선하고 싶은 분"]','["독자 중심 콘텐츠를 작성합니다.","검색과 클릭 지표를 이해합니다.","월간 개선 계획을 만듭니다."]','["독자와 콘텐츠 주제","제목·본문·이미지와 SEO","방문·검색·클릭 지표","콘텐츠 달력과 개선 보고서"]','["인터넷 노트북","운영할 홈페이지 주제","스프레드시트"]','["codex-request","github-pages-publish"]','모집 예정','coral','10','/edu/images/program-codex.webp','콘텐츠 카드와 방문 데이터를 살펴보는 모습')
+on conflict (id) do update set title=excluded.title, category_id=excluded.category_id, category=excluded.category, level=excluded.level, duration=excluded.duration, description=excluded.description, introduction=excluded.introduction, audience=excluded.audience, goals=excluded.goals, curriculum=excluded.curriculum, preparations=excluded.preparations, related_lesson_ids=excluded.related_lesson_ids, status=excluded.status, color=excluded.color, display_number=excluded.display_number, image_url=excluded.image_url, image_alt=excluded.image_alt;
 
 insert into public.edu_lessons (
   id, title, category_id, category, level, duration, description, explanation,
@@ -148,7 +159,7 @@ insert into public.edu_lessons (
   '["원하는 기능과 변경하지 않을 범위를 함께 적었나요?"]'::jsonb, 'github-first-push'
 ),
 (
-  'github-first-push', 'GitHub에 소스 올리기', 'deployment', '배포 및 운영', '기초', '25분',
+  'github-first-push', 'GitHub에 소스 올리기', 'deployment', '테스트·배포·운영', '기초', '25분',
   '프로젝트 변경 내용을 기록하고 GitHub 저장소에 보관합니다.',
   'Git은 변경 기록을 관리하는 노트이고 GitHub는 그 노트를 보관하는 온라인 서랍입니다.',
   '["Git과 GitHub의 차이를 이해합니다.", "비밀 정보가 올라가지 않는지 확인합니다."]'::jsonb,
@@ -158,7 +169,7 @@ insert into public.edu_lessons (
   '[".env.local과 비밀번호가 포함되지 않았나요?"]'::jsonb, 'github-pages-publish'
 ),
 (
-  'github-pages-publish', 'GitHub Pages로 홈페이지 공개하기', 'deployment', '배포 및 운영', '기초', '30분',
+  'github-pages-publish', 'GitHub Pages로 홈페이지 공개하기', 'deployment', '테스트·배포·운영', '기초', '30분',
   '완성된 홈페이지를 실제 인터넷 주소로 확인합니다.',
   'GitHub Pages는 저장소의 웹사이트를 실제 인터넷 주소에 공개하는 기능입니다.',
   '["자동 배포 흐름을 이해합니다.", "공개 주소에서 주요 화면을 확인합니다."]'::jsonb,
@@ -190,7 +201,7 @@ insert into public.edu_lessons (
 ('supabase-rls','RLS로 자료 안전하게 보호하기','database','데이터베이스','기초','30분','누구나 읽되 관리자만 수정하는 규칙을 이해합니다.','RLS는 건물 출입 규칙처럼 데이터베이스에서 권한을 검사합니다.','["화면 숨김과 데이터 보호를 구분합니다.","조회와 수정 정책을 구분합니다."]','["RLS를 켭니다.","조회 정책을 봅니다.","관리자 수정 정책을 봅니다.","일반 사용자로 시험합니다."]','SQL',E'alter table edu_lessons enable row level security;\ncreate policy "public read" on edu_lessons for select using (true);','RLS를 건물 출입 규칙에 비유하고 공개 조회 정책을 설명해줘.','["RLS가 켜졌나요?","일반 수정이 차단되나요?"]','codex-request','supabase-database',false,false,'2026-08-26'),
 ('codex-error-request','오류 화면을 Codex와 해결하기','ai-development','AI 활용 개발','기초','25분','오류 문장과 재현 순서를 전달해 원인을 좁힙니다.','오류 해결은 아픈 곳을 의사에게 설명하는 일과 같습니다.','["오류 메시지를 전달합니다.","재현 순서를 씁니다."]','["오류를 다시 만듭니다.","첫 오류를 복사합니다.","명령과 주소를 적습니다.","최소 수정을 요청합니다."]','요청문',E'npm run dev 후 화면이 백지입니다.\n콘솔 첫 오류는 ... 입니다.','오류 원인을 초보자에게 설명하고 최소 수정을 찾아줘.','["오류를 생략하지 않았나요?","재현 순서를 적었나요?"]','codex-review','codex-first-service',true,false,'2026-08-31'),
 ('codex-review','Codex 결과를 직접 검토하기','ai-development','AI 활용 개발','기초','25분','변경 파일과 테스트 결과를 확인하고 안전하게 마무리합니다.','AI 결과도 변경 파일, 화면, 빌드와 비밀정보를 사람이 확인해야 합니다.','["변경 파일을 확인합니다.","빌드와 화면을 시험합니다."]','["git status를 봅니다.","불필요한 파일을 찾습니다.","빌드합니다.","PC와 모바일을 봅니다."]','터미널',E'git status\ngit diff --stat\nnpm run build','변경 사항에서 범위 이탈, 보안 위험, 테스트 누락을 찾아줘.','["파일을 설명할 수 있나요?","비밀 키가 없고 빌드가 성공했나요?"]','github-first-push','codex-first-service',false,false,'2026-08-26'),
-('github-actions-check','GitHub Actions 배포 확인하기','deployment','배포 및 운영','기초','20분','자동 배포 진행 상태와 오류 위치를 확인합니다.','Actions는 정해 둔 일을 실행하는 자동 작업자입니다.','["실행 상태를 구분합니다.","첫 오류를 찾습니다."]','["Actions를 엽니다.","최근 실행을 고릅니다.","Build와 Deploy를 봅니다.","첫 오류를 읽습니다."]','터미널',E'npm install\nnpm run build','최신 Actions 배포 실패 원인을 로그에서 찾고 복구 순서를 알려줘.','["최신 실행을 봤나요?","Build와 Deploy가 성공인가요?"]','github-pages-publish','github-vercel',false,false,'2026-08-26')
+('github-actions-check','GitHub Actions 배포 확인하기','deployment','테스트·배포·운영','기초','20분','자동 배포 진행 상태와 오류 위치를 확인합니다.','Actions는 정해 둔 일을 실행하는 자동 작업자입니다.','["실행 상태를 구분합니다.","첫 오류를 찾습니다."]','["Actions를 엽니다.","최근 실행을 고릅니다.","Build와 Deploy를 봅니다.","첫 오류를 읽습니다."]','터미널',E'npm install\nnpm run build','최신 Actions 배포 실패 원인을 로그에서 찾고 복구 순서를 알려줘.','["최신 실행을 봤나요?","Build와 Deploy가 성공인가요?"]','github-pages-publish','github-vercel',false,false,'2026-08-26')
 on conflict (id) do update set
   title=excluded.title, category_id=excluded.category_id, category=excluded.category,
   level=excluded.level, duration=excluded.duration, description=excluded.description,
@@ -243,7 +254,7 @@ on conflict (id) do update set
 -- 별도 프로그램으로 추가했던 이전 12주 과정이 남아 있다면 제거합니다.
 delete from public.edu_programs where id = 'vibe-coding-fullstack';
 
--- 실행 결과 확인: 프로그램 6개, 교육자료 18개, 공지사항 3개가 정상입니다.
+-- 실행 결과 확인: 프로그램 10개, 교육자료 18개, 공지사항 3개가 정상입니다.
 select '교육 프로그램' as item, count(*) as saved_count from public.edu_programs
 union all
 select '교육자료', count(*) from public.edu_lessons

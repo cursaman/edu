@@ -45,6 +45,30 @@ export const programWeeks = {
     { title: 'AWS 배포 ① EC2·RDS', summary: 'EC2 실행 환경을 구성하고 RDS 데이터베이스 스키마를 연결합니다.', topics: ['EC2 환경 구성', '보안 그룹', 'RDS 연결'], tools: ['AWS EC2', 'AWS RDS'], result: '클라우드에서 실행되는 서버와 DB', lessonIds: ['github-actions-check'] },
     { title: '운영 배포 & 점검 루틴', summary: '백엔드를 빌드·배포하고 로그와 모니터링으로 이슈에 대응합니다.', topics: ['백엔드 빌드·배포', '로그·모니터링', '장애 대응 체크'], tools: ['AWS', 'GitHub', 'Spring Boot'], result: '운영 점검표를 갖춘 실제 웹서비스', lessonIds: ['github-pages-publish', 'codex-review'] },
   ]),
+  'service-planning-basic': weeks([
+    { title: '사용자와 문제 찾기', summary: '생활 속 불편을 관찰해 누구의 어떤 문제인지 한 문장으로 정리합니다.', topics: ['사용자 정의', '문제 인터뷰', '문제 문장'], tools: ['Codex', '메모 도구'], result: '사용자 문제 정의서', lessonIds: ['codex-request'] },
+    { title: 'MVP 기능 우선순위 정하기', summary: '꼭 필요한 기능과 나중 기능을 나눠 첫 제작 범위를 정합니다.', topics: ['MVP', '기능 목록', '우선순위'], tools: ['스프레드시트', 'Codex'], result: 'MVP 기능 목록', lessonIds: ['codex-request'] },
+    { title: '화면 흐름과 요구사항 작성', summary: '사용자가 이동하는 순서와 화면별 기능을 정리합니다.', topics: ['사용자 흐름', '화면 목록', '완료 기준'], tools: ['Figma', 'Codex'], result: '화면 흐름도와 요구사항', lessonIds: ['codex-request'] },
+    { title: '기획 발표와 개발 요청서', summary: '기획을 설명하고 첫 개발 작업을 실행 가능한 요청서로 바꿉니다.', topics: ['범위 검토', '발표', '개발 요청'], tools: ['Codex', 'GitHub'], result: '한 장 기획서와 1일차 요청서', lessonIds: ['codex-review'] },
+  ]),
+  'uiux-figma-basic': weeks([
+    { title: '디자인 기본과 Figma 시작', summary: '색상·글자·여백 원칙과 Figma 기본 도구를 익힙니다.', topics: ['색상 대비', '타이포그래피', 'Frame'], tools: ['Figma'], result: '첫 웹 화면 프레임', lessonIds: ['css-first-style'] },
+    { title: '메인 화면·메뉴·카드 설계', summary: '반복되는 화면 요소를 컴포넌트처럼 설계합니다.', topics: ['그리드', 'Auto Layout', '컴포넌트'], tools: ['Figma'], result: 'PC 메인 화면 시안', lessonIds: ['react-components'] },
+    { title: '모바일과 디자인 시스템', summary: '작은 화면 배치와 색상·버튼·간격 규칙을 정리합니다.', topics: ['모바일', '디자인 토큰', '접근성'], tools: ['Figma', 'Contrast Checker'], result: '모바일 시안과 디자인 규칙', lessonIds: ['responsive-layout'] },
+    { title: 'Figma 시안을 React로 구현', summary: '설계한 카드와 버튼을 실제 React·CSS 화면으로 옮깁니다.', topics: ['컴포넌트 분리', 'CSS 적용', '화면 비교'], tools: ['React', 'CSS', 'Codex'], result: '디자인과 일치하는 반응형 화면', lessonIds: ['react-components', 'css-first-style'] },
+  ]),
+  'web-security-infra-basic': weeks([
+    { title: '환경변수와 비밀 키', summary: '공개 가능한 값과 비밀 값을 나누고 Git 노출을 막습니다.', topics: ['.env.local', '.gitignore', '키 점검'], tools: ['Git', 'GitHub'], result: '비밀정보 점검표', lessonIds: ['github-first-push'] },
+    { title: '입력 검증과 웹 공격 기초', summary: '잘못된 입력과 XSS·SQL Injection의 원리를 안전한 예제로 익힙니다.', topics: ['입력 검증', 'XSS', 'SQL Injection'], tools: ['JavaScript', 'SQL'], result: '검증이 적용된 입력 화면', lessonIds: ['api-validation'] },
+    { title: '인증·권한·HTTPS', summary: '로그인과 권한의 차이, 암호화된 연결의 의미를 이해합니다.', topics: ['인증과 인가', 'RLS', 'HTTPS'], tools: ['Supabase Auth', '브라우저'], result: '권한별 접근 점검표', lessonIds: ['supabase-rls'] },
+    { title: 'DNS·포트·방화벽 점검', summary: '도메인에서 서버까지 연결되는 길과 허용할 포트를 확인합니다.', topics: ['DNS', '포트', '방화벽'], tools: ['AWS', 'DNS 도구'], result: '서비스 연결 구조도', lessonIds: ['github-pages-publish'] },
+  ]),
+  'content-analytics-basic': weeks([
+    { title: '독자와 콘텐츠 주제 정하기', summary: '누가 왜 다시 찾아오는지 정하고 정기 콘텐츠 주제를 만듭니다.', topics: ['독자 정의', '검색 의도', '주제 목록'], tools: ['Codex', '스프레드시트'], result: '콘텐츠 주제 12개', lessonIds: ['codex-request'] },
+    { title: '제목·본문·이미지와 SEO', summary: '읽기 쉬운 글 구조와 검색에 필요한 기본 정보를 작성합니다.', topics: ['제목 구조', '메타 설명', '이미지 저작권'], tools: ['CMS', 'Codex'], result: '게시 가능한 콘텐츠 한 편', lessonIds: ['html-first-page'] },
+    { title: '방문·검색·클릭 지표 읽기', summary: '페이지 방문과 클릭 데이터를 질문에 맞게 해석합니다.', topics: ['조회', '클릭률', '이탈'], tools: ['Analytics', '스프레드시트'], result: '기본 성과표', lessonIds: ['javascript-basics'] },
+    { title: '콘텐츠 달력과 개선 보고서', summary: '월간 발행 일정과 개선할 내용을 한 장으로 정리합니다.', topics: ['콘텐츠 달력', 'A/B 아이디어', '개선 기록'], tools: ['스프레드시트', 'Codex'], result: '4주 운영 계획과 개선 보고서', lessonIds: ['codex-review'] },
+  ]),
 }
 
 export function getProgramWeeks(program) {
