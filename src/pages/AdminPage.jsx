@@ -4,7 +4,7 @@ import { categories } from '../data/catalog.js'
 import { deleteSharedItem, loadSharedContent, readManagedContent, restoreManagedContent, restoreSharedContent, saveManagedContent, saveSharedItem } from '../data/contentStorage.js'
 import { readCompletedLessons } from '../data/learningProgress.js'
 
-const emptyLesson = { title: '', categoryId: '', level: '입문', duration: '20분', description: '', explanation: '', goals: '', steps: '', codeLanguage: 'JavaScript', code: '', prompt: '', checklist: '', relatedProgramId: '', featured: false, popular: false, publishedAt: new Date().toISOString().slice(0, 10) }
+const emptyLesson = { title: '', categoryId: '', level: '입문', duration: '20분', description: '', explanation: '', goals: '', steps: '', codeLanguage: 'JavaScript', code: '', prompt: '', checklist: '', relatedProgramId: '', featured: false, popular: false, publishedAt: new Date().toISOString().slice(0, 10), slideUrl: '', pdfUrl: '', materialVersion: '1.0', slidePages: 8 }
 const emptyNotice = { title: '', date: new Date().toLocaleDateString('ko-KR').replace(/\s/g, '').replace(/\.$/, ''), summary: '', content: '' }
 const emptyProgram = { title: '', categoryId: '', level: '입문', duration: '4주 · 토요일', status: '모집 예정', description: '', introduction: '', audience: '', goals: '', curriculum: '', preparations: '', relatedLessonIds: [], image: '', imageAlt: '' }
 
@@ -106,7 +106,7 @@ function ContentForm({ type, editing, programs, onCancel, onSave }) {
     if (required.some((key) => !form[key]?.trim())) return setError('필수 입력 항목을 모두 작성해 주세요.')
     const category = categories.find((item) => item.id === form.categoryId)
     const item = isLesson
-      ? { ...editing, ...form, id: editing?.id || `lesson-${Date.now()}`, category: category.title, goals: linesToList(form.goals), steps: linesToList(form.steps), checklist: linesToList(form.checklist), nextLessonId: editing?.nextLessonId || null }
+      ? { ...editing, ...form, id: editing?.id || `lesson-${Date.now()}`, category: category.title, goals: linesToList(form.goals), steps: linesToList(form.steps), checklist: linesToList(form.checklist), nextLessonId: editing?.nextLessonId || null, slidePages: Number(form.slidePages) || 8 }
       : { ...editing, ...form, id: editing?.id || `notice-${Date.now()}`, content: form.content.split('\n').map((paragraph) => paragraph.trim()).filter(Boolean), checklist: editing?.checklist || ['안내 내용을 확인해 주세요.'] }
     onSave(item)
   }
@@ -129,6 +129,10 @@ function ContentForm({ type, editing, programs, onCancel, onSave }) {
         <label>확인 문제: 한 줄에 한 항목 <textarea value={form.checklist} onChange={(e) => setForm({ ...form, checklist: e.target.value })} required /></label>
         <label>관련 프로그램 <select value={form.relatedProgramId} onChange={(e) => setForm({ ...form, relatedProgramId: e.target.value })}><option value="">선택 안 함</option>{programs.map((program) => <option key={program.id} value={program.id}>{program.title}</option>)}</select></label>
         <label>게시일 <input type="date" value={form.publishedAt} onChange={(e) => setForm({ ...form, publishedAt: e.target.value })} /></label>
+        <label>PPT 자료 주소 <input value={form.slideUrl} onChange={(e) => setForm({ ...form, slideUrl: e.target.value })} placeholder="예: /edu/materials/foundation/html-first-page.pptx" /></label>
+        <label>PDF 자료 주소 <input value={form.pdfUrl} onChange={(e) => setForm({ ...form, pdfUrl: e.target.value })} placeholder="예: /edu/materials/foundation/html-first-page.pdf" /></label>
+        <label>자료 버전 <input value={form.materialVersion} onChange={(e) => setForm({ ...form, materialVersion: e.target.value })} placeholder="예: 1.0" /></label>
+        <label>슬라이드 수 <input min="1" type="number" value={form.slidePages} onChange={(e) => setForm({ ...form, slidePages: e.target.value })} /></label>
         <label><input checked={Boolean(form.featured)} onChange={(e) => setForm({ ...form, featured: e.target.checked })} type="checkbox" /> 분야별 추천 자료로 표시</label>
         <label><input checked={Boolean(form.popular)} onChange={(e) => setForm({ ...form, popular: e.target.checked })} type="checkbox" /> 인기 자료로 표시</label>
       </> : <>

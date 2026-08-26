@@ -1,4 +1,15 @@
-const makeLesson = (item) => ({ level: '입문', duration: '20분', publishedAt: '2026-08-26', featured: false, popular: false, ...item })
+const makeLesson = (item) => ({
+  level: '입문',
+  duration: '20분',
+  publishedAt: '2026-08-26',
+  featured: false,
+  popular: false,
+  slideUrl: `/edu/materials/${item.categoryId}/${item.id}.pptx`,
+  pdfUrl: `/edu/materials/${item.categoryId}/${item.id}.pdf`,
+  materialVersion: '1.0',
+  slidePages: 8,
+  ...item,
+})
 
 export const lessons = [
   makeLesson({ id: 'html-first-page', categoryId: 'foundation', category: '웹 기초', title: 'HTML로 첫 화면 만들기', popular: true, description: '제목·문단·버튼을 배치하며 웹페이지의 뼈대를 만듭니다.', explanation: 'HTML은 웹페이지의 설계도입니다. 태그(내용의 역할을 표시하는 이름)로 제목과 설명, 버튼을 구분합니다.', goals: ['HTML의 역할을 이해합니다.', '제목과 설명, 버튼을 직접 작성합니다.'], steps: ['index.html을 엽니다.', '제목과 설명을 작성합니다.', '버튼을 추가합니다.', '저장하고 새로고침합니다.'], codeLanguage: 'HTML', code: '<h1>우리 동네 배움터</h1>\n<p>오늘부터 천천히 시작합니다.</p>\n<button>교육 보기</button>', prompt: '초보자용 홈페이지에 제목, 설명, 교육 보기 버튼이 있는 HTML을 만들어줘.', checklist: ['제목과 설명이 구분되나요?', '버튼 문구를 바꿔 봤나요?'], relatedProgramId: 'web-foundation', nextLessonId: 'css-first-style' }),

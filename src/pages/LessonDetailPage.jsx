@@ -89,6 +89,19 @@ export default function LessonDetailPage({ lessonId }) {
             <ul>{lesson.checklist.map((item) => <li key={item}>{item}</li>)}</ul>
           </section>
 
+          {(lesson.pdfUrl || lesson.slideUrl) && (
+            <section className="detail-section lesson-material-card">
+              <span className="section-eyebrow">DOWNLOAD MATERIALS</span>
+              <h2>수업 자료로 복습하세요</h2>
+              <p>PDF는 바로 열어 읽고, PPT는 내려받아 수업이나 개인 복습에 사용할 수 있습니다.</p>
+              <p className="lesson-material-meta">버전 {lesson.materialVersion || '1.0'} · {lesson.slidePages || 8}쪽</p>
+              <div className="lesson-material-actions">
+                {lesson.pdfUrl && <a className="button button-primary" href={lesson.pdfUrl} rel="noreferrer" target="_blank">PDF 자료 보기</a>}
+                {lesson.slideUrl && <a className="button button-secondary" download href={lesson.slideUrl}>PPT 자료 받기</a>}
+              </div>
+            </section>
+          )}
+
           {nextLesson && (
             <section className="next-lesson">
               <span className="section-eyebrow">NEXT LESSON</span>

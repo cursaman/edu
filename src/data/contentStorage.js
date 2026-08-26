@@ -31,6 +31,8 @@ function fromDatabase(type, row) {
     checklist: row.checklist, nextLessonId: row.next_lesson_id,
     relatedProgramId: row.related_program_id, featured: row.is_featured,
     popular: row.is_popular, publishedAt: row.published_at,
+    slideUrl: row.slide_url, pdfUrl: row.pdf_url,
+    materialVersion: row.material_version, slidePages: row.slide_pages,
   }
 }
 
@@ -59,6 +61,8 @@ function toDatabase(type, item) {
     prompt: item.prompt || '', checklist: item.checklist || [], next_lesson_id: item.nextLessonId || null,
     related_program_id: item.relatedProgramId || null, is_featured: Boolean(item.featured),
     is_popular: Boolean(item.popular), published_at: item.publishedAt || new Date().toISOString().slice(0, 10),
+    slide_url: item.slideUrl || '', pdf_url: item.pdfUrl || '',
+    material_version: item.materialVersion || '1.0', slide_pages: Number(item.slidePages) || 8,
   }
 }
 
@@ -67,7 +71,13 @@ export function readManagedContent(type) {
     const saved = window.localStorage.getItem(storageKeys[type])
     if (!saved) return defaults[type]
     const parsed = JSON.parse(saved)
-    return Array.isArray(parsed) ? parsed : defaults[type]
+    if (!Array.isArray(parsed)) return defaults[type]
+    if (type !== 'lessons') return parsed
+
+    return parsed.map((item) => {
+      const original = defaultLessons.find((lesson) => lesson.id === item.id)
+      return original ? { ...original, ...item, slideUrl: item.slideUrl || original.slideUrl, pdfUrl: item.pdfUrl || original.pdfUrl } : item
+    })
   } catch {
     return defaults[type]
   }

@@ -54,6 +54,10 @@ create table if not exists public.edu_lessons (
   is_featured boolean not null default false,
   is_popular boolean not null default false,
   published_at date not null default current_date,
+  slide_url text not null default '',
+  pdf_url text not null default '',
+  material_version text not null default '1.0',
+  slide_pages integer not null default 8,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -62,6 +66,10 @@ alter table public.edu_lessons add column if not exists related_program_id text;
 alter table public.edu_lessons add column if not exists is_featured boolean not null default false;
 alter table public.edu_lessons add column if not exists is_popular boolean not null default false;
 alter table public.edu_lessons add column if not exists published_at date not null default current_date;
+alter table public.edu_lessons add column if not exists slide_url text not null default '';
+alter table public.edu_lessons add column if not exists pdf_url text not null default '';
+alter table public.edu_lessons add column if not exists material_version text not null default '1.0';
+alter table public.edu_lessons add column if not exists slide_pages integer not null default 8;
 
 -- 교육자료 목록과 홈 추천 영역에서 자주 사용하는 조회를 빠르게 합니다.
 create index if not exists edu_programs_category_id_idx on public.edu_programs (category_id);

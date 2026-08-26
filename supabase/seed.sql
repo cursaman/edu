@@ -205,6 +205,13 @@ update public.edu_lessons set related_program_id='react-website', is_popular=tru
 update public.edu_lessons set related_program_id='codex-first-service', is_popular=true where id='codex-request';
 update public.edu_lessons set related_program_id='github-vercel', is_popular=(id='github-first-push'), is_featured=(id='github-pages-publish') where id in ('github-first-push','github-pages-publish');
 
+-- 18개 교육자료에 같은 이름의 PPT와 PDF 파일을 연결합니다.
+update public.edu_lessons
+set slide_url = '/edu/materials/' || category_id || '/' || id || '.pptx',
+    pdf_url = '/edu/materials/' || category_id || '/' || id || '.pdf',
+    material_version = '1.0',
+    slide_pages = 8;
+
 insert into public.edu_notices (id, title, display_date, summary, content, checklist) values
 (
   'program-registration', '교육 프로그램 모집 안내', '2026.08.25',

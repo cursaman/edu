@@ -2080,6 +2080,38 @@ button:focus-visible {
   }
 }
 
+.lesson-material-card {
+  background: linear-gradient(135deg, #f1eeff, #e8f8f3);
+  border: 1px solid #d9d2ff;
+}
+
+.lesson-material-card > p {
+  max-width: 680px;
+}
+
+.lesson-material-meta {
+  color: #5f6475;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.lesson-material-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+@media (max-width: 680px) {
+  .lesson-material-actions {
+    flex-direction: column;
+  }
+
+  .lesson-material-actions .button {
+    width: 100%;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

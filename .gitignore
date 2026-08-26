@@ -5,4 +5,5 @@ dist/
 .env.*.local
 .vercel/
 *.log
+tmp/
 .DS_Store
