@@ -107,7 +107,15 @@ export default function App() {
   } else if (route.pathname.startsWith('/programs/')) {
     page = <ProgramDetailPage programId={route.pathname.split('/')[2]} />
   } else if (route.pathname === '/lessons') {
-    page = <LessonsPage selectedCategory={route.searchParams.get('category') || 'all'} />
+    page = <LessonsPage
+      selectedCategory={route.searchParams.get('category') || 'all'}
+      selectedCollection={route.searchParams.get('collection') || 'all'}
+      selectedDuration={route.searchParams.get('duration') || 'all'}
+      selectedLevel={route.searchParams.get('level') || 'all'}
+      selectedPage={route.searchParams.get('page') || '1'}
+      selectedSearch={route.searchParams.get('search') || ''}
+      selectedSort={route.searchParams.get('sort') || 'recommended'}
+    />
   } else if (route.pathname.startsWith('/lessons/')) {
     page = <LessonDetailPage key={route.pathname} lessonId={route.pathname.split('/')[2]} />
   } else if (route.pathname === '/notice') {
