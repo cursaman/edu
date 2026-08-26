@@ -74,9 +74,9 @@ export default function HomePage() {
       </section>
 
       <section className="home-overview page-shell" aria-label="교육 플랫폼 이용 현황">
-        <article><span>교육 프로그램</span><strong>{programs.length}개</strong></article>
-        <article><span>제공 교육자료</span><strong>{lessons.length}개</strong></article>
-        <article><span>내 학습 진행</span><strong>{completedCount} / {lessons.length}개 완료</strong></article>
+        <article><span>교육 프로그램(과정)</span><strong>{programs.length}개</strong></article>
+        <article><span>별도 학습자료(콘텐츠)</span><strong>{lessons.length}개</strong></article>
+        <article><span>교육자료 학습 진행</span><strong>{completedCount} / {lessons.length}개 완료</strong></article>
         <a className="button button-secondary" href="#/lessons">교육자료 보러 가기 →</a>
       </section>
 
@@ -115,9 +115,9 @@ export default function HomePage() {
       </section>
 
       <section className="section page-shell home-learning-section">
-        <SectionHeading eyebrow="RECOMMENDED BY FIELD" title="분야별 추천 자료" description="여섯 분야에서 하나씩 골라 전체 개발 흐름을 살펴보세요." />
+        <SectionHeading eyebrow="RECOMMENDED BY FIELD" title="분야별 추천 자료" description={`${categories.length}개 분야의 핵심 자료를 골라 전체 개발 흐름을 살펴보세요.`} />
         <div className="lesson-grid">{categoryRecommendations.map(lessonCard)}</div>
-        <a className="home-lessons-link" href="#/lessons">교육자료 18개 모두 보기 →</a>
+        <a className="home-lessons-link" href="#/lessons">교육자료 {lessons.length}개 모두 보기 →</a>
       </section>
 
       <section className="section page-shell">
@@ -143,10 +143,11 @@ export default function HomePage() {
           />
 
           <div className="program-grid">
-            {programs.map((program) => (
+            {programs.slice(0, 6).map((program) => (
               <ProgramCard key={program.id} program={program} />
             ))}
           </div>
+          <a className="home-lessons-link" href="#/programs">교육 프로그램 {programs.length}개 모두 보기 →</a>
         </div>
       </section>
 
