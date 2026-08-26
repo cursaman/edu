@@ -784,6 +784,59 @@ button:focus-visible {
   color: var(--violet);
 }
 
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 42px;
+}
+
+.pagination-numbers {
+  display: flex;
+  gap: 7px;
+}
+
+.pagination-number,
+.pagination-move {
+  display: inline-flex;
+  min-width: 42px;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #ffffff;
+  color: #505a6b;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.pagination-number:hover,
+.pagination-number:focus-visible,
+.pagination-move:hover,
+.pagination-move:focus-visible {
+  border-color: var(--violet);
+  color: var(--violet);
+}
+
+.pagination-current {
+  border-color: var(--violet);
+  background: var(--violet);
+  color: #ffffff;
+}
+
+.pagination-current:hover,
+.pagination-current:focus-visible {
+  color: #ffffff;
+}
+
+.pagination-disabled {
+  pointer-events: none;
+  opacity: 0.42;
+}
+
 .empty-state {
   display: grid;
   min-height: 260px;
@@ -2001,6 +2054,17 @@ button:focus-visible {
 
   .program-filters {
     gap: 8px;
+  }
+
+  .pagination {
+    gap: 7px;
+  }
+
+  .pagination-number,
+  .pagination-move {
+    min-width: 40px;
+    min-height: 40px;
+    padding-inline: 10px;
   }
 
   .lesson-progress-banner {

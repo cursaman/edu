@@ -96,7 +96,7 @@ export default function App() {
   } else if (route.pathname === '/categories') {
     page = <CategoriesPage />
   } else if (route.pathname === '/programs') {
-    page = <ProgramsPage selectedCategory={route.searchParams.get('category') || 'all'} />
+    page = <ProgramsPage selectedCategory={route.searchParams.get('category') || 'all'} selectedPage={route.searchParams.get('page') || '1'} />
   } else if (route.pathname.startsWith('/programs/')) {
     page = <ProgramDetailPage programId={route.pathname.split('/')[2]} />
   } else if (route.pathname === '/lessons') {

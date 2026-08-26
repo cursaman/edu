@@ -73,8 +73,17 @@ export const programWeeks = {
 
 export function getProgramWeeks(program) {
   if (programWeeks[program.id]) return programWeeks[program.id]
+  const toolsByCategory = {
+    '서비스 기획': ['Codex', '문서 도구'], 'UI·UX 웹디자인': ['Figma', '웹브라우저'],
+    '웹 기초': ['HTML·CSS·JavaScript', 'Chrome'], '프런트엔드': ['React', 'Vite'],
+    '백엔드': ['Node.js', 'API 도구'], '데이터베이스': ['SQL', 'Supabase'],
+    'AI 활용 개발': ['Codex', '웹브라우저'], '보안·네트워크·인프라': ['Chrome', '보안 점검표'],
+    '콘텐츠·데이터 분석': ['스프레드시트', '분석 도구'], '테스트·배포·운영': ['GitHub', 'Chrome'],
+  }
   return (program.curriculum || []).map((title, index) => ({
-    week: index + 1, title, summary: '이 주차의 핵심 내용을 실습하고 결과를 직접 확인합니다.',
-    topics: [title], tools: ['Codex', '웹브라우저'], result: `${index + 1}주차 실습 결과물`, lessonIds: [],
+    week: index + 1, title, summary: `${title}의 핵심을 쉬운 예제로 익히고 직접 결과를 확인합니다.`,
+    topics: [title, '단계별 직접 실습', '결과 확인과 개선'],
+    tools: toolsByCategory[program.category] || ['Codex', '웹브라우저'],
+    result: `${title} 실습 결과물`, lessonIds: program.relatedLessonIds?.slice(0, 2) || [],
   }))
 }

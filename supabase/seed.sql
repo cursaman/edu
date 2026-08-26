@@ -104,6 +104,45 @@ insert into public.edu_programs (
 ('content-analytics-basic','웹 콘텐츠 운영과 데이터 분석 기초','content-analytics','콘텐츠·데이터 분석','입문','4주 · 주 1회','교육 콘텐츠를 기획하고 검색·클릭 데이터를 바탕으로 개선합니다.','콘텐츠 구조, SEO, 이미지 저작권, 방문 지표와 개선 기록을 익혀 운영 계획을 완성합니다.','["홈페이지 콘텐츠를 꾸준히 운영하고 싶은 분","방문자 반응으로 글과 화면을 개선하고 싶은 분"]','["독자 중심 콘텐츠를 작성합니다.","검색과 클릭 지표를 이해합니다.","월간 개선 계획을 만듭니다."]','["독자와 콘텐츠 주제","제목·본문·이미지와 SEO","방문·검색·클릭 지표","콘텐츠 달력과 개선 보고서"]','["인터넷 노트북","운영할 홈페이지 주제","스프레드시트"]','["codex-request","github-pages-publish"]','모집 예정','coral','10','/edu/images/program-codex.webp','콘텐츠 카드와 방문 데이터를 살펴보는 모습')
 on conflict (id) do update set title=excluded.title, category_id=excluded.category_id, category=excluded.category, level=excluded.level, duration=excluded.duration, description=excluded.description, introduction=excluded.introduction, audience=excluded.audience, goals=excluded.goals, curriculum=excluded.curriculum, preparations=excluded.preparations, related_lesson_ids=excluded.related_lesson_ids, status=excluded.status, color=excluded.color, display_number=excluded.display_number, image_url=excluded.image_url, image_alt=excluded.image_alt;
 
+-- 분야별 입문·기초·실전 구성을 완성하는 확장 프로그램 20개
+with expanded_programs(id, title, category_id, category, level, description, curriculum, lesson_id, color, display_number, image_url) as (
+  values
+  ('user-research-basic','사용자 조사와 서비스 요구사항 작성','service-planning','서비스 기획','기초','인터뷰와 사용자 여정을 통해 필요한 기능과 완료 기준을 정리합니다.','["조사 목표와 인터뷰 질문","사용자 인터뷰와 핵심 발견","사용자 여정과 문제 우선순위","요구사항 명세서 완성"]'::jsonb,'codex-request','coral','11','/edu/images/program-foundation.webp'),
+  ('service-planning-project','실전 웹서비스 기획 프로젝트','service-planning','서비스 기획','실전','시장 조사부터 화면 정책과 개발 일정까지 실제 서비스 기획안을 완성합니다.','["시장·경쟁 서비스 분석","핵심 지표와 기능 정책","화면·데이터·예외 정책","로드맵과 최종 기획 발표"]'::jsonb,'codex-review','coral','12','/edu/images/program-foundation.webp'),
+  ('responsive-ui-basic','반응형 UI·UX 디자인 실습','uiux-design','UI·UX 웹디자인','기초','PC·태블릿·모바일에서 편리한 화면 구조와 상호작용을 설계합니다.','["사용 흐름과 정보 구조","PC 그리드와 주요 화면","모바일 전환과 터치 UI","사용성 점검과 시안 개선"]'::jsonb,'responsive-layout','violet','13','/edu/images/program-react.webp'),
+  ('design-system-project','웹 디자인 시스템 만들기','uiux-design','UI·UX 웹디자인','실전','색상·글자·버튼·카드를 재사용 가능한 디자인 규칙으로 완성합니다.','["브랜드 원칙과 디자인 토큰","버튼·입력·카드 컴포넌트","상태·접근성·반응형 규칙","문서화와 개발 전달"]'::jsonb,'css-first-style','violet','14','/edu/images/program-react.webp'),
+  ('web-accessibility-basic','쉬운 웹 접근성과 반응형 기초','foundation','웹 기초','기초','누구나 읽고 키보드로 사용할 수 있는 모바일 친화 화면을 만듭니다.','["의미 있는 HTML 구조","글자·색상 대비와 대체 설명","키보드와 입력 항목 점검","반응형 페이지 완성"]'::jsonb,'responsive-layout','mint','15','/edu/images/program-foundation.webp'),
+  ('interactive-web-project','JavaScript 인터랙티브 랜딩페이지','foundation','웹 기초','실전','메뉴·탭·폼·저장 기능이 있는 소개 홈페이지를 직접 완성합니다.','["랜딩페이지 구조와 데이터","메뉴·탭·모달 상호작용","폼 검증과 localStorage","모바일 점검과 공개"]'::jsonb,'javascript-basics','mint','16','/edu/images/program-foundation.webp'),
+  ('react-state-api','React 상태관리와 API 활용','frontend','프런트엔드','기초','검색·필터·비동기 요청이 동작하는 데이터 중심 화면을 만듭니다.','["상태와 사용자 입력","목록 검색·필터·정렬","Fetch API와 비동기 상태","데이터 서비스 완성"]'::jsonb,'react-state-filter','violet','17','/edu/images/program-react.webp'),
+  ('react-dashboard-project','React 관리자 대시보드 프로젝트','frontend','프런트엔드','실전','CRUD 화면과 차트·권한 UI를 갖춘 반응형 관리 화면을 완성합니다.','["대시보드 구조와 라우팅","목록·상세·등록·수정","통계 카드와 차트 UI","권한 화면·테스트·배포"]'::jsonb,'react-components','violet','18','/edu/images/program-react.webp'),
+  ('rest-api-basic','REST API 설계와 구현','backend','백엔드','기초','주소·요청 방식·상태 코드의 원칙에 맞는 CRUD API를 구현합니다.','["REST와 API 명세","조회·등록 API","수정·삭제와 입력 검증","API 문서와 통합 테스트"]'::jsonb,'node-json-api','coral','19','/edu/images/program-backend.webp'),
+  ('backend-auth-project','인증이 있는 백엔드 서비스','backend','백엔드','실전','로그인·권한·로그를 적용한 안전한 웹 API 프로젝트를 완성합니다.','["인증 흐름과 사용자 모델","로그인·토큰·세션","역할별 API 권한","보안 점검·로그·배포"]'::jsonb,'api-validation','coral','20','/edu/images/program-backend.webp'),
+  ('sql-foundation','SQL로 데이터 조회하기','database','데이터베이스','입문','표를 만들고 필요한 정보를 조건·정렬·집계로 찾아보는 SQL 입문 과정입니다.','["테이블·행·열과 자료형","SELECT와 조건 검색","정렬·그룹·집계","작은 교육 데이터 분석"]'::jsonb,'database-table-basics','violet','21','/edu/images/program-database.webp'),
+  ('database-modeling-project','서비스 데이터 모델링 실전','database','데이터베이스','실전','중복을 줄이고 관계와 권한을 고려한 서비스 데이터 구조를 설계합니다.','["요구사항과 개체 찾기","관계·키·정규화","인덱스와 조회 성능","RLS와 최종 스키마 검증"]'::jsonb,'supabase-rls','violet','22','/edu/images/program-database.webp'),
+  ('ai-prompt-foundation','AI 개발 요청문 작성 입문','ai-development','AI 활용 개발','입문','원하는 기능을 작게 나누고 AI에게 정확히 요청·검토·수정하는 방법을 익힙니다.','["AI 개발 도구와 안전 규칙","맥락·범위·완료 기준 작성","오류 전달과 수정 요청","작은 웹 기능 완성"]'::jsonb,'codex-request','violet','23','/edu/images/program-codex.webp'),
+  ('ai-workflow-project','AI 업무 자동화 웹앱 만들기','ai-development','AI 활용 개발','실전','반복 업무를 분석하고 AI와 API를 연결한 안전한 자동화 웹앱을 설계합니다.','["반복 업무와 위험 분석","프롬프트·API·데이터 설계","자동화 화면과 예외 처리","품질 평가·보안·발표"]'::jsonb,'codex-review','violet','24','/edu/images/program-codex.webp'),
+  ('personal-web-security','일반인을 위한 웹 보안 기초','security-infrastructure','보안·네트워크·인프라','입문','계정·비밀번호·피싱·개인정보와 웹서비스의 기본 보안 습관을 익힙니다.','["계정과 안전한 비밀번호","피싱·악성 링크 구분","개인정보와 브라우저 보안","내 서비스 보안 점검표"]'::jsonb,'api-validation','mint','25','/edu/images/program-database.webp'),
+  ('cloud-security-project','클라우드 보안 운영 실전','security-infrastructure','보안·네트워크·인프라','실전','권한·네트워크·로그·백업을 점검하고 사고 대응 절차를 만듭니다.','["자산·계정·권한 점검","네트워크와 비밀정보 보호","로그·모니터링·경보","백업·복구·사고 대응 훈련"]'::jsonb,'supabase-rls','mint','26','/edu/images/program-database.webp'),
+  ('seo-content-basic','검색되는 웹 콘텐츠 만들기','content-analytics','콘텐츠·데이터 분석','기초','검색 의도에 맞는 제목·본문·이미지와 기본 SEO 정보를 작성합니다.','["독자 질문과 검색 의도","제목·소제목·본문 구성","이미지·링크·메타 정보","발행과 검색 품질 점검"]'::jsonb,'html-first-page','coral','27','/edu/images/program-codex.webp'),
+  ('web-analytics-project','웹 데이터 분석과 개선 프로젝트','content-analytics','콘텐츠·데이터 분석','실전','방문·전환 데이터를 읽고 가설과 실험으로 홈페이지를 개선합니다.','["목표·지표·측정 계획","방문 흐름과 전환 분석","가설과 개선 실험","결과 보고와 다음 운영 계획"]'::jsonb,'codex-review','coral','28','/edu/images/program-codex.webp'),
+  ('web-testing-basic','웹사이트 테스트와 오류 점검','deployment','테스트·배포·운영','기초','기능·모바일·접근성·성능을 순서대로 검사하고 오류를 기록합니다.','["완료 기준과 테스트 목록","기능·입력·오류 주소 검사","모바일·접근성·성능 검사","오류 보고와 회귀 테스트"]'::jsonb,'codex-review','mint','29','/edu/images/program-deployment.webp'),
+  ('cicd-operation-project','CI/CD 자동 배포와 운영 실전','deployment','테스트·배포·운영','실전','GitHub Actions로 빌드·배포를 자동화하고 로그·복구 절차를 구성합니다.','["브랜치와 배포 전략","Actions 빌드·테스트 자동화","환경별 배포와 모니터링","장애 대응·롤백·운영 문서"]'::jsonb,'github-actions-check','mint','30','/edu/images/program-deployment.webp')
+)
+insert into public.edu_programs (
+  id, title, category_id, category, level, duration, description, introduction,
+  audience, goals, curriculum, preparations, related_lesson_ids,
+  status, color, display_number, image_url, image_alt
+)
+select id, title, category_id, category, level, '4주 · 주 1회', description,
+  description || ' 매주 쉬운 개념 설명과 직접 실습을 거쳐 마지막 주에 결과물을 완성합니다.',
+  jsonb_build_array(category || ' 분야를 단계적으로 배우고 싶은 분', '직접 결과물을 완성하고 싶은 분'),
+  jsonb_build_array('핵심 개념을 쉬운 말로 설명합니다.', '주차별 실습 결과물을 완성합니다.', '완성 결과를 점검하고 발표합니다.'),
+  curriculum, jsonb_build_array('인터넷에 연결되는 노트북', '웹브라우저', '실습용 계정 또는 도구'),
+  jsonb_build_array(lesson_id), '모집 예정', color, display_number, image_url,
+  title || ' 교육의 주요 실습 과정을 보여주는 모습'
+from expanded_programs
+on conflict (id) do update set title=excluded.title, category_id=excluded.category_id, category=excluded.category, level=excluded.level, duration=excluded.duration, description=excluded.description, introduction=excluded.introduction, audience=excluded.audience, goals=excluded.goals, curriculum=excluded.curriculum, preparations=excluded.preparations, related_lesson_ids=excluded.related_lesson_ids, status=excluded.status, color=excluded.color, display_number=excluded.display_number, image_url=excluded.image_url, image_alt=excluded.image_alt;
+
 insert into public.edu_lessons (
   id, title, category_id, category, level, duration, description, explanation,
   goals, steps, code_language, code, prompt, checklist, next_lesson_id
@@ -254,7 +293,7 @@ on conflict (id) do update set
 -- 별도 프로그램으로 추가했던 이전 12주 과정이 남아 있다면 제거합니다.
 delete from public.edu_programs where id = 'vibe-coding-fullstack';
 
--- 실행 결과 확인: 프로그램 10개, 교육자료 18개, 공지사항 3개가 정상입니다.
+-- 실행 결과 확인: 프로그램 30개, 교육자료 18개, 공지사항 3개가 정상입니다.
 select '교육 프로그램' as item, count(*) as saved_count from public.edu_programs
 union all
 select '교육자료', count(*) from public.edu_lessons

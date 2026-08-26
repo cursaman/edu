@@ -2,7 +2,17 @@ import ProgramCard from '../components/ProgramCard.jsx'
 import { categories } from '../data/catalog.js'
 import { readManagedContent } from '../data/contentStorage.js'
 
-export default function ProgramsPage({ selectedCategory }) {
+const PROGRAMS_PER_PAGE = 9
+
+function pageHref(categoryId, page) {
+  const params = new URLSearchParams()
+  if (categoryId !== 'all') params.set('category', categoryId)
+  if (page > 1) params.set('page', String(page))
+  const query = params.toString()
+  return `#/programs${query ? `?${query}` : ''}`
+}
+
+export default function ProgramsPage({ selectedCategory, selectedPage }) {
   const programs = readManagedContent('programs')
   const activeCategory = categories.some((category) => category.id === selectedCategory)
     ? selectedCategory
@@ -10,6 +20,14 @@ export default function ProgramsPage({ selectedCategory }) {
   const visiblePrograms = activeCategory === 'all'
     ? programs
     : programs.filter((program) => program.categoryId === activeCategory)
+  const totalPages = Math.max(1, Math.ceil(visiblePrograms.length / PROGRAMS_PER_PAGE))
+  const requestedPage = Number.parseInt(selectedPage, 10)
+  const currentPage = Number.isFinite(requestedPage) && requestedPage > 0
+    ? Math.min(requestedPage, totalPages)
+    : 1
+  const startIndex = (currentPage - 1) * PROGRAMS_PER_PAGE
+  const pagedPrograms = visiblePrograms.slice(startIndex, startIndex + PROGRAMS_PER_PAGE)
+  const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1)
 
   return (
     <section className="content-page page-shell" aria-labelledby="programs-title">
@@ -40,12 +58,33 @@ export default function ProgramsPage({ selectedCategory }) {
         ))}
       </nav>
 
-      <p className="results-summary">현재 볼 수 있는 프로그램 <strong>{visiblePrograms.length}개</strong></p>
+      <p className="results-summary">
+        전체 <strong>{visiblePrograms.length}개</strong>
+        {visiblePrograms.length > 0 && <> · 현재 <strong>{startIndex + 1}–{Math.min(startIndex + PROGRAMS_PER_PAGE, visiblePrograms.length)}번</strong></>}
+      </p>
 
       {visiblePrograms.length > 0 ? (
-        <div className="program-grid">
-          {visiblePrograms.map((program) => <ProgramCard key={program.id} program={program} />)}
-        </div>
+        <>
+          <div className="program-grid">
+            {pagedPrograms.map((program) => <ProgramCard key={program.id} program={program} />)}
+          </div>
+
+          {totalPages > 1 && (
+            <nav className="pagination" aria-label="교육 프로그램 페이지 이동">
+              {currentPage === 1
+                ? <span aria-disabled="true" className="pagination-move pagination-disabled">이전</span>
+                : <a className="pagination-move" href={pageHref(activeCategory, currentPage - 1)}>이전</a>}
+              <div className="pagination-numbers">
+                {pageNumbers.map((page) => (
+                  <a aria-current={page === currentPage ? 'page' : undefined} className={`pagination-number${page === currentPage ? ' pagination-current' : ''}`} href={pageHref(activeCategory, page)} key={page}>{page}</a>
+                ))}
+              </div>
+              {currentPage === totalPages
+                ? <span aria-disabled="true" className="pagination-move pagination-disabled">다음</span>
+                : <a className="pagination-move" href={pageHref(activeCategory, currentPage + 1)}>다음</a>}
+            </nav>
+          )}
+        </>
       ) : (
         <div className="empty-state">
           <strong>이 분야의 프로그램은 준비하고 있어요.</strong>
