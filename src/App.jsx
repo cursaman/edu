@@ -96,7 +96,14 @@ export default function App() {
   } else if (route.pathname === '/categories') {
     page = <CategoriesPage />
   } else if (route.pathname === '/programs') {
-    page = <ProgramsPage selectedCategory={route.searchParams.get('category') || 'all'} selectedPage={route.searchParams.get('page') || '1'} />
+    page = <ProgramsPage
+      selectedCategory={route.searchParams.get('category') || 'all'}
+      selectedDuration={route.searchParams.get('duration') || 'all'}
+      selectedLevel={route.searchParams.get('level') || 'all'}
+      selectedPage={route.searchParams.get('page') || '1'}
+      selectedSearch={route.searchParams.get('search') || ''}
+      selectedSort={route.searchParams.get('sort') || 'recommended'}
+    />
   } else if (route.pathname.startsWith('/programs/')) {
     page = <ProgramDetailPage programId={route.pathname.split('/')[2]} />
   } else if (route.pathname === '/lessons') {

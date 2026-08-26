@@ -755,6 +755,88 @@ button:focus-visible {
   gap: 10px;
 }
 
+.program-search {
+  display: grid;
+  gap: 9px;
+  margin-bottom: 20px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  background: #fafaff;
+}
+
+.program-search > label,
+.program-filter-toolbar label {
+  color: #4d5667;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.program-search > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+}
+
+.program-search input,
+.program-filter-toolbar select {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid #d9deea;
+  border-radius: 11px;
+  background: #ffffff;
+  color: var(--ink);
+  font: inherit;
+}
+
+.program-search input {
+  padding-inline: 15px;
+}
+
+.program-search input:focus,
+.program-filter-toolbar select:focus {
+  border-color: var(--violet);
+  outline: 3px solid rgba(93, 103, 245, 0.13);
+}
+
+.program-search .button {
+  min-height: 46px;
+}
+
+.program-filter-toolbar {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(150px, 1fr)) auto;
+  align-items: end;
+  gap: 12px;
+  margin-top: 20px;
+  padding: 17px;
+  border-radius: 15px;
+  background: #f6f7fb;
+}
+
+.program-filter-toolbar label {
+  display: grid;
+  gap: 7px;
+}
+
+.program-filter-toolbar select {
+  padding-inline: 12px 32px;
+}
+
+.program-filter-reset {
+  display: inline-flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 15px;
+  border: 1px solid #d9deea;
+  border-radius: 11px;
+  background: #ffffff;
+  color: #596477;
+  font-size: 13px;
+  font-weight: 650;
+}
+
 .filter-chip {
   display: inline-flex;
   min-height: 43px;
@@ -835,6 +917,15 @@ button:focus-visible {
 .pagination-disabled {
   pointer-events: none;
   opacity: 0.42;
+}
+
+.pagination-ellipsis {
+  display: inline-flex;
+  min-width: 24px;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
 }
 
 .empty-state {
@@ -2054,6 +2145,22 @@ button:focus-visible {
 
   .program-filters {
     gap: 8px;
+  }
+
+  .program-search {
+    padding: 17px;
+  }
+
+  .program-search > div {
+    grid-template-columns: 1fr;
+  }
+
+  .program-filter-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .program-filter-reset {
+    width: 100%;
   }
 
   .pagination {
