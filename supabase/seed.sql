@@ -143,6 +143,82 @@ select id, title, category_id, category, level, '4주 · 주 1회', description,
 from expanded_programs
 on conflict (id) do update set title=excluded.title, category_id=excluded.category_id, category=excluded.category, level=excluded.level, duration=excluded.duration, description=excluded.description, introduction=excluded.introduction, audience=excluded.audience, goals=excluded.goals, curriculum=excluded.curriculum, preparations=excluded.preparations, related_lesson_ids=excluded.related_lesson_ids, status=excluded.status, color=excluded.color, display_number=excluded.display_number, image_url=excluded.image_url, image_alt=excluded.image_alt;
 
+-- 분야별 10개 구성을 완성하는 추가 프로그램 70개
+with category_expansions(category_order, category_id, category, color, image_url, lesson_id, ids, titles, levels, focuses) as (
+  values
+  (1,'service-planning','서비스 기획','coral','/edu/images/program-foundation.webp','codex-request',
+   array['planning-persona','planning-benchmark','planning-mvp','planning-policy','planning-kpi','planning-agile','planning-portfolio'],
+   array['고객 페르소나와 사용자 여정','경쟁 서비스 벤치마킹','MVP 기능 우선순위 워크숍','웹서비스 화면·운영 정책 설계','서비스 KPI와 데이터 측정 설계','애자일 프로젝트와 스프린트 기획','서비스 기획 포트폴리오 완성'],
+   array['입문','기초','기초','중급','중급','실전','프로젝트'],
+   array['고객 유형과 이용 흐름 정리','경쟁 서비스 비교와 차별점 발견','핵심 기능 선정과 제작 범위 결정','정상·오류·예외 상황의 화면 정책 작성','목표 지표와 측정 이벤트 정의','백로그와 주간 실행 계획 운영','문제부터 성과까지 기획 사례 문서화']),
+  (2,'uiux-design','UI·UX 웹디자인','violet','/edu/images/program-react.webp','responsive-layout',
+   array['design-color-type','design-wireframe','design-mobile','design-prototype','design-accessibility','design-ecommerce','design-portfolio'],
+   array['웹 색상과 타이포그래피 입문','Figma 와이어프레임 제작','모바일 앱 UI 디자인 기초','Figma 인터랙티브 프로토타입','접근성을 고려한 UI 디자인','쇼핑몰 UI·UX 프로젝트','웹디자이너 포트폴리오 완성'],
+   array['입문','입문','기초','기초','중급','실전','프로젝트'],
+   array['읽기 좋은 색상·글자·간격 구성','핵심 화면의 정보 구조와 배치 설계','터치 중심 모바일 화면과 이동 설계','클릭 가능한 화면 흐름과 전환 구현','대비·초점·대체 설명 디자인 점검','상품 탐색부터 주문까지 화면 설계','디자인 과정과 결과를 사례로 정리']),
+  (3,'foundation','웹 기초','mint','/edu/images/program-foundation.webp','javascript-basics',
+   array['foundation-html','foundation-css','foundation-js','foundation-form','foundation-dom','foundation-storage','foundation-portfolio'],
+   array['HTML 문서 구조 집중 과정','CSS 레이아웃 집중 과정','JavaScript 문법 첫걸음','웹 입력 폼과 유효성 검사','DOM과 이벤트 실습','localStorage 생활 웹앱 만들기','개인 소개 웹사이트 완성'],
+   array['입문','입문','입문','기초','기초','실전','프로젝트'],
+   array['의미 있는 태그와 웹 문서 구조 작성','박스·Flex·Grid를 이용한 화면 배치','변수·조건·반복·함수의 쉬운 활용','안전하고 이해하기 쉬운 입력 화면 구현','클릭·입력에 반응하는 화면 구현','새로고침 후에도 유지되는 브라우저 저장','반응형 개인 홈페이지 제작과 공개']),
+  (4,'frontend','프런트엔드','violet','/edu/images/program-react.webp','react-components',
+   array['frontend-router','frontend-form','frontend-query','frontend-performance','frontend-test','frontend-shop','frontend-portfolio'],
+   array['React 라우팅과 다중 페이지 구성','React 폼과 입력 상태 관리','React 서버 데이터 관리','React 성능과 코드 분할','React 컴포넌트 테스트','React 쇼핑몰 프런트엔드','프런트엔드 포트폴리오 완성'],
+   array['기초','기초','중급','중급','중급','실전','프로젝트'],
+   array['주소에 따라 바뀌는 화면과 이동 구현','등록·수정 폼과 오류 안내 구현','API 캐시·재요청·로딩 상태 구성','느린 화면 분석과 필요한 코드만 불러오기','사용자 행동 중심의 화면 자동 검사','상품·장바구니·주문 화면 제작','기획·개발·배포 과정을 사례로 정리']),
+  (5,'backend','백엔드','coral','/edu/images/program-backend.webp','node-json-api',
+   array['backend-express','backend-validation','backend-upload','backend-email','backend-spring','backend-realtime','backend-project'],
+   array['Express 서버 개발 입문','백엔드 입력 검증과 오류 처리','파일 업로드 API 만들기','이메일 알림 서비스 구현','Spring Boot 백엔드 입문','실시간 알림과 WebSocket','예약 서비스 백엔드 프로젝트'],
+   array['입문','기초','중급','중급','기초','실전','프로젝트'],
+   array['라우팅과 미들웨어가 있는 서버 구현','안전한 요청 검사와 일관된 오류 응답','파일 형식·크기 검사와 저장 흐름 구현','템플릿과 발송 상태를 관리하는 알림 기능','Java 기반 컨트롤러와 서비스 계층 구성','연결 상태와 실시간 메시지 처리','예약·취소·권한·동시성 API 완성']),
+  (6,'database','데이터베이스','violet','/edu/images/program-database.webp','database-table-basics',
+   array['database-postgresql','database-supabase','database-rls','database-index','database-backup','database-analytics','database-project'],
+   array['PostgreSQL 실무 SQL','Supabase CRUD 집중 실습','RLS 데이터 보안 정책','인덱스와 SQL 성능 개선','데이터 백업과 복구 운영','교육 데이터 분석 SQL 프로젝트','게시판 데이터베이스 프로젝트'],
+   array['기초','기초','중급','중급','중급','실전','프로젝트'],
+   array['조인·서브쿼리·집계 쿼리 작성','공동 데이터를 등록·조회·수정·삭제','사용자와 역할에 따른 행 단위 권한 적용','실행 계획을 이용한 느린 조회 개선','백업 주기·검증·복구 훈련 구성','학습·신청 데이터를 지표로 분석','회원·게시글·댓글·권한 스키마 완성']),
+  (7,'ai-development','AI 활용 개발','violet','/edu/images/program-codex.webp','codex-request',
+   array['ai-codex-start','ai-debug','ai-docs','ai-api','ai-rag','ai-evaluation','ai-project'],
+   array['Codex로 개발 시작하기','AI와 함께 오류 해결하기','AI로 개발 문서와 매뉴얼 작성','생성형 AI API 연동 기초','내 자료를 찾는 RAG 서비스 입문','AI 결과 품질 평가와 개선','AI 교육 도우미 웹서비스 프로젝트'],
+   array['입문','기초','기초','중급','중급','실전','프로젝트'],
+   array['파일 확인부터 작은 수정과 검증까지 경험','오류 정보 수집과 단계별 원인 진단','README·사용법·운영 절차 자동 초안 작성','서버 측 AI 호출과 안전한 결과 표시','문서 검색과 근거 기반 답변 흐름 설계','평가 기준·테스트 자료·품질 기록 구성','질문·답변·검토가 있는 AI 서비스 완성']),
+  (8,'security-infrastructure','보안·네트워크·인프라','mint','/edu/images/program-database.webp','api-validation',
+   array['security-password','security-network','security-webattack','security-cloud','security-linux','security-monitoring','security-project'],
+   array['계정·비밀번호·MFA 보안','웹 네트워크와 HTTP·DNS 기초','웹 공격과 안전한 코딩 기초','AWS 클라우드 인프라 입문','Linux 서버 운영 기초','서버 모니터링과 로그 분석','안전한 웹서비스 구축 프로젝트'],
+   array['입문','입문','기초','기초','중급','실전','프로젝트'],
+   array['안전한 로그인과 다중 인증 습관 적용','브라우저부터 서버까지 연결 흐름 이해','XSS·인젝션·CSRF 원리와 방어 점검','서버·네트워크·스토리지 기본 구성','계정·권한·서비스·로그 기본 관리','상태 지표·로그·경보로 이상 발견','인증·권한·HTTPS·점검표 통합 적용']),
+  (9,'content-analytics','콘텐츠·데이터 분석','coral','/edu/images/program-codex.webp','codex-review',
+   array['content-writing','content-image','content-calendar','content-newsletter','content-ga','content-experiment','content-project'],
+   array['읽기 쉬운 웹 글쓰기','웹 이미지 제작과 저작권 기초','월간 콘텐츠 캘린더 운영','뉴스레터 콘텐츠 기획','웹 분석 도구 기초','콘텐츠 A/B 테스트 실습','교육 콘텐츠 운영 프로젝트'],
+   array['입문','입문','기초','기초','중급','실전','프로젝트'],
+   array['독자 질문에 답하는 제목과 본문 작성','합법적 이미지 선택·편집·대체 설명 작성','주제·담당·발행일·검수 상태 관리','구독자가 기다리는 정기 콘텐츠 구성','방문·유입·전환 지표 확인과 해석','가설·비교안·측정·판단 과정 운영','기획·제작·발행·분석의 한 달 운영']),
+  (10,'deployment','테스트·배포·운영','mint','/edu/images/program-deployment.webp','github-actions-check',
+   array['deploy-git','deploy-pages','deploy-vercel','deploy-test','deploy-monitor','deploy-docker','deploy-project'],
+   array['Git과 GitHub 버전관리 입문','GitHub Pages 정적 사이트 배포','Vercel 프런트엔드 배포','웹 자동 테스트와 품질 검사','서비스 로그와 모니터링 입문','Docker 컨테이너 배포 기초','무중단 배포와 운영 프로젝트'],
+   array['입문','기초','기초','중급','중급','실전','프로젝트'],
+   array['변경 기록·복구·원격 저장의 기본 활용','Vite 빌드와 Actions 자동 공개 구성','저장소 연결과 환경별 배포 확인','빌드 전에 실행되는 기능·화면 검사 구성','오류·성능·가용성 지표와 경보 확인','같은 실행 환경을 이미지로 만들고 배포','배포·점검·롤백·장애 대응 절차 완성'])
+), expanded_rows as (
+  select e.*, p.id, p.title, p.level, p.focus, p.position
+  from category_expansions e
+  cross join lateral unnest(e.ids, e.titles, e.levels, e.focuses) with ordinality as p(id, title, level, focus, position)
+)
+insert into public.edu_programs (
+  id, title, category_id, category, level, duration, description, introduction,
+  audience, goals, curriculum, preparations, related_lesson_ids,
+  status, color, display_number, image_url, image_alt
+)
+select id, title, category_id, category, level, '4주 · 주 1회',
+  focus || '을(를) 단계별 실습으로 배우는 과정입니다.',
+  focus || '을(를) 단계별 실습으로 배우며 마지막 주에 결과물을 완성합니다.',
+  jsonb_build_array(category || ' 분야를 더 깊게 배우고 싶은 분', '직접 결과물을 만들며 익히고 싶은 분'),
+  jsonb_build_array(focus || '의 핵심 개념을 설명합니다.', '단계별 실습을 직접 수행합니다.', '완성 결과를 점검하고 개선합니다.'),
+  jsonb_build_array(focus || ' 핵심 개념', focus || ' 따라하기', focus || ' 응용 실습', title || ' 결과물 완성과 발표'),
+  jsonb_build_array('인터넷에 연결되는 노트북', '웹브라우저', '분야별 실습 도구 또는 계정'),
+  jsonb_build_array(lesson_id, 'codex-review'), '모집 예정', color,
+  lpad((30 + ((category_order - 1) * 7) + position)::text, 2, '0'), image_url,
+  title || ' 교육의 주요 실습 과정을 보여주는 모습'
+from expanded_rows
+on conflict (id) do update set title=excluded.title, category_id=excluded.category_id, category=excluded.category, level=excluded.level, duration=excluded.duration, description=excluded.description, introduction=excluded.introduction, audience=excluded.audience, goals=excluded.goals, curriculum=excluded.curriculum, preparations=excluded.preparations, related_lesson_ids=excluded.related_lesson_ids, status=excluded.status, color=excluded.color, display_number=excluded.display_number, image_url=excluded.image_url, image_alt=excluded.image_alt;
+
 insert into public.edu_lessons (
   id, title, category_id, category, level, duration, description, explanation,
   goals, steps, code_language, code, prompt, checklist, next_lesson_id
@@ -293,7 +369,7 @@ on conflict (id) do update set
 -- 별도 프로그램으로 추가했던 이전 12주 과정이 남아 있다면 제거합니다.
 delete from public.edu_programs where id = 'vibe-coding-fullstack';
 
--- 실행 결과 확인: 프로그램 30개, 교육자료 18개, 공지사항 3개가 정상입니다.
+-- 실행 결과 확인: 프로그램 100개, 교육자료 18개, 공지사항 3개가 정상입니다.
 select '교육 프로그램' as item, count(*) as saved_count from public.edu_programs
 union all
 select '교육자료', count(*) from public.edu_lessons
