@@ -1,4 +1,5 @@
 import { lessonEnrichment } from './lessonEnrichment.js'
+import { categories, programs } from './catalog.js'
 
 const makeLesson = (item) => ({
   level: '입문',
@@ -13,6 +14,51 @@ const makeLesson = (item) => ({
   extendedContent: lessonEnrichment[item.id] || null,
   ...item,
 })
+
+const existingLessonCounts = {
+  foundation: 3, frontend: 3, backend: 3, database: 3, 'ai-development': 3, deployment: 3,
+  'service-planning': 0, 'uiux-design': 0, 'security-infrastructure': 0, 'content-analytics': 0,
+}
+
+const lessonExamples = {
+  'service-planning': ['문서 예시', '사용자: 처음 방문한 성인\n문제: 무엇부터 배울지 어렵다\n해결: 단계별 추천 과정을 보여준다'],
+  'uiux-design': ['CSS', '.card {\n  padding: 24px;\n  border-radius: 16px;\n  color: #182033;\n}'],
+  foundation: ['HTML·JavaScript', '<button id="start">학습 시작</button>\n<script>\n  document.querySelector("#start").onclick = () => alert("시작합니다")\n</script>'],
+  frontend: ['React JSX', 'function PracticeCard({ title }) {\n  return <article><h2>{title}</h2><button>시작</button></article>\n}'],
+  backend: ['JavaScript', 'app.get("/api/practice", (req, res) => {\n  res.json({ ok: true, message: "연결되었습니다" })\n})'],
+  database: ['SQL', 'select category, count(*)\nfrom edu_lessons\ngroup by category\norder by category;'],
+  'ai-development': ['요청문', '작업 위치와 목표를 먼저 확인해줘.\n기존 기능을 유지하고 한 기능만 수정해줘.\n완료 후 빌드 결과를 알려줘.'],
+  'security-infrastructure': ['점검표', '1. 비밀 키가 Git에 없는지 확인\n2. 입력 길이 제한 확인\n3. 관리자 권한 정책 확인'],
+  'content-analytics': ['분석 예시', '목표: 교육자료 시작률 높이기\n지표: 상세 보기 대비 학습 시작 클릭률\n개선: 첫 버튼 문구 비교'],
+  deployment: ['터미널', 'git status\nnpm run build\n# 배포 후 실제 주소에서 다시 확인'],
+}
+
+const generatedLessonDrafts = categories.flatMap((category) => {
+  const needed = 10 - (existingLessonCounts[category.id] || 0)
+  return programs.filter((program) => program.categoryId === category.id).slice(0, needed).map((program, index) => {
+    const [codeLanguage, code] = lessonExamples[category.id]
+    const focus = program.curriculum?.[index % Math.max(program.curriculum.length, 1)] || program.title
+    return makeLesson({
+      id: `program-${program.id}-lesson`, categoryId: category.id, category: category.title,
+      title: `${program.title} 핵심 실습`, level: program.level, duration: index % 3 === 0 ? '15분' : index % 3 === 1 ? '20분' : '30분',
+      description: `${program.title} 과정에서 꼭 알아야 할 내용을 짧은 실습으로 익힙니다.`,
+      explanation: `${focus}은(는) ${category.title} 작업을 완성하기 위한 핵심 단계입니다. 먼저 쉬운 예를 보고 같은 순서로 직접 따라 하면 됩니다.`,
+      goals: [`${focus}의 의미를 쉬운 말로 설명합니다.`, '예제를 직접 실행하고 결과를 확인합니다.', '내 프로젝트에 맞게 한 부분을 수정합니다.'],
+      steps: [`${focus}에서 필요한 입력과 결과를 적습니다.`, '예제 내용을 그대로 실행합니다.', '문구나 값을 한 가지 바꿉니다.', '변경 전후를 비교하고 기록합니다.'],
+      codeLanguage, code,
+      prompt: `${program.title}의 ${focus} 실습을 코딩 초보자도 따라 할 수 있게 한 단계씩 안내해줘. 기존 기능은 유지하고 완료 후 확인 방법도 알려줘.`,
+      checklist: ['예제를 직접 실행했나요?', '한 가지 이상 내 상황에 맞게 수정했나요?', '결과를 말로 설명할 수 있나요?'],
+      relatedProgramId: program.id, nextLessonId: null, featured: existingLessonCounts[category.id] === 0 && index === 0,
+      popular: index === 1, publishedAt: `2026-09-${String((index % 9) + 2).padStart(2, '0')}`,
+      slideUrl: '', pdfUrl: '', materialVersion: '1.0', slidePages: 0,
+    })
+  })
+})
+
+const generatedLessons = generatedLessonDrafts.map((lesson, index) => ({
+  ...lesson,
+  nextLessonId: generatedLessonDrafts.slice(index + 1).find((next) => next.categoryId === lesson.categoryId)?.id || null,
+}))
 
 export const lessons = [
   makeLesson({ id: 'html-first-page', categoryId: 'foundation', category: '웹 기초', title: 'HTML로 첫 화면 만들기', popular: true, description: '제목·문단·버튼을 배치하며 웹페이지의 뼈대를 만듭니다.', explanation: 'HTML은 웹페이지의 설계도입니다. 태그(내용의 역할을 표시하는 이름)로 제목과 설명, 버튼을 구분합니다.', goals: ['HTML의 역할을 이해합니다.', '제목과 설명, 버튼을 직접 작성합니다.'], steps: ['index.html을 엽니다.', '제목과 설명을 작성합니다.', '버튼을 추가합니다.', '저장하고 새로고침합니다.'], codeLanguage: 'HTML', code: '<h1>우리 동네 배움터</h1>\n<p>오늘부터 천천히 시작합니다.</p>\n<button>교육 보기</button>', prompt: '초보자용 홈페이지에 제목, 설명, 교육 보기 버튼이 있는 HTML을 만들어줘.', checklist: ['제목과 설명이 구분되나요?', '버튼 문구를 바꿔 봤나요?'], relatedProgramId: 'web-foundation', nextLessonId: 'css-first-style' }),
@@ -33,6 +79,7 @@ export const lessons = [
   makeLesson({ id: 'github-first-push', categoryId: 'deployment', category: '테스트·배포·운영', title: 'GitHub에 소스 안전하게 올리기', level: '기초', duration: '25분', popular: true, description: '변경 내용을 기록하고 비밀 파일을 제외해 GitHub에 올립니다.', explanation: 'Git은 작업 일지이고 GitHub는 온라인 보관함입니다. 올리기 전 .env.local과 비밀번호가 없는지 확인합니다.', goals: ['Git과 GitHub를 구분합니다.', '안전한 업로드 순서를 익힙니다.'], steps: ['상태를 봅니다.', '비밀 파일을 확인합니다.', '커밋합니다.', 'main에 올립니다.'], codeLanguage: '터미널', code: 'git status\ngit add .\ngit commit -m "교육자료 추가"\ngit push origin main', prompt: '환경변수와 비밀번호가 없는지 확인하고 교육자료 변경만 GitHub에 올려줘.', checklist: ['비밀 파일이 제외됐나요?', '커밋 문장이 분명한가요?'], relatedProgramId: 'github-vercel', nextLessonId: 'github-actions-check' }),
   makeLesson({ id: 'github-actions-check', categoryId: 'deployment', category: '테스트·배포·운영', title: 'GitHub Actions 배포 확인하기', level: '기초', duration: '20분', description: '자동 배포 진행 상태와 오류 위치를 확인합니다.', explanation: 'GitHub Actions는 정해 둔 일을 실행하는 자동 작업자입니다. 노란색은 진행, 초록색은 성공, 빨간색은 실패입니다.', goals: ['실행 상태를 구분합니다.', '첫 오류를 찾습니다.'], steps: ['Actions를 엽니다.', '최근 실행을 고릅니다.', 'Build와 Deploy를 봅니다.', '첫 오류를 읽습니다.'], codeLanguage: '터미널', code: 'npm install\nnpm run build', prompt: '최신 Actions 배포 실패 원인을 로그에서 찾고 복구 순서를 알려줘.', checklist: ['최신 실행을 봤나요?', 'Build와 Deploy가 성공인가요?'], relatedProgramId: 'github-vercel', nextLessonId: 'github-pages-publish' }),
   makeLesson({ id: 'github-pages-publish', categoryId: 'deployment', category: '테스트·배포·운영', title: '실제 홈페이지 공개하고 점검하기', level: '기초', duration: '30분', featured: true, publishedAt: '2026-09-01', description: '공개 주소에서 메뉴·이미지·모바일 화면을 점검합니다.', explanation: '배포는 웹사이트를 다른 사람이 접속하는 주소에 올리는 일입니다. 내 컴퓨터가 아닌 공개 주소에서 다시 확인해야 완료입니다.', goals: ['빌드와 배포를 구분합니다.', '공개 주소를 점검합니다.'], steps: ['Actions 성공을 봅니다.', '공개 주소를 엽니다.', '메뉴와 상세를 봅니다.', '모바일과 새로고침을 봅니다.'], codeLanguage: '터미널', code: 'npm run build\n\nhttps://cursaman.github.io/edu/', prompt: '공개 홈페이지에서 메뉴, 이미지, 상세 주소, 모바일 화면을 점검해줘.', checklist: ['빈 화면 없이 열리나요?', '이미지와 상세가 나오나요?'], relatedProgramId: 'github-vercel', nextLessonId: null }),
+  ...generatedLessons,
 ]
 
 export function findLesson(lessonId) {

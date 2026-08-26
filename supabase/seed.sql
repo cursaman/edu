@@ -326,18 +326,77 @@ on conflict (id) do update set
   related_program_id=excluded.related_program_id, is_featured=excluded.is_featured,
   is_popular=excluded.is_popular, published_at=excluded.published_at;
 
+-- 기존 18개를 유지하고 프로그램별 핵심 실습 82개를 추가하여 분야별 10개, 총 100개를 만듭니다.
+with lesson_targets(category_id, existing_count) as (
+  values
+  ('service-planning',0),('uiux-design',0),('foundation',3),('frontend',3),('backend',3),
+  ('database',3),('ai-development',3),('security-infrastructure',0),('content-analytics',0),('deployment',3)
+), ranked_programs as (
+  select p.*, t.existing_count,
+    row_number() over (partition by p.category_id order by p.display_number::integer, p.id) as category_row
+  from public.edu_programs p
+  join lesson_targets t on t.category_id = p.category_id
+), selected_programs as (
+  select * from ranked_programs where category_row <= 10 - existing_count
+)
+insert into public.edu_lessons (
+  id, title, category_id, category, level, duration, description, explanation,
+  goals, steps, code_language, code, prompt, checklist, next_lesson_id,
+  related_program_id, is_featured, is_popular, published_at,
+  slide_url, pdf_url, material_version, slide_pages
+)
+select
+  'program-' || id || '-lesson', title || ' 핵심 실습', category_id, category, level,
+  case when category_row % 3 = 1 then '15분' when category_row % 3 = 2 then '20분' else '30분' end,
+  title || ' 과정에서 꼭 알아야 할 내용을 짧은 실습으로 익힙니다.',
+  coalesce(curriculum->>0, title) || '은(는) ' || category || ' 작업을 완성하기 위한 핵심 단계입니다. 쉬운 예를 보고 같은 순서로 따라 하면 됩니다.',
+  jsonb_build_array(coalesce(curriculum->>0, title) || '의 의미를 설명합니다.', '예제를 직접 실행하고 결과를 확인합니다.', '내 프로젝트에 맞게 한 부분을 수정합니다.'),
+  jsonb_build_array(coalesce(curriculum->>0, title) || '에서 필요한 입력과 결과를 적습니다.', '예제 내용을 그대로 실행합니다.', '문구나 값을 한 가지 바꿉니다.', '변경 전후를 비교하고 기록합니다.'),
+  case category_id
+    when 'service-planning' then '문서 예시' when 'uiux-design' then 'CSS' when 'foundation' then 'HTML·JavaScript'
+    when 'frontend' then 'React JSX' when 'backend' then 'JavaScript' when 'database' then 'SQL'
+    when 'ai-development' then '요청문' when 'security-infrastructure' then '점검표'
+    when 'content-analytics' then '분석 예시' else '터미널' end,
+  case category_id
+    when 'service-planning' then E'사용자: 처음 방문한 성인\n문제: 무엇부터 배울지 어렵다\n해결: 단계별 추천 과정을 보여준다'
+    when 'uiux-design' then E'.card {\n  padding: 24px;\n  border-radius: 16px;\n}'
+    when 'foundation' then E'<button id="start">학습 시작</button>\n<script>document.querySelector("#start").onclick = () => alert("시작합니다")</script>'
+    when 'frontend' then E'function PracticeCard({ title }) {\n  return <article><h2>{title}</h2></article>\n}'
+    when 'backend' then E'app.get("/api/practice", (req, res) => {\n  res.json({ ok: true })\n})'
+    when 'database' then E'select category, count(*)\nfrom edu_lessons\ngroup by category;'
+    when 'ai-development' then E'작업 위치와 목표를 확인해줘.\n기존 기능을 유지하고 완료 후 확인 방법을 알려줘.'
+    when 'security-infrastructure' then E'1. 비밀 키 확인\n2. 입력 길이 제한 확인\n3. 관리자 권한 확인'
+    when 'content-analytics' then E'목표: 학습 시작률 높이기\n지표: 상세 보기 대비 시작 클릭률'
+    else E'git status\nnpm run build' end,
+  title || ' 실습을 코딩 초보자도 따라 할 수 있게 한 단계씩 안내하고 완료 후 확인 방법도 알려줘.',
+  jsonb_build_array('예제를 직접 실행했나요?', '한 가지 이상 내 상황에 맞게 수정했나요?', '결과를 말로 설명할 수 있나요?'),
+  null, id, (existing_count = 0 and category_row = 1), (category_row = 2),
+  date '2026-09-02' + (((category_row - 1) % 9)::integer), '', '', '1.0', 0
+from selected_programs
+on conflict (id) do update set
+  title=excluded.title, category_id=excluded.category_id, category=excluded.category,
+  level=excluded.level, duration=excluded.duration, description=excluded.description,
+  explanation=excluded.explanation, goals=excluded.goals, steps=excluded.steps,
+  code_language=excluded.code_language, code=excluded.code, prompt=excluded.prompt,
+  checklist=excluded.checklist, next_lesson_id=excluded.next_lesson_id,
+  related_program_id=excluded.related_program_id, is_featured=excluded.is_featured,
+  is_popular=excluded.is_popular, published_at=excluded.published_at,
+  slide_url=excluded.slide_url, pdf_url=excluded.pdf_url,
+  material_version=excluded.material_version, slide_pages=excluded.slide_pages;
+
 -- 기존 7개 자료에도 관련 프로그램과 홈 추천 정보를 연결합니다.
 update public.edu_lessons set related_program_id='web-foundation', is_popular=(id='html-first-page'), is_featured=(id='css-first-style') where id in ('html-first-page','css-first-style','javascript-basics');
 update public.edu_lessons set related_program_id='react-website', is_popular=true where id='react-components';
 update public.edu_lessons set related_program_id='codex-first-service', is_popular=true where id='codex-request';
 update public.edu_lessons set related_program_id='github-vercel', is_popular=(id='github-first-push'), is_featured=(id='github-pages-publish') where id in ('github-first-push','github-pages-publish');
 
--- 18개 교육자료에 같은 이름의 PPT와 PDF 파일을 연결합니다.
+-- 실제 PPT와 PDF 파일이 준비된 기존 18개 교육자료에만 다운로드 주소를 연결합니다.
 update public.edu_lessons
 set slide_url = '/edu/materials/' || category_id || '/' || id || '.pptx',
     pdf_url = '/edu/materials/' || category_id || '/' || id || '.pdf',
     material_version = '1.0',
-    slide_pages = 8;
+    slide_pages = 8
+where id not like 'program-%-lesson';
 
 update public.edu_lessons
 set material_version = '2.0', slide_pages = 15
@@ -369,14 +428,14 @@ on conflict (id) do update set
 -- 별도 프로그램으로 추가했던 이전 12주 과정이 남아 있다면 제거합니다.
 delete from public.edu_programs where id = 'vibe-coding-fullstack';
 
--- 실행 결과 확인: 프로그램 100개, 교육자료 18개, 공지사항 3개가 정상입니다.
+-- 실행 결과 확인: 프로그램 100개, 교육자료 100개, 공지사항 3개가 정상입니다.
 select '교육 프로그램' as item, count(*) as saved_count from public.edu_programs
 union all
 select '교육자료', count(*) from public.edu_lessons
 union all
 select '공지사항', count(*) from public.edu_notices;
 
--- 분야별 교육자료가 각각 3개인지 확인합니다.
+-- 분야별 교육자료가 각각 10개인지 확인합니다.
 select category, count(*) as lesson_count
 from public.edu_lessons
 group by category
