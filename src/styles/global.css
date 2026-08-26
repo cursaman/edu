@@ -2102,6 +2102,65 @@ button:focus-visible {
   margin-top: 22px;
 }
 
+.lesson-purpose-section,
+.lesson-challenge {
+  border-left: 5px solid #6756e8;
+  background: #faf9ff;
+}
+
+.lesson-purpose-section h3 {
+  margin-top: 24px;
+  color: #3f358e;
+}
+
+.lesson-explanation-list,
+.lesson-error-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.lesson-explanation-list div,
+.lesson-error-list div,
+.lesson-quiz div {
+  padding: 18px;
+  border-radius: 14px;
+  background: #f7f7fb;
+}
+
+.lesson-explanation-list dt,
+.lesson-error-list dt {
+  margin-bottom: 6px;
+  color: #3f358e;
+  font-weight: 800;
+}
+
+.lesson-explanation-list dd,
+.lesson-error-list dd {
+  margin: 0;
+}
+
+.lesson-prompt-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.lesson-quiz summary {
+  cursor: pointer;
+  color: #4e3fd0;
+  font-weight: 800;
+}
+
+.lesson-quiz div {
+  margin-top: 12px;
+}
+
+.lesson-quiz p {
+  margin: 8px 0 0;
+  color: #606678;
+}
+
 @media (max-width: 680px) {
   .lesson-material-actions {
     flex-direction: column;

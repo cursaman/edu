@@ -212,6 +212,10 @@ set slide_url = '/edu/materials/' || category_id || '/' || id || '.pptx',
     material_version = '1.0',
     slide_pages = 8;
 
+update public.edu_lessons
+set material_version = '2.0', slide_pages = 15
+where id in ('html-first-page', 'react-components', 'node-json-api', 'supabase-crud', 'codex-request', 'github-first-push');
+
 insert into public.edu_notices (id, title, display_date, summary, content, checklist) values
 (
   'program-registration', '교육 프로그램 모집 안내', '2026.08.25',

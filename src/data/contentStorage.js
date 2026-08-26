@@ -33,6 +33,7 @@ function fromDatabase(type, row) {
     popular: row.is_popular, publishedAt: row.published_at,
     slideUrl: row.slide_url, pdfUrl: row.pdf_url,
     materialVersion: row.material_version, slidePages: row.slide_pages,
+    extendedContent: defaultLessons.find((lesson) => lesson.id === row.id)?.extendedContent || null,
   }
 }
 

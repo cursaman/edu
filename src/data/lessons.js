@@ -1,3 +1,5 @@
+import { lessonEnrichment } from './lessonEnrichment.js'
+
 const makeLesson = (item) => ({
   level: '입문',
   duration: '20분',
@@ -6,8 +8,9 @@ const makeLesson = (item) => ({
   popular: false,
   slideUrl: `/edu/materials/${item.categoryId}/${item.id}.pptx`,
   pdfUrl: `/edu/materials/${item.categoryId}/${item.id}.pdf`,
-  materialVersion: '1.0',
-  slidePages: 8,
+  materialVersion: lessonEnrichment[item.id] ? '2.0' : '1.0',
+  slidePages: lessonEnrichment[item.id] ? 15 : 8,
+  extendedContent: lessonEnrichment[item.id] || null,
   ...item,
 })
 

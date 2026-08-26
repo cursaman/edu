@@ -61,6 +61,20 @@ export default function LessonDetailPage({ lessonId }) {
             <p>{lesson.explanation}</p>
           </section>
 
+          {lesson.extendedContent && <>
+            <section className="detail-section lesson-purpose-section">
+              <h2>왜 배워야 하나요?</h2>
+              <p>{lesson.extendedContent.why}</p>
+              <h3>오늘 완성할 결과</h3>
+              <p>{lesson.extendedContent.outcome}</p>
+            </section>
+
+            <section className="detail-section">
+              <h2>시작 전에 준비하세요</h2>
+              <ul>{lesson.extendedContent.preparations.map((item) => <li key={item}>{item}</li>)}</ul>
+            </section>
+          </>}
+
           <section className="detail-section">
             <h2>오늘의 10분 실습</h2>
             <p>전부 외우지 말고 아래 순서대로 한 단계씩 실행해 보세요.</p>
@@ -79,10 +93,30 @@ export default function LessonDetailPage({ lessonId }) {
             </div>
           </section>
 
+          {lesson.extendedContent && <section className="detail-section">
+            <h2>코드를 한 줄씩 이해해요</h2>
+            <dl className="lesson-explanation-list">{lesson.extendedContent.walkthrough.map(([term, meaning]) => <div key={term}><dt>{term}</dt><dd>{meaning}</dd></div>)}</dl>
+          </section>}
+
           <section className="detail-section">
             <h2>Codex에는 이렇게 요청하세요</h2>
             <blockquote className="lesson-prompt">{lesson.prompt}</blockquote>
+            {lesson.extendedContent && <ol className="lesson-prompt-list">{lesson.extendedContent.prompts.map((prompt) => <li key={prompt}>{prompt}</li>)}</ol>}
           </section>
+
+          {lesson.extendedContent && <>
+            <section className="detail-section">
+              <h2>자주 생기는 오류와 해결법</h2>
+              <dl className="lesson-error-list">{lesson.extendedContent.errors.map(([error, solution]) => <div key={error}><dt>{error}</dt><dd>{solution}</dd></div>)}</dl>
+            </section>
+            <section className="detail-section lesson-challenge">
+              <h2>한 단계 더 해보기</h2><p>{lesson.extendedContent.challenge}</p>
+            </section>
+            <section className="detail-section">
+              <h2>확인 문제와 정답</h2>
+              <details className="lesson-quiz"><summary>문제 5개와 정답 열기</summary>{lesson.extendedContent.quiz.map(([question, answer], index) => <div key={question}><strong>{index + 1}. {question}</strong><p>{answer}</p></div>)}</details>
+            </section>
+          </>}
 
           <section className="detail-section">
             <h2>학습 후 확인해 보세요</h2>
