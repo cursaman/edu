@@ -219,6 +219,11 @@ select id, title, category_id, category, level, '4주 · 주 1회',
 from expanded_rows
 on conflict (id) do update set title=excluded.title, category_id=excluded.category_id, category=excluded.category, level=excluded.level, duration=excluded.duration, description=excluded.description, introduction=excluded.introduction, audience=excluded.audience, goals=excluded.goals, curriculum=excluded.curriculum, preparations=excluded.preparations, related_lesson_ids=excluded.related_lesson_ids, status=excluded.status, color=excluded.color, display_number=excluded.display_number, image_url=excluded.image_url, image_alt=excluded.image_alt;
 
+-- 모든 교육 프로그램에 프로그램 ID와 일치하는 개별 대표 이미지를 연결합니다.
+update public.edu_programs
+set image_url = '/edu/images/programs/' || id || '.webp',
+    image_alt = title || ' 교육의 핵심 실습 장면을 표현한 일러스트';
+
 insert into public.edu_lessons (
   id, title, category_id, category, level, duration, description, explanation,
   goals, steps, code_language, code, prompt, checklist, next_lesson_id

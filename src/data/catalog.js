@@ -166,7 +166,7 @@ const expansionPrograms = expansionProgramSpecs.map(([id, categoryId, title, lev
   })
 })
 
-export const programs = [
+const programCatalog = [
   {
     id: 'web-foundation',
     categoryId: 'foundation',
@@ -325,6 +325,12 @@ export const programs = [
   makeProgram({ id: 'cicd-operation-project', categoryId: 'deployment', category: '테스트·배포·운영', title: 'CI/CD 자동 배포와 운영 실전', description: 'GitHub Actions로 빌드·배포를 자동화하고 로그·복구 절차를 구성합니다.', level: '실전', number: '30', color: 'mint', image: 'program-deployment.webp', audience: ['반복 배포를 자동화할 분', '서비스 운영 절차가 필요한 분'], goals: ['자동 배포 흐름을 구성합니다.', '실패 로그를 분석합니다.', '롤백과 운영 점검표를 만듭니다.'], curriculum: ['브랜치와 배포 전략', 'Actions 빌드·테스트 자동화', '환경별 배포와 모니터링', '장애 대응·롤백·운영 문서'], preparations: ['Git·GitHub 기초', '배포 가능한 프로젝트', '호스팅 계정'], relatedLessonIds: ['github-first-push', 'github-actions-check', 'github-pages-publish'] }),
   ...expansionPrograms,
 ]
+
+export const programs = programCatalog.map((program) => ({
+  ...program,
+  image: `${import.meta.env.BASE_URL}images/programs/${program.id}.webp`,
+  imageAlt: `${program.title} 교육의 핵심 실습 장면을 표현한 일러스트`,
+}))
 
 export const learningSteps = [
   {
