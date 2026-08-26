@@ -6,6 +6,17 @@ insert into public.edu_programs (
   status, color, display_number, image_url, image_alt
 ) values
 (
+  'web-foundation', 'HTML·CSS·JavaScript로 첫 홈페이지 만들기', 'foundation', '웹 기초', '입문', '4주 · 토요일',
+  '웹의 세 가지 기본 도구를 익히고 직접 반응하는 홈페이지를 완성합니다.',
+  'HTML로 내용을 정리하고 CSS로 꾸민 뒤 JavaScript로 버튼이 반응하는 첫 홈페이지를 완성합니다.',
+  '["코딩을 처음 시작하는 분", "웹페이지가 만들어지는 순서를 기초부터 배우고 싶은 분"]'::jsonb,
+  '["HTML, CSS, JavaScript의 역할을 구분합니다.", "읽기 좋은 소개 홈페이지를 직접 만듭니다.", "버튼과 간단한 상호작용을 구현합니다."]'::jsonb,
+  '["웹페이지의 구조와 HTML 첫 화면 만들기", "CSS로 글자·색상·여백 꾸미기", "JavaScript로 버튼과 화면 반응 만들기", "PC·모바일 점검과 첫 홈페이지 발표"]'::jsonb,
+  '["인터넷에 연결되는 노트북", "웹브라우저", "Visual Studio Code 또는 사용 중인 편집 도구"]'::jsonb,
+  '["html-first-page", "css-first-style", "javascript-basics"]'::jsonb, '모집 예정', 'mint', '01',
+  '/edu/images/program-foundation.webp', '성인 학습자가 화면 구성 블록을 조립해 첫 홈페이지를 완성하는 모습'
+),
+(
   'react-website', 'React 웹사이트 만들기', 'frontend', '프런트엔드', '입문', '4주 · 토요일',
   '화면을 작은 부품으로 나누고, 나만의 첫 웹사이트를 완성합니다.',
   '웹사이트 화면을 작은 구성 요소로 나누어 만들고 첫 React 웹사이트를 완성하는 입문 과정입니다.',
@@ -13,8 +24,30 @@ insert into public.edu_programs (
   '["React 화면의 기본 구조를 이해합니다.", "교육 프로그램 카드를 직접 만들고 수정합니다.", "PC와 모바일에서 읽기 좋은 화면을 완성합니다."]'::jsonb,
   '["개발 환경 확인과 첫 화면 실행", "화면 구성 요소와 교육 분야 카드 만들기", "프로그램 목록과 상세 화면 연결", "화면 점검과 완성 결과 발표"]'::jsonb,
   '["인터넷에 연결되는 노트북", "Node.js와 npm 설치", "웹브라우저와 편집 도구"]'::jsonb,
-  '["react-components", "javascript-basics"]'::jsonb, '모집 예정', 'violet', '01',
+  '["react-components", "javascript-basics"]'::jsonb, '모집 예정', 'violet', '02',
   '/edu/images/program-react.webp', '데스크톱과 태블릿, 스마트폰에서 같은 교육 홈페이지가 열려 있는 모습'
+),
+(
+  'node-backend', 'Node.js 웹서비스 기초', 'backend', '백엔드', '기초', '4주 · 토요일',
+  '화면의 요청을 받아 처리하고 결과를 돌려주는 서버의 흐름을 배웁니다.',
+  'Node.js로 브라우저의 요청을 받고 JSON 데이터를 돌려주는 작은 서버를 만듭니다.',
+  '["웹사이트 뒤에서 데이터가 처리되는 과정이 궁금한 분", "프런트엔드 다음 단계로 서버를 경험하고 싶은 분"]'::jsonb,
+  '["프런트엔드와 백엔드의 역할을 구분합니다.", "간단한 API 요청과 응답을 이해합니다.", "입력값을 확인하고 안전한 응답을 돌려줍니다."]'::jsonb,
+  '["서버와 요청·응답의 생활 속 개념 이해", "Node.js로 첫 서버 실행하기", "JSON 데이터를 제공하는 API 만들기", "입력 검증·오류 처리와 전체 동작 점검"]'::jsonb,
+  '["인터넷에 연결되는 노트북", "Node.js와 npm 설치", "웹브라우저와 편집 도구"]'::jsonb,
+  '["javascript-basics", "codex-request"]'::jsonb, '모집 예정', 'coral', '03',
+  '/edu/images/program-backend.webp', '브라우저의 요청이 서버 블록을 거쳐 성공 응답으로 돌아오는 흐름을 학습자가 확인하는 모습'
+),
+(
+  'supabase-database', 'Supabase 데이터 저장 입문', 'database', '데이터베이스', '기초', '4주 · 토요일',
+  '교육자료를 공동 저장하고 검색하며 안전하게 관리하는 방법을 익힙니다.',
+  'Supabase PostgreSQL에 교육자료를 저장하고 조회·수정·삭제하며 RLS의 기초를 배웁니다.',
+  '["브라우저를 바꿔도 유지되는 공동 저장 기능이 필요한 분", "데이터베이스를 쉬운 실습으로 처음 배우고 싶은 분"]'::jsonb,
+  '["테이블·행·열을 생활 속 표에 비유해 이해합니다.", "교육자료를 등록하고 검색합니다.", "RLS로 허용된 사용자만 데이터를 변경하게 합니다."]'::jsonb,
+  '["Supabase 가입과 프로젝트·테이블 만들기", "React에서 자료 조회하고 목록 표시하기", "관리자 자료 등록·수정·삭제 연결하기", "RLS 정책과 다른 브라우저 공동 저장 점검"]'::jsonb,
+  '["인터넷에 연결되는 노트북", "GitHub 계정", "Supabase 계정", "실행 가능한 React 프로젝트"]'::jsonb,
+  '["javascript-basics", "codex-request"]'::jsonb, '모집 예정', 'violet', '04',
+  '/edu/images/program-database.webp', '학습자가 교육자료 카드를 보안이 적용된 데이터베이스에 저장하고 검색하는 모습'
 ),
 (
   'codex-first-service', 'Codex로 첫 웹서비스 만들기', 'ai-development', 'AI 활용 개발', '기초', '4주 · 토요일',
@@ -24,7 +57,7 @@ insert into public.edu_programs (
   '["개발 요청을 구체적으로 작성합니다.", "실행 결과와 오류를 직접 확인합니다.", "첫 웹서비스 화면을 완성합니다."]'::jsonb,
   '["Codex 사용법과 첫 작업 요청", "서비스 화면과 메뉴 구성", "교육 프로그램 데이터 연결", "결과 검토와 다음 개발 계획 정리"]'::jsonb,
   '["인터넷에 연결되는 노트북", "Codex 사용 환경", "Node.js와 npm 설치"]'::jsonb,
-  '["codex-request", "html-first-page"]'::jsonb, '모집 예정', 'coral', '02',
+  '["codex-request", "html-first-page"]'::jsonb, '모집 예정', 'coral', '05',
   '/edu/images/program-codex.webp', '학습자가 AI에게 개발을 요청하고 완성된 웹사이트 화면을 확인하는 모습'
 ),
 (
@@ -35,10 +68,25 @@ insert into public.edu_programs (
   '["Git과 GitHub의 역할을 구분합니다.", "프로젝트를 GitHub에 안전하게 보관합니다.", "실제 접속 주소를 확인합니다."]'::jsonb,
   '["소스 저장의 필요성과 GitHub 가입", "Git 저장소 만들기와 첫 커밋", "GitHub와 Vercel 연결하기", "실제 접속 주소 점검"]'::jsonb,
   '["인터넷에 연결되는 노트북", "GitHub 계정", "Vercel 계정", "실행 가능한 React 프로젝트"]'::jsonb,
-  '["github-first-push", "github-pages-publish"]'::jsonb, '모집 예정', 'mint', '03',
+  '["github-first-push", "github-pages-publish"]'::jsonb, '모집 예정', 'mint', '06',
   '/edu/images/program-deployment.webp', '노트북의 소스가 온라인 저장소와 배포 과정을 거쳐 홈페이지로 공개되는 흐름'
 )
 on conflict (id) do update set
+  title = excluded.title,
+  category_id = excluded.category_id,
+  category = excluded.category,
+  level = excluded.level,
+  duration = excluded.duration,
+  description = excluded.description,
+  introduction = excluded.introduction,
+  audience = excluded.audience,
+  goals = excluded.goals,
+  curriculum = excluded.curriculum,
+  preparations = excluded.preparations,
+  related_lesson_ids = excluded.related_lesson_ids,
+  status = excluded.status,
+  color = excluded.color,
+  display_number = excluded.display_number,
   image_url = excluded.image_url,
   image_alt = excluded.image_alt;
 
