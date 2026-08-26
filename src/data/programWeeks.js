@@ -37,6 +37,20 @@ export const programWeeks = {
     { title: 'Vercel과 저장소 연결하기', summary: 'GitHub 저장소를 가져와 자동 배포를 시작합니다.', topics: ['프로젝트 Import', '빌드 설정', '배포 로그'], tools: ['GitHub', 'Vercel'], result: '실제 *.vercel.app 주소', lessonIds: ['github-actions-check'] },
     { title: '공개 주소 점검과 수정 반영', summary: '모바일·새로고침·오류 주소를 확인하고 수정본을 다시 배포합니다.', topics: ['실제 URL 점검', '재배포 확인', '운영 체크리스트'], tools: ['Vercel', 'Chrome', 'Git'], result: '다른 사람에게 공유 가능한 홈페이지', lessonIds: ['github-pages-publish'] },
   ]),
+  'vibe-coding-fullstack': weeks([
+    { title: '바이브코딩 시작 & 환경 세팅', summary: '전체 개발 흐름을 살펴보고 에디터와 Git 기본 환경을 준비합니다.', topics: ['오리엔테이션', '개발 흐름', '에디터·Git 설정'], tools: ['Claude', 'Cursor AI', 'VS Code', 'GitHub'], result: '실습 가능한 개발 환경', lessonIds: ['codex-request', 'github-first-push'] },
+    { title: 'MCP로 AI↔클라우드 연동 이해', summary: 'MCP의 역할과 동작을 이해하고 간단한 데이터 연결을 경험합니다.', topics: ['MCP 개념', '도구 연결 흐름', '데이터 연결 실습'], tools: ['Claude', 'MCP', 'Cursor AI'], result: 'AI 도구 연결 흐름도와 첫 연결', lessonIds: ['codex-request'] },
+    { title: '웹 기본기 & 프로젝트 뼈대', summary: 'HTTP와 클라이언트·서버를 이해하고 React 프로젝트 구조를 세웁니다.', topics: ['HTTP', '클라이언트·서버', '폴더 구조·라우팅'], tools: ['React', 'VS Code'], result: '라우팅이 연결된 React 프로젝트', lessonIds: ['react-components', 'node-request-response'] },
+    { title: 'GitHub 협업 & 형상관리', summary: '저장소와 브랜치를 만들고 PR과 이슈로 작업을 관리합니다.', topics: ['레포 생성', '브랜치와 PR', '이슈 트래킹'], tools: ['GitHub', 'Git'], result: '협업 규칙이 있는 GitHub 저장소', lessonIds: ['github-first-push'] },
+    { title: '프런트엔드 CRUD ① 게시판/폼', summary: '게시판 목록·상세 화면과 입력 폼의 상태·유효성 검사를 구현합니다.', topics: ['목록과 상세', '폼 상태', '필수값·길이 검증'], tools: ['React', 'Cursor AI', 'Claude'], result: '등록 폼이 있는 게시판 화면', lessonIds: ['react-state-filter', 'api-validation'] },
+    { title: '프런트엔드 CRUD ② To-do·비동기', summary: '할 일 상태를 관리하고 Fetch로 비동기 통신을 연결합니다.', topics: ['상태 추가·수정·삭제', 'Fetch', '로딩·오류 처리'], tools: ['React', 'Cursor AI', 'Claude'], result: '비동기로 동작하는 To-do', lessonIds: ['javascript-basics', 'node-json-api'] },
+    { title: '외부 API 활용 & 갤러리', summary: '공공·날씨 API를 연결하고 페이지네이션이 있는 갤러리를 만듭니다.', topics: ['외부 API 요청', '갤러리 UI', '페이지네이션'], tools: ['React', 'Fetch API'], result: '외부 데이터 갤러리', lessonIds: ['node-json-api', 'responsive-layout'] },
+    { title: '백엔드 기초 & 데이터베이스', summary: 'Spring Boot 프로젝트를 시작하고 MariaDB 설치와 SQL을 실습합니다.', topics: ['Spring Boot 구조', 'MariaDB 설치', '기본 SQL'], tools: ['Spring Boot', 'MariaDB'], result: 'DB에 연결할 백엔드 프로젝트', lessonIds: ['database-table-basics', 'node-request-response'] },
+    { title: 'DB 연동 CRUD API 만들기', summary: '서버와 데이터베이스를 연결하고 REST API의 CRUD를 검증합니다.', topics: ['Entity·Repository', 'REST CRUD', 'API 테스트'], tools: ['Spring Boot', 'MariaDB'], result: '게시판 CRUD REST API', lessonIds: ['supabase-crud', 'api-validation'] },
+    { title: 'FE↔BE 연동 & 인증 기본', summary: 'React에서 백엔드 API를 호출하고 세션·토큰 인증 흐름을 익힙니다.', topics: ['프런트 API 호출', 'CORS', '세션·토큰'], tools: ['React', 'Spring Boot'], result: '로그인 흐름이 연결된 웹서비스', lessonIds: ['node-request-response', 'api-validation'] },
+    { title: 'AWS 배포 ① EC2·RDS', summary: 'EC2 실행 환경을 구성하고 RDS 데이터베이스 스키마를 연결합니다.', topics: ['EC2 환경 구성', '보안 그룹', 'RDS 연결'], tools: ['AWS EC2', 'AWS RDS'], result: '클라우드에서 실행되는 서버와 DB', lessonIds: ['github-actions-check'] },
+    { title: '운영 배포 & 점검 루틴', summary: '백엔드를 빌드·배포하고 로그와 모니터링으로 이슈에 대응합니다.', topics: ['백엔드 빌드·배포', '로그·모니터링', '장애 대응 체크'], tools: ['AWS', 'GitHub', 'Spring Boot'], result: '운영 점검표를 갖춘 실제 웹서비스', lessonIds: ['github-pages-publish', 'codex-review'] },
+  ]),
 }
 
 export function getProgramWeeks(program) {

@@ -72,6 +72,18 @@ insert into public.edu_programs (
   '["인터넷에 연결되는 노트북", "GitHub 계정", "Vercel 계정", "실행 가능한 React 프로젝트"]'::jsonb,
   '["github-first-push", "github-pages-publish"]'::jsonb, '모집 예정', 'mint', '06',
   '/edu/images/program-deployment.webp', '노트북의 소스가 온라인 저장소와 배포 과정을 거쳐 홈페이지로 공개되는 흐름'
+),
+(
+  'vibe-coding-fullstack', '바이브코딩 실전: React·Spring Boot·AWS 웹서비스 구축', 'ai-development', 'AI 활용 개발', '중급', '12주 · 주 1회',
+  'AI 개발 도구와 React, Spring Boot, AWS를 연결해 풀스택 웹서비스를 완성합니다.',
+  'AI 개발 요청부터 프런트엔드 CRUD, Spring Boot·MariaDB API, 인증 기초, AWS 배포와 운영 점검까지 경험하는 12주 실전 과정입니다.',
+  '["React 기초를 배우고 실제 서비스까지 확장하고 싶은 분", "AI 개발 도구로 프런트엔드와 백엔드를 함께 만들고 싶은 분"]'::jsonb,
+  '["AI 개발 도구에 명확한 작업을 요청합니다.", "React와 Spring Boot를 연결해 CRUD 서비스를 만듭니다.", "AWS EC2와 RDS에 배포하고 운영 상태를 점검합니다."]'::jsonb,
+  '["바이브코딩 시작과 환경 세팅", "MCP로 AI와 클라우드 연동 이해", "웹 기본기와 프로젝트 뼈대", "GitHub 협업과 형상관리", "프런트엔드 CRUD 게시판과 폼", "프런트엔드 CRUD To-do와 비동기", "외부 API 활용과 갤러리", "백엔드 기초와 데이터베이스", "DB 연동 CRUD API", "프런트엔드와 백엔드 연동·인증", "AWS EC2·RDS 배포", "운영 배포와 점검 루틴"]'::jsonb,
+  '["인터넷에 연결되는 노트북", "GitHub와 AWS 계정", "Node.js, Java, VS Code 설치", "Claude 또는 Cursor AI 사용 환경"]'::jsonb,
+  '["codex-request", "react-components", "github-first-push", "node-json-api", "database-table-basics", "api-validation"]'::jsonb,
+  '모집 예정', 'violet', '07', '/edu/images/program-codex.webp',
+  '학습자가 AI 개발 도구와 코드 화면을 함께 보며 풀스택 웹서비스를 만드는 모습'
 )
 on conflict (id) do update set
   title = excluded.title,
@@ -239,7 +251,7 @@ on conflict (id) do update set
   title=excluded.title, display_date=excluded.display_date, summary=excluded.summary,
   content=excluded.content, checklist=excluded.checklist;
 
--- 실행 결과 확인: 프로그램 6개, 교육자료 18개, 공지사항 3개가 정상입니다.
+-- 실행 결과 확인: 프로그램 7개, 교육자료 18개, 공지사항 3개가 정상입니다.
 select '교육 프로그램' as item, count(*) as saved_count from public.edu_programs
 union all
 select '교육자료', count(*) from public.edu_lessons
