@@ -1,4 +1,5 @@
 import { findManagedProgram, readManagedContent } from '../data/contentStorage.js'
+import { getProgramWeeks } from '../data/programWeeks.js'
 
 export default function ProgramDetailPage({ programId }) {
   const program = findManagedProgram(programId)
@@ -15,6 +16,7 @@ export default function ProgramDetailPage({ programId }) {
   }
 
   const selectedLessonIds = program.relatedLessonIds || []
+  const weeklyCurriculum = getProgramWeeks(program)
   const relatedLessons = readManagedContent('lessons').filter((lesson) => (
     selectedLessonIds.length > 0
       ? selectedLessonIds.includes(lesson.id)
@@ -64,18 +66,6 @@ export default function ProgramDetailPage({ programId }) {
             <ul>{program.goals.map((item) => <li key={item}>{item}</li>)}</ul>
           </section>
 
-          <section className="detail-section">
-            <h2>회차별 교육 과정</h2>
-            <ol className="curriculum-list">
-              {program.curriculum.map((item, index) => (
-                <li key={item}>
-                  <span>{index + 1}회차</span>
-                  <strong>{item}</strong>
-                </li>
-              ))}
-            </ol>
-          </section>
-
           {relatedLessons.length > 0 && (
             <section className="detail-section">
               <h2>함께 보면 좋은 교육자료</h2>
@@ -98,6 +88,32 @@ export default function ProgramDetailPage({ programId }) {
           <p className="preparation-note">실제 신청 접수는 다음 개발 단계에서 연결됩니다.</p>
         </aside>
       </div>
+
+      <section className="weekly-curriculum-section" aria-labelledby="weekly-curriculum-title">
+        <div className="weekly-curriculum-heading">
+          <span className="section-eyebrow">4 WEEK CURRICULUM</span>
+          <h2 id="weekly-curriculum-title">주차별 커리큘럼</h2>
+          <p>매주 무엇을 배우고 어떤 결과물을 완성하는지 한눈에 확인하세요.</p>
+        </div>
+        <div className="weekly-curriculum-grid">
+          {weeklyCurriculum.map((week) => (
+            <article className="weekly-curriculum-card" key={week.week}>
+              <div className={`weekly-card-image weekly-card-image-${program.color}`}>
+                <img alt="" aria-hidden="true" src={program.image || fallbackImage} />
+                <strong>WEEK {String(week.week).padStart(2, '0')}</strong>
+              </div>
+              <div className="weekly-card-body">
+                <span>STEP {String(week.week).padStart(2, '0')}</span>
+                <h3>{week.title}</h3>
+                <p>{week.summary}</p>
+                <ul>{week.topics.map((topic) => <li key={topic}>{topic}</li>)}</ul>
+                <dl><div><dt>사용 도구</dt><dd>{week.tools.join(' · ')}</dd></div><div><dt>완성 결과</dt><dd>{week.result}</dd></div></dl>
+                {week.lessonIds.length > 0 && <div className="weekly-card-links">{week.lessonIds.map((lessonId) => { const lesson = readManagedContent('lessons').find((item) => item.id === lessonId); return lesson ? <a href={`#/lessons/${lesson.id}`} key={lesson.id}>{lesson.title} →</a> : null })}</div>}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
     </article>
   )
 }
