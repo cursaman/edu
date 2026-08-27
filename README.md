@@ -211,6 +211,8 @@ localStorage는 웹브라우저 안에 간단한 내용을 보관하는 작은 �
 
 웹 기초 1~30회차는 실제 수업 검증용 완성 교안입니다. 회차별 시작 HTML과 완성 HTML, 구체적인 예상 결과, 오류 복구표와 10점 과제 평가 기준을 제공하며 실습 파일은 `public/practice/web-foundation`에 있습니다.
 
+웹 기초·실무 JavaScript·React 웹사이트 3개 과정은 과정별 강사용 30회차 지도서와 수강생 30회차 활동지를 `public/materials/course-guides`에서 제공합니다. 지도서는 강의 대본·시연 코드·예상 결과·오류 대응·정답·평가표·수업 후 기록란을 포함하고, 활동지는 실행 전 예상·실습·오류 기록·확인 문제·회고란을 포함합니다. `scripts/generateCourseGuides.mjs`를 실행하면 최신 회차 데이터를 기준으로 6개 문서를 다시 생성합니다.
+
 React 웹사이트 과정 1~30회차도 시작·완성 JSX·CSS·환경변수·SQL·배포·점검 파일과 예상 결과, 오류 복구표, 10점 평가 기준을 제공합니다. 실습 파일은 `public/practice/react-website`에 있습니다.
 
 Node.js 백엔드 과정 1~30회차는 시작·완성 JavaScript 서버 파일과 실행 명령, 예상 응답, 오류 복구표, 10점 평가 기준을 제공합니다. 실습 파일은 `public/practice/node-backend`에 있습니다.

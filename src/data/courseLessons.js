@@ -1127,5 +1127,9 @@ export const representativeCourses = representativeCourseSpecs.map((spec) => {
   return { ...course, sessions: course.sessions.map((item) => ({ ...item, ...(webFoundationPilot[item.id] || {}), ...(nodePilot[item.id] || {}), ...(supabasePilot[item.id] || {}), ...(githubVercelPilot[item.id] || {}), ...(servicePlanningPilot[item.id] || {}), ...(figmaPilot[item.id] || {}), ...(codexPilot[item.id] || {}), ...(securityPilot[item.id] || {}), ...(contentAnalyticsPilot[item.id] || {}), ...(reactStatePilot[item.id] || {}), ...(javascriptPracticalPilot[item.id] || {}) })) }
 })
 const validatedReactCourse = { ...reactWebsiteCourse, sessions: reactWebsiteCourse.sessions.map((item) => ({ ...item, ...(reactPilot[item.id] || {}) })) }
-export const detailedCourses = [validatedReactCourse, ...representativeCourses]
+const courseResourceMap = Object.fromEntries(['web-foundation', 'javascript-practical', 'react-website'].map((programId) => [programId, [
+  { label: '강사용 30회차 수업 지도서', path: `materials/course-guides/${programId}-instructor.md`, audience: '강사용' },
+  { label: '수강생 30회차 활동지', path: `materials/course-guides/${programId}-workbook.md`, audience: '수강생용' },
+]]))
+export const detailedCourses = [validatedReactCourse, ...representativeCourses].map((course) => ({ ...course, resources: courseResourceMap[course.programId] || [] }))
 export const findDetailedCourse = (programId) => detailedCourses.find((course) => course.programId === programId)
