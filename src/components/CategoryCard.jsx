@@ -2,10 +2,8 @@ export default function CategoryCard({ category, detailed = false, programCount 
   return (
     <article className="category-card" style={{ '--category-accent': category.accent }}>
       <div className="category-topline">
+        <span className="category-icon" aria-hidden="true">{category.mark}</span>
         <span className="category-eyebrow">{category.eyebrow}</span>
-        <span className="category-mark" aria-hidden="true">
-          {category.mark}
-        </span>
       </div>
 
       <h3 className="category-title">{category.title}</h3>
@@ -18,9 +16,10 @@ export default function CategoryCard({ category, detailed = false, programCount 
         </dl>
       )}
 
-      <a className="category-link" href={`#/programs?category=${category.id}`} aria-label={`${category.title} 교육 프로그램 보기`}>
-        과정 살펴보기 <span aria-hidden="true">→</span>
-      </a>
+      <div className="category-actions">
+        <a className="category-link" href={`#/programs?category=${category.id}`} aria-label={`${category.title} 교육 프로그램 보기`}>프로그램 <span aria-hidden="true">→</span></a>
+        <a className="category-link category-link-secondary" href={`#/lessons?category=${category.id}`} aria-label={`${category.title} 교육자료 보기`}>교육자료</a>
+      </div>
     </article>
   )
 }

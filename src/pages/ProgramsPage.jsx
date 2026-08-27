@@ -34,6 +34,7 @@ export default function ProgramsPage({ selectedCategory, selectedPage, selectedS
   const programs = readManagedContent('programs')
   const [searchInput, setSearchInput] = useState(selectedSearch)
   const activeCategory = categories.some((category) => category.id === selectedCategory) ? selectedCategory : 'all'
+  const activeCategoryData = categories.find((category) => category.id === activeCategory)
   const availableLevels = levelOrder.filter((level) => programs.some((program) => program.level === level))
   const availableDurations = [...new Set(programs.map((program) => program.duration.match(/\d+주/)?.[0]).filter(Boolean))]
     .sort((a, b) => Number.parseInt(a, 10) - Number.parseInt(b, 10))
@@ -75,11 +76,15 @@ export default function ProgramsPage({ selectedCategory, selectedPage, selectedS
   }
 
   return (
-    <section className="content-page page-shell" aria-labelledby="programs-title">
-      <div className="page-introduction">
-        <span className="section-eyebrow">EDUCATION PROGRAMS</span>
-        <h1 id="programs-title">나에게 맞는 교육 프로그램</h1>
-        <p>검색어와 교육 분야, 난이도, 기간을 선택해 원하는 프로그램을 찾아보세요.</p>
+    <section className="content-page page-shell catalog-page" aria-labelledby="programs-title">
+      <div className="page-introduction catalog-hero filtered-catalog-hero" style={{ '--catalog-accent': activeCategoryData?.accent || '#5d67f5' }}>
+        <div className="catalog-hero-copy">
+          <span className="section-eyebrow">{activeCategoryData?.eyebrow || '100 EDUCATION PROGRAMS'}</span>
+          <h1 id="programs-title">{activeCategoryData ? `${activeCategoryData.title} 프로그램` : '나에게 맞는 교육 프로그램'}</h1>
+          <p>{activeCategoryData?.description || '기초부터 프로젝트까지, 만들고 싶은 결과에 맞는 과정을 선택하세요.'}</p>
+          <div className="catalog-hero-tags"><span>단계별 실습</span><span>결과물 중심</span><span>모바일 학습</span></div>
+        </div>
+        <div className="catalog-hero-symbol" aria-hidden="true"><strong>{activeCategoryData?.mark || '100'}</strong><span>{activeCategoryData ? 'FIELD' : 'PROGRAMS'}</span></div>
       </div>
 
       <form className="program-search" onSubmit={submitSearch} role="search">

@@ -40,6 +40,7 @@ export default function LessonsPage({ selectedCategory, selectedPage, selectedSe
   const [favoriteLessons, setFavoriteLessons] = useState(readFavoriteLessons)
   const [recentLessons, setRecentLessons] = useState(readRecentLessons)
   const activeCategory = categories.some((category) => category.id === selectedCategory) ? selectedCategory : 'all'
+  const activeCategoryData = categories.find((category) => category.id === activeCategory)
   const availableLevels = levelOrder.filter((level) => lessons.some((lesson) => lesson.level === level))
   const availableDurations = [...new Set(lessons.map((lesson) => lesson.duration.match(/\d+분/)?.[0]).filter(Boolean))]
     .sort((a, b) => Number.parseInt(a, 10) - Number.parseInt(b, 10))
@@ -81,8 +82,11 @@ export default function LessonsPage({ selectedCategory, selectedPage, selectedSe
   function submitSearch(event) { event.preventDefault(); navigate({ ...filters, search: searchInput, page: 1 }) }
 
   return (
-    <section className="content-page page-shell" aria-labelledby="lessons-title">
-      <div className="page-introduction"><span className="section-eyebrow">LEARNING LIBRARY</span><h1 id="lessons-title">하나씩 따라 하는 교육자료</h1><p>검색과 필터로 필요한 자료를 고르고, 짧은 설명과 실습을 직접 확인해 보세요.</p></div>
+    <section className="content-page page-shell catalog-page" aria-labelledby="lessons-title">
+      <div className="page-introduction catalog-hero filtered-catalog-hero lesson-catalog-hero" style={{ '--catalog-accent': activeCategoryData?.accent || '#258872' }}>
+        <div className="catalog-hero-copy"><span className="section-eyebrow">{activeCategoryData?.eyebrow || 'LEARNING LIBRARY'}</span><h1 id="lessons-title">{activeCategoryData ? `${activeCategoryData.title} 교육자료` : '하나씩 따라 하는 교육자료'}</h1><p>{activeCategoryData ? `${activeCategoryData.description} 짧은 설명과 실습으로 바로 시작해 보세요.` : '검색과 필터로 필요한 자료를 고르고, 짧은 설명과 실습을 직접 확인해 보세요.'}</p><div className="catalog-hero-tags"><span>쉬운 설명</span><span>예제 코드</span><span>확인 문제</span></div></div>
+        <div className="catalog-hero-symbol" aria-hidden="true"><strong>{activeCategoryData?.mark || lessons.length}</strong><span>{activeCategoryData ? 'FIELD' : 'LESSONS'}</span></div>
+      </div>
       <div className="lesson-progress-banner"><div><strong>내 학습 진행 상황</strong><span>완료한 기록은 지금 사용하는 브라우저에만 저장됩니다.</span></div><span className="lesson-progress-count"><strong>{completedLessons.length}</strong> / {lessons.length}개 완료</span></div>
 
       <form className="program-search" onSubmit={submitSearch} role="search"><label htmlFor="lesson-search-input">교육자료 검색</label><div><input id="lesson-search-input" onChange={(event) => setSearchInput(event.target.value)} placeholder="예: HTML, React, GitHub" type="search" value={searchInput} /><button className="button button-primary" type="submit">검색</button></div></form>

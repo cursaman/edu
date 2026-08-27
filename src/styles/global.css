@@ -533,7 +533,11 @@ button:focus-visible {
   border: 1px solid #e7eaf0;
   border-radius: 18px;
   background: #ffffff;
+  box-shadow: 0 8px 24px rgba(52, 63, 99, .035);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
 }
+
+.program-card:hover { transform: translateY(-4px); border-color: #d8dcf0; box-shadow: 0 18px 38px rgba(52,63,99,.09); }
 
 .program-card-image {
   display: block;
@@ -695,6 +699,28 @@ button:focus-visible {
   padding-block: 88px 112px;
 }
 
+.catalog-page { padding-top: 54px; }
+
+.catalog-hero { position: relative; display: grid; max-width: none; grid-template-columns: minmax(0, 1.2fr) minmax(320px, .8fr); align-items: center; gap: 54px; overflow: hidden; margin-bottom: 62px; padding: 52px 56px; border: 1px solid #e2e5f2; border-radius: 28px; background: linear-gradient(135deg, #f4f5ff 0%, #f5fbf9 58%, #fff7f4 100%); }
+.catalog-hero::after { position: absolute; right: -85px; bottom: -115px; width: 330px; height: 330px; border-radius: 50%; background: var(--catalog-accent, #5d67f5); content: ''; opacity: .08; }
+.catalog-hero-copy { position: relative; z-index: 1; }
+.catalog-hero h1 { max-width: 720px; margin: 14px 0; font-size: clamp(37px, 4.5vw, 54px); letter-spacing: -.075em; line-height: 1.17; }
+.catalog-hero p { max-width: 700px; margin: 0; color: #667184; font-size: 15px; line-height: 1.8; }
+.catalog-hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+.catalog-hero-tags span { padding: 8px 11px; border: 1px solid color-mix(in srgb, var(--catalog-accent) 22%, white); border-radius: 999px; background: rgba(255,255,255,.75); color: #556071; font-size: 11px; font-weight: 700; }
+.catalog-hero-stats { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.catalog-hero-stats article { display: grid; min-height: 145px; align-content: center; gap: 5px; padding: 18px; border: 1px solid rgba(218,222,238,.9); border-radius: 19px; background: rgba(255,255,255,.82); box-shadow: 0 15px 38px rgba(62,71,107,.06); }
+.catalog-hero-stats span, .catalog-hero-stats small { color: var(--muted); font-size: 11px; }
+.catalog-hero-stats strong { color: var(--violet); font-size: 31px; }
+.catalog-hero-symbol { position: relative; z-index: 1; display: grid; width: 210px; height: 210px; place-items: center; justify-self: center; align-content: center; border: 1px solid color-mix(in srgb, var(--catalog-accent) 24%, white); border-radius: 50%; background: rgba(255,255,255,.76); box-shadow: 0 25px 60px rgba(54,64,101,.1); color: var(--catalog-accent); }
+.catalog-hero-symbol::before { position: absolute; inset: 17px; border: 1px dashed color-mix(in srgb, var(--catalog-accent) 38%, white); border-radius: inherit; content: ''; }
+.catalog-hero-symbol strong { font-size: 56px; letter-spacing: -.08em; line-height: 1; }
+.catalog-hero-symbol span { margin-top: 9px; font-size: 10px; font-weight: 800; letter-spacing: .14em; }
+.lesson-catalog-hero { background: linear-gradient(135deg, #f1fbf7, #f5f5ff 58%, #fff8f4); }
+.catalog-section-heading { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin-bottom: 30px; }
+.catalog-section-heading h2 { margin: 8px 0 0; font-size: 29px; letter-spacing: -.055em; }
+.catalog-section-heading > p { max-width: 440px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.7; text-align: right; }
+
 .page-introduction {
   max-width: 680px;
   margin-bottom: 43px;
@@ -721,6 +747,13 @@ button:focus-visible {
 .category-grid-detailed .category-card {
   min-height: 287px;
 }
+
+.category-grid-detailed .category-card { display: flex; overflow: hidden; min-height: 320px; flex-direction: column; padding: 26px; background: linear-gradient(145deg, color-mix(in srgb, var(--category-accent) 6%, white), #fff 48%); }
+.category-grid-detailed .category-card::after { position: absolute; right: -45px; top: -50px; width: 140px; height: 140px; border-radius: 50%; background: var(--category-accent); content: ''; opacity: .07; }
+.category-grid-detailed .category-topline { justify-content: flex-start; gap: 12px; }
+.category-icon { display: grid; width: 42px; height: 42px; place-items: center; border-radius: 13px; background: color-mix(in srgb, var(--category-accent) 13%, white); color: var(--category-accent); font-size: 12px; font-weight: 800; }
+.category-actions { display: flex; align-items: center; gap: 16px; margin-top: auto; padding-top: 7px; }
+.category-link-secondary { color: #7a8392; }
 
 .page-help {
   margin-top: 42px;
@@ -1757,6 +1790,8 @@ button:focus-visible {
 }
 
 .lesson-card {
+  position: relative;
+  overflow: hidden;
   display: flex;
   min-height: 259px;
   flex-direction: column;
@@ -1764,7 +1799,12 @@ button:focus-visible {
   border: 1px solid var(--line);
   border-radius: 16px;
   background: #ffffff;
+  box-shadow: 0 8px 24px rgba(52, 63, 99, .035);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
 }
+
+.lesson-card::before { position: absolute; inset: 0 0 auto; height: 4px; background: linear-gradient(90deg, var(--violet), #6bcbb0, #ed8a79); content: ''; opacity: .72; }
+.lesson-card:hover { transform: translateY(-4px); border-color: #d8dcf0; box-shadow: 0 18px 38px rgba(52,63,99,.09); }
 
 .lesson-card-completed {
   border-color: #cce8de;
@@ -2079,6 +2119,10 @@ button:focus-visible {
 }
 
 @media (max-width: 960px) {
+  .catalog-hero { grid-template-columns: 1fr; gap: 32px; padding: 42px; }
+  .catalog-hero-symbol { width: 160px; height: 160px; justify-self: start; }
+  .catalog-hero-symbol strong { font-size: 44px; }
+
   .hero {
     min-height: auto;
     grid-template-columns: 1fr;
@@ -2301,6 +2345,17 @@ button:focus-visible {
   .content-page {
     padding-block: 61px 77px;
   }
+
+  .catalog-page { padding-top: 28px; }
+  .catalog-hero { gap: 27px; margin-bottom: 42px; padding: 31px 23px; border-radius: 21px; }
+  .catalog-hero h1 { font-size: 35px; }
+  .catalog-hero-stats { grid-template-columns: 1fr; }
+  .catalog-hero-stats article { min-height: 91px; grid-template-columns: 1fr auto; align-items: center; }
+  .catalog-hero-stats article strong { grid-row: 1 / 3; grid-column: 2; }
+  .catalog-hero-symbol { width: 130px; height: 130px; }
+  .catalog-hero-symbol strong { font-size: 36px; }
+  .catalog-section-heading { align-items: flex-start; flex-direction: column; gap: 10px; }
+  .catalog-section-heading > p { text-align: left; }
 
   .page-introduction h1,
   .program-detail-header h1,
