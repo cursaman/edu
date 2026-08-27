@@ -1,0 +1,25 @@
+{
+  "summary": {
+    "generatedAt": "2026-08-27T06:25:54.153Z",
+    "courses": 12,
+    "sessions": 360,
+    "practiceFiles": 720,
+    "errors": 0,
+    "warnings": 2,
+    "passed": true
+  },
+  "issues": [
+    {
+      "severity": "warning",
+      "code": "DUPLICATE_CODE",
+      "message": "같은 예제 코드가 2회 사용됩니다.",
+      "location": "react-state-api/react-state-api-07, codex-first-service/codex-first-service-16"
+    },
+    {
+      "severity": "warning",
+      "code": "DUPLICATE_CODE",
+      "message": "같은 예제 코드가 2회 사용됩니다.",
+      "location": "codex-first-service/codex-first-service-22, github-vercel/github-vercel-04"
+    }
+  ]
+}

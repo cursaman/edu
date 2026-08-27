@@ -14,7 +14,7 @@ const session = (id, week, order, title, goal, concept, practice, code, prompt, 
     : index === 1
       ? '예제의 제목·문구·숫자·조건 중 하나를 바꾸고 화면 변화를 확인합니다.'
       : '브라우저 화면보다 터미널과 개발자 도구에 표시된 첫 번째 오류 문장을 먼저 확인합니다.'),
-  assignment: `${result}을(를) 내 프로젝트에 적용하고 변경 전후 화면을 한 장씩 기록합니다.`,
+  assignment: `${result} 결과를 내 프로젝트에 적용하고 변경 전후 화면을 한 장씩 기록합니다.`,
   completionCriteria: ['예제를 직접 실행했습니다.', '내 프로젝트에 맞게 한 가지 이상 수정했습니다.', '결과와 배운 점을 설명할 수 있습니다.'],
   errors: ['화면이 바뀌지 않으면 파일 저장 여부와 브라우저 주소를 확인합니다.', '오류가 나오면 콘솔의 첫 번째 빨간 문장부터 확인합니다.'],
 })
@@ -600,7 +600,7 @@ const makeRepresentativeCourse = ({ programId, title, outcome, tools, modules })
     const formats = [
       ['개념 이해', `${moduleTitle}의 역할과 필요한 이유를 설명합니다.`, `${moduleTitle}은(는) 결과물을 안전하고 순서 있게 완성하기 위한 기본 단계입니다.`],
       ['따라 하기', `${moduleTitle}의 핵심 작업을 직접 실행합니다.`, `작은 예제를 먼저 실행하고 한 가지 값을 바꾸면 ${moduleTitle}의 작동 원리를 눈으로 확인할 수 있습니다.`],
-      ['내 프로젝트 적용', `${moduleTitle}을(를) 결과물에 적용하고 완료 기준으로 점검합니다.`, `예제를 그대로 두지 않고 내 주제와 자료로 바꾸어야 실제로 사용할 수 있는 결과물이 됩니다.`],
+      ['내 프로젝트 적용', `${moduleTitle} 내용을 결과물에 적용하고 완료 기준으로 점검합니다.`, `예제를 그대로 두지 않고 내 주제와 자료로 바꾸어야 실제로 사용할 수 있는 결과물이 됩니다.`],
     ]
     return formats.map(([format, goal], formatIndex) => {
       const order = moduleIndex * 3 + formatIndex + 1
@@ -620,7 +620,7 @@ const makeRepresentativeCourse = ({ programId, title, outcome, tools, modules })
             : [`이전 회차의 ${moduleTitle} 예제를 엽니다.`, '내 서비스의 사용자·자료·조건으로 예제를 바꿉니다.', 'PC와 모바일 또는 정상·오류 조건을 각각 확인합니다.', `완성된 ${moduleTitle} 결과를 프로젝트에 저장합니다.`, '완료 기준 세 항목을 확인하고 다음 주차 준비를 기록합니다.'],
         exactLesson?.codes[formatIndex] || `// ${title} ${order}회차 실습 기록\nconst topic = '${moduleTitle}'\nconst result = '${format} 완료'\nconsole.log(topic, result)`,
         `${title}의 ${order}회차입니다. ${moduleTitle} ${format} 실습을 초보자도 따라 할 수 있게 작은 단계로 진행해줘. 기존 결과는 유지하고 완료 후 확인 방법과 오류 복구 순서를 알려줘.`,
-        [`${moduleTitle}이(가) 필요한 이유를 설명할 수 있나요?`, '예제에서 직접 바꾼 부분은 무엇인가요?', '완료 결과를 어떤 방법으로 확인했나요?'],
+        [`${moduleTitle}의 필요성을 설명할 수 있나요?`, '예제에서 직접 바꾼 부분은 무엇인가요?', '완료 결과를 어떤 방법으로 확인했나요?'],
         `${moduleTitle} ${format} 결과물`,
       )
       if (!exactLesson) return generated
@@ -636,10 +636,13 @@ const makeRepresentativeCourse = ({ programId, title, outcome, tools, modules })
 const webFoundationPilot = {
   'web-foundation-01': {
     instructorGuide: '파일을 더블클릭했을 때 브라우저가 열리는 모습을 먼저 보여주세요. HTML은 어려운 명령어가 아니라 브라우저에 전달하는 내용표라는 점을 강조합니다. 수강생이 제목을 직접 바꾸고 저장·새로고침의 차이를 말하게 합니다.',
-    practice: ['시작 파일을 내려받아 연습용 폴더에 저장합니다.', '파일을 더블클릭해 Chrome에서 열고 현재 빈 화면을 확인합니다.', '주석 아래에 <h1>나의 첫 웹페이지</h1>을 작성하고 저장합니다.', '브라우저에서 새로고침해 제목이 나타나는지 확인합니다.', '완성 파일과 비교하고 파일명·저장 위치·화면을 활동지에 기록합니다.'],
+    code: '<!-- 브라우저는 위에서 아래로 HTML을 읽습니다. -->\n<h1>나의 첫 웹페이지</h1>\n<p>브라우저가 HTML을 읽어 이 문장을 표시합니다.</p>',
+    practice: ['시작 파일을 내려받아 연습용 폴더에 저장합니다.', '파일을 더블클릭해 Chrome에서 열고 현재 빈 화면을 확인합니다.', '주석 아래에 <h1>나의 첫 웹페이지</h1>과 설명 문단 <p>브라우저가 HTML을 읽어 이 문장을 표시합니다.</p>를 작성합니다.', 'Ctrl+S로 저장한 뒤 브라우저를 새로고침해 제목과 설명이 나타나는지 확인합니다.', '완성 파일과 비교하고 파일명·저장 위치·화면을 활동지에 기록합니다.'],
     expectedResult: ['브라우저 탭 제목이 “나의 첫 웹페이지”로 표시됩니다.', '화면에 큰 제목과 설명 문단이 한 번씩 표시됩니다.', '파일을 수정하고 저장한 뒤 새로고침하면 문구가 바뀝니다.'],
     errors: ['화면이 그대로면 편집기에서 Ctrl+S로 저장했는지 확인합니다.', '코드가 글자로 보이면 파일 확장자가 .html인지 확인합니다.', '다른 파일이 열리면 주소창 끝의 파일명과 저장 위치를 확인합니다.'],
     rubric: ['3점: HTML 파일을 올바른 브라우저에서 열었습니다.', '3점: h1과 p 문구를 직접 수정했습니다.', '2점: 저장과 새로고침의 관계를 설명했습니다.', '2점: 완성 화면과 파일 위치를 기록했습니다.'],
+    assignment: '제목과 설명을 자신의 관심 주제로 바꾸고 저장 전후 화면을 기록합니다.',
+    materials: ['VS Code가 설치된 노트북', 'Chrome 브라우저', '다운로드한 1회차 HTML 시작 파일과 활동지'],
     downloads: [{ label: '1회차 시작 파일', path: 'practice/web-foundation/lesson-01-start.html' }, { label: '1회차 완성 파일', path: 'practice/web-foundation/lesson-01-complete.html' }],
   },
   'web-foundation-02': {
@@ -648,14 +651,20 @@ const webFoundationPilot = {
     expectedResult: ['브라우저 탭과 h1에 서로 알맞은 제목이 표시됩니다.', 'header와 main 안에 내용이 의미에 맞게 구분됩니다.', '세 개의 학습 항목이 글머리표 목록으로 표시됩니다.'],
     errors: ['일부 내용이 사라지면 여는 태그와 닫는 태그의 짝을 위에서부터 확인합니다.', '한글이 깨지면 meta charset이 UTF-8인지 확인합니다.', '목록 모양이 이상하면 ul 안에 li가 들어 있는지 확인합니다.'],
     rubric: ['2점: head와 body의 역할을 구분했습니다.', '3점: header·main·section 구조를 사용했습니다.', '3점: 제목 단계와 목록 태그를 올바르게 사용했습니다.', '2점: 들여쓰기와 한글 표시를 확인했습니다.'],
+    assignment: '자신의 교육 주제로 제목·설명·학습 목록 세 개를 작성하고 태그 구조를 표시합니다.',
+    materials: ['VS Code가 설치된 노트북', 'Chrome 브라우저', '다운로드한 2회차 HTML 시작 파일과 활동지'],
     downloads: [{ label: '2회차 시작 파일', path: 'practice/web-foundation/lesson-02-start.html' }, { label: '2회차 완성 파일', path: 'practice/web-foundation/lesson-02-complete.html' }],
   },
   'web-foundation-03': {
     instructorGuide: '복사해서 끝내지 않고 수강생 본인의 교육·가게·취미 주제로 모든 문구를 바꾸게 합니다. 완성 기준은 예제와 똑같은 화면이 아니라 대상과 제공 내용이 분명한 자기 소개 화면입니다.',
-    practice: ['3회차 시작 파일을 내려받아 자신의 주제 이름으로 새 파일에 저장합니다.', 'h1에 서비스 이름, p에 대상과 제공 결과를 작성합니다.', '링크 문구와 목적지를 연습용 이메일 주소로 변경합니다.', '제공된 CSS를 style 안에 적용하고 색상 한 가지를 직접 바꿉니다.', 'PC와 390px 모바일 화면에서 읽기와 가로 스크롤을 확인합니다.'],
+    goal: 'HTML과 CSS를 자신의 소개 화면에 적용하고 PC·모바일 완료 기준으로 점검합니다.',
+    code: '<style>\n  body { margin: 0; background: #f5f6ff; color: #172033; }\n  main { width: min(680px, calc(100% - 40px)); margin: 80px auto; padding: 40px; }\n</style>',
+    practice: ['3회차 시작 파일을 내려받아 자신의 주제 이름으로 새 파일에 저장합니다.', 'h1에 서비스 이름, p에 대상과 제공 결과를 작성합니다.', '링크의 href를 mailto:practice@example.com으로, 링크 문구를 “교육 문의하기”로 변경합니다.', 'head 안의 style 태그에서 주석으로 표시된 위치에 화면의 예제 CSS를 붙여 넣고 배경색 한 가지를 직접 바꿉니다.', 'Chrome 개발자 도구의 기기 모드에서 너비 390px을 선택해 글자 잘림과 가로 스크롤을 확인합니다.'],
     expectedResult: ['서비스 이름·대상·제공 결과가 첫 화면에서 구분됩니다.', '문의 링크를 키보드로 선택할 수 있습니다.', 'PC와 모바일에서 가로 스크롤 없이 내용이 표시됩니다.'],
     errors: ['CSS가 적용되지 않으면 style 태그 위치와 중괄호 짝을 확인합니다.', '링크가 이동하지 않으면 href의 따옴표와 mailto: 형식을 확인합니다.', '모바일이 넓게 보이면 viewport meta 태그가 있는지 확인합니다.'],
     rubric: ['3점: 예제 문구를 자신의 주제로 모두 바꿨습니다.', '2점: 서비스 대상과 제공 결과가 분명합니다.', '2점: 링크와 CSS가 정상 동작합니다.', '2점: 390px 모바일 화면을 확인했습니다.', '1점: 변경한 부분과 어려웠던 점을 기록했습니다.'],
+    assignment: '완성한 소개 화면을 PC와 390px 모바일 크기로 확인하고 두 결과를 활동지에 기록합니다.',
+    materials: ['VS Code가 설치된 노트북', 'Chrome 브라우저와 개발자 도구', '다운로드한 3회차 HTML 시작 파일과 활동지'],
     downloads: [{ label: '3회차 시작 파일', path: 'practice/web-foundation/lesson-03-start.html' }, { label: '3회차 완성 파일', path: 'practice/web-foundation/lesson-03-complete.html' }],
   },
   ...Object.fromEntries([
@@ -1122,11 +1131,23 @@ const javascriptPracticalPilot = Object.fromEntries([
   ['30','검색·필터·저장 함수를 조합하고 정상·빈 값·손상 저장값을 점검합니다.',"const normalize = value => value.trim().toLowerCase()\nconst search = (items, query) => items.filter(item => normalize(item.title).includes(normalize(query)))\nconsole.log(search([{ id: 1, title: 'JavaScript 실무' }], 'script'))",['검색 결과 한 개가 출력됩니다.','빈 검색어와 결과 없음도 검사합니다.']],
 ].map(([number,guide,code,expected])=>[`javascript-practical-${number}`,{code,instructorGuide:`${guide} 먼저 강사가 예상 결과를 말하지 않고 수강생이 실행 전 결과를 예측하게 합니다.`,practice:[`${Number(number)}회차 시작 JavaScript 파일을 내려받습니다.`,guide,'TODO 위치를 직접 완성하고 콘솔에서 실행합니다.','정상값과 경계값을 각각 한 번씩 확인합니다.','완성 파일과 비교하고 입력·처리·결과를 설명합니다.'],expectedResult:expected,errors:['콘솔의 첫 번째 오류 문장과 줄 번호를 확인합니다.','변수명·괄호·따옴표의 짝을 위에서부터 확인합니다.','입력값의 자료형과 예상값을 console.log로 비교합니다.'],rubric:['3점: 회차 기능이 오류 없이 실행됩니다.','2점: 입력·처리·결과를 구분합니다.','2점: 정상값과 경계값을 검사합니다.','2점: 원본 값을 예상치 않게 변경하지 않습니다.','1점: 실행 결과와 수정 내용을 기록합니다.'],downloads:[{label:`${Number(number)}회차 시작 JS`,path:`practice/javascript-practical/lesson-${number}-start.js`},{label:`${Number(number)}회차 완성 JS`,path:`practice/javascript-practical/lesson-${number}-complete.js`}]}]))
 
+const javascriptPracticalDay7 = {
+  'javascript-practical-01': { goal: '값과 변수의 역할을 설명하고 const와 let을 알맞게 사용합니다.', quiz: ['값과 변수는 각각 어떤 역할을 하나요?', '왜 courseName은 const이고 completed는 let인가요?', '실행 결과를 어디에서 확인했나요?'], quizAnswers: ['값은 프로그램이 다루는 정보이고 변수는 그 값에 붙인 이름입니다.', '과정명은 바뀌지 않지만 완료 수는 증가하므로 각각 const와 let을 사용합니다.', '터미널에서 node lesson-01-complete.js를 실행해 “실무 JavaScript 1”을 확인합니다.'], assignment: '과정명과 완료 수를 자신의 학습 주제로 바꾸고 실행 결과를 활동지에 기록합니다.' },
+  'javascript-practical-02': { goal: '문자열·숫자·불리언·undefined를 typeof로 구분합니다.', practice: ['2회차 시작 JavaScript 파일을 내려받습니다.', '실행 전에 네 값의 자료형을 활동지에 먼저 예상합니다.', 'TODO 위치에 values 배열과 typeof 확인 코드를 작성합니다.', '터미널에서 node lesson-02-start.js를 실행하고 예상 표와 실제 표를 비교합니다.', '완성 파일과 비교하고 null과 undefined가 왜 다른지 기록합니다.'], quiz: ['typeof는 무엇을 확인하는 도구인가요?', 'true와 30의 자료형은 각각 무엇인가요?', 'undefined는 어떤 상황을 뜻하나요?'], quizAnswers: ['값의 자료형을 문자열로 확인하는 연산자입니다.', 'true는 boolean이고 30은 number입니다.', '아직 값이 지정되지 않았음을 뜻합니다.'], assignment: 'null을 배열에 추가해 typeof 결과를 확인하고, 실제 값과 자료형을 함께 기록합니다.' },
+  'javascript-practical-03': { goal: '템플릿 문자열에 변수 값을 넣어 읽기 좋은 안내 문장을 만듭니다.', quiz: ['템플릿 문자열은 어떤 따옴표를 사용하나요?', '문장 안에 변수 값을 넣을 때 어떤 모양을 사용하나요?', 'title 값을 바꾸면 출력 문장의 어디가 달라지나요?'], quizAnswers: ['키보드의 백틱(`)을 사용합니다.', '${변수명} 모양으로 작성합니다.', '출력 문장의 과정 이름 부분이 바뀝니다.'], assignment: 'title·session 값을 자신의 과정에 맞게 바꾸고 시작 문장과 종료 문장을 각각 출력합니다.' },
+}
+
+const reactDay7Pilot = {
+  'react-01': { materials: ['Node.js와 npm이 설치된 노트북', 'VS Code와 Chrome', '원본과 분리해 만들 react-day7-practice 폴더'], practice: ['터미널에서 node -v와 npm -v를 실행해 버전 번호를 확인합니다.', '연습 폴더에서 npm create vite@latest react-day7-practice -- --template react를 실행합니다.', '생성된 폴더로 이동해 npm install과 npm run dev를 차례로 실행합니다.', 'src/App.jsx를 1회차 시작 파일 내용으로 바꾸고 제목을 자신의 문구로 수정합니다.', '터미널의 Local 주소를 열고 저장 전후 화면과 첫 오류 문장을 활동지에 기록합니다.'], quizAnswers: ['npm run dev 뒤에 표시된 Local 주소가 브라우저에서 열리면 정상입니다.', 'src/App.jsx의 h1 문구를 수정하고 저장하면 새 제목이 표시됩니다.'], assignment: '새 연습 프로젝트의 제목과 설명을 자신의 교육 주제로 바꾸고 실행 주소와 화면을 기록합니다.', errors: ['node 또는 npm 명령을 찾지 못하면 Node.js 설치 후 터미널을 완전히 닫고 다시 엽니다.', 'package.json을 찾지 못하면 cd 명령으로 react-day7-practice 폴더에 들어왔는지 확인합니다.', '화면이 비면 src/App.jsx 저장 여부와 터미널·브라우저 콘솔의 첫 번째 오류를 확인합니다.'] },
+  'react-02': { practice: ['react-day7-practice 폴더를 열고 src/App.jsx를 App-before-lesson-02.jsx로 복사해 백업합니다.', '2회차 시작 파일을 src/App.jsx에 붙여 넣고 화면을 확인합니다.', 'Header와 MainContent를 별도 함수로 작성해 제목과 본문을 나눕니다.', '두 컴포넌트를 App에서 <Header />와 <MainContent />로 호출합니다.', '완성 파일과 비교하고 함수 이름·호출 위치·화면 결과를 활동지에 기록합니다.'], quizAnswers: ['React가 일반 HTML 태그와 구분할 수 있도록 컴포넌트 이름은 대문자로 시작합니다.', '같은 파일에서는 import가 필요 없고, 별도 파일로 분리할 때 export와 import를 연결합니다.'], assignment: 'Header와 MainContent의 문구를 자신의 주제로 바꾸고 두 부품의 역할을 한 문장씩 적습니다.' },
+  'react-03': { practice: ['src/App.jsx를 App-before-lesson-03.jsx로 복사해 백업합니다.', '3회차 시작 파일을 src/App.jsx에 붙여 넣고 빈 프로그램 화면을 확인합니다.', '서로 다른 id·title·level을 가진 프로그램 객체 세 개를 배열에 작성합니다.', 'ProgramCard를 만들고 map으로 세 카드를 반복하며 key에 program.id를 사용합니다.', '완성 파일과 비교하고 배열 한 건이 카드 한 개로 바뀌는 흐름을 설명합니다.'], quizAnswers: ['서로 다른 제목의 카드 세 개가 보이면 정상입니다.', '각 자료를 구분하는 program.id를 key로 사용합니다.'], assignment: '자신이 배우고 싶은 프로그램 세 개를 배열로 작성하고 카드 결과 화면을 기록합니다.' },
+}
+
 export const representativeCourses = representativeCourseSpecs.map((spec) => {
   const course = makeRepresentativeCourse(spec)
-  return { ...course, sessions: course.sessions.map((item) => ({ ...item, ...(webFoundationPilot[item.id] || {}), ...(nodePilot[item.id] || {}), ...(supabasePilot[item.id] || {}), ...(githubVercelPilot[item.id] || {}), ...(servicePlanningPilot[item.id] || {}), ...(figmaPilot[item.id] || {}), ...(codexPilot[item.id] || {}), ...(securityPilot[item.id] || {}), ...(contentAnalyticsPilot[item.id] || {}), ...(reactStatePilot[item.id] || {}), ...(javascriptPracticalPilot[item.id] || {}) })) }
+  return { ...course, sessions: course.sessions.map((item) => ({ ...item, ...(webFoundationPilot[item.id] || {}), ...(nodePilot[item.id] || {}), ...(supabasePilot[item.id] || {}), ...(githubVercelPilot[item.id] || {}), ...(servicePlanningPilot[item.id] || {}), ...(figmaPilot[item.id] || {}), ...(codexPilot[item.id] || {}), ...(securityPilot[item.id] || {}), ...(contentAnalyticsPilot[item.id] || {}), ...(reactStatePilot[item.id] || {}), ...(javascriptPracticalPilot[item.id] || {}), ...(javascriptPracticalDay7[item.id] || {}) })) }
 })
-const validatedReactCourse = { ...reactWebsiteCourse, sessions: reactWebsiteCourse.sessions.map((item) => ({ ...item, ...(reactPilot[item.id] || {}) })) }
+const validatedReactCourse = { ...reactWebsiteCourse, sessions: reactWebsiteCourse.sessions.map((item) => ({ ...item, ...(reactPilot[item.id] || {}), ...(reactDay7Pilot[item.id] || {}) })) }
 const courseResourceMap = Object.fromEntries(['web-foundation', 'javascript-practical', 'react-website'].map((programId) => [programId, [
   { label: '강사용 30회차 수업 지도서', path: `materials/course-guides/${programId}-instructor.md`, audience: '강사용' },
   { label: '수강생 30회차 활동지', path: `materials/course-guides/${programId}-workbook.md`, audience: '수강생용' },

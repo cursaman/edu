@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite --configLoader runner",
     "build": "vite build --configLoader runner",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "validate:content": "node scripts/validateCourseQuality.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.4",
