@@ -7,6 +7,19 @@ import { readCompletedLessons } from '../data/learningProgress.js'
 import { readManagedContent } from '../data/contentStorage.js'
 import { readFavoriteLessons, toggleFavoriteLesson } from '../data/lessonActivity.js'
 
+const beginnerPath = [
+  { number: '01', title: '기획과 웹 기초', description: '아이디어를 정리하고 HTML·CSS로 첫 화면을 만듭니다.', accent: 'violet' },
+  { number: '02', title: 'JavaScript와 React', description: '버튼과 데이터를 연결해 실제로 동작하는 화면을 만듭니다.', accent: 'mint' },
+  { number: '03', title: '데이터와 실무 기능', description: 'Node.js·Supabase로 저장과 관리 흐름을 익힙니다.', accent: 'coral' },
+  { number: '04', title: '배포와 품질 점검', description: 'GitHub·Vercel로 공개하고 보안과 오류를 점검합니다.', accent: 'blue' },
+]
+
+const projectResults = [
+  { mark: '01', title: '반응형 소개 홈페이지', description: 'PC와 모바일에서 보기 좋은 나만의 웹페이지' },
+  { mark: '02', title: '데이터가 저장되는 서비스', description: '입력·수정·삭제가 가능한 실무형 웹서비스' },
+  { mark: '03', title: '공개 URL과 포트폴리오', description: '누구에게나 보여 줄 수 있는 완성 결과물' },
+]
+
 function SectionHeading({ eyebrow, title, description }) {
   return (
     <div className="section-heading">
@@ -80,6 +93,22 @@ export default function HomePage() {
         <a className="button button-secondary" href="#/lessons">교육자료 보러 가기 →</a>
       </section>
 
+      <section className="home-highlight" aria-labelledby="classroom-highlight-title">
+        <div className="page-shell home-highlight-inner">
+          <div>
+            <p className="section-eyebrow">COMPLETE LEARNING SYSTEM</p>
+            <h2 id="classroom-highlight-title">짧은 자료를 넘어,<br />실제 수업이 되는 과정</h2>
+            <p>핵심 12개 과정은 과정당 30회차로 구성되어 있습니다. 강사용 대본, 수강생 활동지, 실행 결과와 오류 사례를 함께 확인할 수 있습니다.</p>
+          </div>
+          <div className="home-highlight-stats" aria-label="핵심 교육 구성">
+            <article><strong>12</strong><span>핵심 과정</span></article>
+            <article><strong>360</strong><span>전체 회차</span></article>
+            <article><strong>4종</strong><span>수업 지원자료</span></article>
+          </div>
+          <a className="button button-primary" href="#/classroom">내 강의실 보기 →</a>
+        </div>
+      </section>
+
       <section className="learning-strip" aria-label="학습 진행 방식">
         <div className="page-shell steps-grid">
           {learningSteps.map((step) => (
@@ -91,6 +120,34 @@ export default function HomePage() {
               </div>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section className="section page-shell home-path-section">
+        <SectionHeading eyebrow="BEGINNER ROADMAP" title="처음이라면 이 순서로 시작하세요" description="무엇을 먼저 배울지 고민하지 않도록 웹서비스 완성 과정을 네 단계로 정리했습니다." />
+        <div className="home-path-grid">
+          {beginnerPath.map((path) => (
+            <article className={`home-path-card home-path-${path.accent}`} key={path.number}>
+              <span>STEP {path.number}</span>
+              <h3>{path.title}</h3>
+              <p>{path.description}</p>
+            </article>
+          ))}
+        </div>
+        <a className="home-lessons-link" href="#/programs">나에게 맞는 과정 찾아보기 →</a>
+      </section>
+
+      <section className="home-results-section">
+        <div className="section page-shell home-results-inner">
+          <SectionHeading eyebrow="WHAT YOU WILL MAKE" title="배우고 끝나지 않고, 결과물을 만듭니다" description="각 단계에서 직접 실행하고 확인하며 내 손으로 완성한 결과를 남깁니다." />
+          <div className="home-result-grid">
+            {projectResults.map((result) => (
+              <article className="home-result-card" key={result.mark}>
+                <span aria-hidden="true">{result.mark}</span>
+                <div><h3>{result.title}</h3><p>{result.description}</p></div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -165,6 +222,15 @@ export default function HomePage() {
           <p>실제 개인정보 없이 현재 브라우저에서만 수강 신청 과정을 체험해 보세요.</p>
           <a className="information-link" href="#/application">수강 신청 체험하기 →</a>
         </article>
+      </section>
+
+      <section className="home-quality page-shell" aria-labelledby="home-quality-title">
+        <div>
+          <p className="section-eyebrow">CLASS QUALITY</p>
+          <h2 id="home-quality-title">수업 후 기록하고, 더 좋은 내용으로 고칩니다.</h2>
+          <p>실제 소요 시간, 반복 질문, 오류와 만족도를 기록해 과정별 공개 가능 여부를 점검합니다.</p>
+        </div>
+        <a className="button button-secondary" href="#/admin">수업 품질 관리 안내 →</a>
       </section>
     </>
   )
