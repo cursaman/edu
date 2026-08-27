@@ -1,0 +1,2 @@
+import { useState } from 'react'
+export default function Search({ programs }) { const [keyword, setKeyword] = useState(''); const query=keyword.trim().toLowerCase(); const found=programs.filter(item=>`${item.title} ${item.description}`.toLowerCase().includes(query)); return <main><label htmlFor="search">프로그램 검색</label><input id="search" value={keyword} onChange={event=>setKeyword(event.target.value)} /><p aria-live="polite">{found.length}개 결과</p>{found.map(item=><article key={item.id}>{item.title}</article>)}</main> }

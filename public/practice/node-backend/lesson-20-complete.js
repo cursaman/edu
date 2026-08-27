@@ -1,0 +1,2 @@
+export function validateLesson(input){const title=String(input.title||'').trim();const category=String(input.category||'').trim();const errors={};if(!title)errors.title='제목은 필수입니다.';else if(title.length>100)errors.title='제목은 100자 이하로 입력해 주세요.';if(!category)errors.category='분야는 필수입니다.';return {ok:Object.keys(errors).length===0,data:{title,category},errors}}
+console.log(validateLesson({title:'',category:''}))

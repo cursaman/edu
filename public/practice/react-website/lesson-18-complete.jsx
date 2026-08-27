@@ -1,0 +1,3 @@
+import { useState } from 'react'
+export const calculateProgress=(completed,total)=>total?Math.round(completed/total*100):0
+export default function Progress({ sessions }) { const [completed,setCompleted]=useState(()=>JSON.parse(localStorage.getItem('edu:completed')||'[]'));const toggle=id=>setCompleted(current=>{const next=current.includes(id)?current.filter(item=>item!==id):[...current,id];localStorage.setItem('edu:completed',JSON.stringify(next));return next});const percent=calculateProgress(completed.length,sessions.length);return <section><p>{percent}% 완료</p><progress max="100" value={percent}>{percent}%</progress>{sessions.map(item=><button key={item.id} onClick={()=>toggle(item.id)}>{completed.includes(item.id)?'완료 취소':`${item.title} 완료`}</button>)}</section> }

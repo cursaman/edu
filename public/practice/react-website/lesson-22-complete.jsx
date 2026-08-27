@@ -1,0 +1,1 @@
+export default function AccessibleForm({ error }) { return <form noValidate><label htmlFor="email">이메일</label><input id="email" name="email" type="email" required aria-invalid={Boolean(error)} aria-describedby={error?'email-error':undefined}/>{error&&<p id="email-error" role="alert">{error}</p>}<button type="submit">저장</button></form> }

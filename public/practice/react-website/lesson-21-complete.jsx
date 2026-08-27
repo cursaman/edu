@@ -1,0 +1,2 @@
+import { useState } from 'react'
+export default function ApplyForm() { const [form,setForm]=useState({ name:'', motivation:'' });const change=event=>setForm(current=>({...current,[event.target.name]:event.target.value}));return <form><label htmlFor="name">이름</label><input id="name" name="name" value={form.name} onChange={change}/><label htmlFor="motivation">신청 동기</label><textarea id="motivation" name="motivation" maxLength="300" value={form.motivation} onChange={change}/><p>{form.motivation.length}/300자</p></form> }

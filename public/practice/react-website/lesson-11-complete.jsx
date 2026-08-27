@@ -1,0 +1,1 @@
+export default function ProgramList({ items, loading }) { if (loading) return <p role="status">프로그램을 불러오는 중입니다.</p>; if (!items.length) return <div><strong>프로그램이 없습니다.</strong><p>검색 조건을 바꿔 보세요.</p></div>; return <section>{items.map(item => <article key={item.id}><h2>{item.title}</h2></article>)}</section> }

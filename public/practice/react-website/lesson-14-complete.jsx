@@ -1,0 +1,2 @@
+export function sortPrograms(programs, sortBy) { return [...programs].sort((a,b)=>{ if(sortBy==='title') return a.title.localeCompare(b.title,'ko'); if(sortBy==='newest') return new Date(b.createdAt)-new Date(a.createdAt); return a.order-b.order }) }
+export default function SortSelect({ value,onChange }) { return <label>정렬<select value={value} onChange={event=>onChange(event.target.value)}><option value="default">기본</option><option value="title">이름순</option><option value="newest">최신순</option></select></label> }

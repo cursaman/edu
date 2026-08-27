@@ -1,0 +1,3 @@
+import { useEffect,useState } from 'react'
+import { supabase } from './supabaseClient'
+export default function Programs(){const [state,setState]=useState({loading:true,data:[],error:''});useEffect(()=>{supabase.from('edu_programs').select('id,title,category,level').order('title').then(({data,error})=>setState({loading:false,data:data||[],error:error?.message||''}))},[]);if(state.loading)return <p role="status">불러오는 중입니다.</p>;if(state.error)return <p role="alert">{state.error}</p>;return <section>{state.data.map(item=><article key={item.id}><h2>{item.title}</h2><p>{item.category} · {item.level}</p></article>)}</section>}

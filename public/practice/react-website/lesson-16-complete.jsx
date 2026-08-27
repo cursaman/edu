@@ -1,0 +1,2 @@
+export function readSearchState() { const query=location.hash.split('?')[1]||'';const params=new URLSearchParams(query);return { keyword:params.get('q')||'', category:params.get('category')||'all', page:Math.max(1,Number(params.get('page'))||1) } }
+export function writeSearchState({ keyword,category,page }) { const params=new URLSearchParams();if(keyword)params.set('q',keyword);if(category!=='all')params.set('category',category);if(page>1)params.set('page',String(page));location.hash=`#/programs${params.size?`?${params}`:''}` }

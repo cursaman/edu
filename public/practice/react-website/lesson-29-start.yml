@@ -1,0 +1,7 @@
+name: Deploy React
+on:
+  push:
+    branches: [main]
+jobs:
+  build:
+    # 빌드와 Pages 배포 단계를 작성하세요.

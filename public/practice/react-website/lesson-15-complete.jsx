@@ -1,0 +1,2 @@
+import { useState } from 'react'
+export default function Pagination({ items }) { const [page,setPage]=useState(1);const pageSize=9;const pageCount=Math.max(1,Math.ceil(items.length/pageSize));const visible=items.slice((page-1)*pageSize,page*pageSize);return <main>{visible.map(item=><article key={item.id}>{item.title}</article>)}<nav aria-label="페이지"><button disabled={page===1} onClick={()=>setPage(page-1)}>이전</button><span>{page} / {pageCount}</span><button disabled={page===pageCount} onClick={()=>setPage(page+1)}>다음</button></nav></main> }

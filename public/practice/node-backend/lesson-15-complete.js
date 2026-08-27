@@ -1,0 +1,2 @@
+export function paginate(items,page=1,pageSize=10){const safeSize=Math.min(50,Math.max(1,Number(pageSize)||10));const pageCount=Math.max(1,Math.ceil(items.length/safeSize));const safePage=Math.min(pageCount,Math.max(1,Number(page)||1));const start=(safePage-1)*safeSize;return {items:items.slice(start,start+safeSize),page:safePage,pageSize:safeSize,pageCount,total:items.length}}
+console.log(paginate(Array.from({length:23},(_,i)=>i+1),2,10))

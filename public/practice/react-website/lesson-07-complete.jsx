@@ -1,0 +1,2 @@
+import { useState } from 'react'
+export default function ApplyForm() { const [name, setName] = useState(''); const [error, setError] = useState(''); const submit = event => { event.preventDefault(); setError(name.trim() ? '' : '이름을 입력해 주세요.') }; return <form onSubmit={submit} noValidate><label htmlFor="name">연습용 이름</label><input id="name" value={name} onChange={event => setName(event.target.value)} aria-describedby="name-error" /><p id="name-error" role="alert">{error}</p><button>확인</button></form> }

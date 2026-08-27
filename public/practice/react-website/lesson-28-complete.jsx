@@ -1,0 +1,1 @@
+export default function ProgramImage({ src,alt,fallback }) { const replace=event=>{event.currentTarget.onerror=null;event.currentTarget.src=fallback};return <img src={src||fallback} alt={alt||'교육 프로그램 대표 이미지'} loading="lazy" decoding="async" width="640" height="360" onError={replace}/> }
