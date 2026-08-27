@@ -63,5 +63,42 @@ export const reactWebsiteCourse = {
   ],
 }
 
-export const detailedCourses = [reactWebsiteCourse]
+const representativeCourseSpecs = [
+  { programId: 'service-planning-basic', title: '아이디어를 웹서비스 기획서로 만들기', outcome: '사용자 문제·MVP·화면 흐름·개발 요청서가 담긴 웹서비스 기획서', tools: 'Codex와 문서 도구', modules: ['과정 목표와 아이디어 찾기','사용자와 문제 정의','인터뷰 질문 설계','경쟁 서비스 조사','핵심 가치 제안','MVP 기능 우선순위','사용자 여정 작성','화면 목록과 흐름','요구사항과 완료 기준','기획 발표와 인수 문서'] },
+  { programId: 'uiux-figma-basic', title: 'Figma로 웹서비스 화면 설계하기', outcome: 'PC·모바일 화면과 디자인 규칙이 포함된 Figma 시안', tools: 'Figma와 웹브라우저', modules: ['Figma 환경과 프레임','색상과 대비','글자 체계','여백과 그리드','Auto Layout','버튼과 입력 요소','카드 컴포넌트','PC 메인 화면','모바일 반응형 화면','프로토타입과 개발 전달'] },
+  { programId: 'web-foundation', title: '웹 기초부터 첫 홈페이지 만들기', outcome: 'HTML·CSS·JavaScript로 만든 반응형 소개 홈페이지', tools: 'VS Code와 Chrome', modules: ['웹과 개발 환경','HTML 문서 구조','제목·문단·링크','이미지와 목록','CSS 연결과 선택자','글자·색상·여백','Flex와 Grid','JavaScript 변수와 함수','클릭·폼 이벤트','반응형 점검과 공개'] },
+  { programId: 'react-state-api', title: 'React 상태관리와 API 활용', outcome: '검색·필터·정렬과 외부 API가 동작하는 React 데이터 서비스', tools: 'React·Vite·Fetch API', modules: ['React 프로젝트 점검','컴포넌트와 props','useState와 입력','목록 검색','복합 필터','정렬과 페이지네이션','비동기와 fetch','로딩·오류·빈 상태','localStorage 저장','통합 테스트와 배포'] },
+  { programId: 'node-backend', title: 'Node.js로 백엔드 시작하기', outcome: '입력 검증과 오류 처리가 적용된 교육자료 REST API', tools: 'Node.js·Express·API 도구', modules: ['서버와 개발 환경','Express 첫 실행','주소와 요청 방식','JSON 응답','목록 조회 API','상세 조회 API','등록 API와 검증','수정·삭제 API','오류·로그·보안','API 테스트와 문서화'] },
+  { programId: 'supabase-database', title: 'Supabase로 데이터 저장하기', outcome: '관리자만 변경하고 누구나 조회할 수 있는 공동 교육자료 저장소', tools: 'Supabase·PostgreSQL·React', modules: ['데이터베이스 기본','테이블과 자료형','키와 관계','SELECT 조회','INSERT 등록','UPDATE와 DELETE','React 연결','Auth 로그인','RLS 권한 정책','백업·테스트·운영'] },
+  { programId: 'codex-first-service', title: 'Codex로 첫 웹서비스 만들기', outcome: 'AI 요청·검토·수정 과정을 거쳐 배포한 첫 웹서비스', tools: 'Codex·React·GitHub', modules: ['Codex와 안전 규칙','좋은 요청문 구조','작업 범위와 완료 기준','React 첫 화면','데이터와 카드','검색·필터 기능','오류 전달과 수정','Git 변경 검토','GitHub 업로드','배포·발표·회고'] },
+  { programId: 'web-security-infra-basic', title: '웹서비스 보안과 클라우드 인프라 입문', outcome: '계정·키·권한·네트워크·복구 항목을 갖춘 서비스 보안 점검서', tools: 'Chrome·GitHub·Supabase', modules: ['웹 보안의 기본','계정과 비밀번호','환경변수와 비밀 키','입력 검증','XSS와 안전한 출력','인증과 권한','RLS와 최소 권한','HTTPS·DNS·포트','로그와 모니터링','백업·복구·사고 대응'] },
+  { programId: 'content-analytics-basic', title: '웹 콘텐츠 운영과 데이터 분석 기초', outcome: '독자 중심 콘텐츠 3편과 지표·개선 계획이 담긴 운영 보고서', tools: 'Codex·스프레드시트·분석 도구', modules: ['독자와 운영 목표','주제와 검색 의도','제목과 글 구조','이미지와 저작권','발행 체크리스트','콘텐츠 달력','조회·클릭·전환','데이터 정리와 시각화','개선 가설과 실험','성과 보고와 다음 계획'] },
+  { programId: 'github-vercel', title: 'GitHub와 Vercel 배포 입문', outcome: '자동 배포와 운영 점검 절차를 갖춘 실제 웹사이트 URL', tools: 'Git·GitHub·Vercel', modules: ['Git 설치와 저장소','상태·추가·커밋','브랜치와 병합','GitHub 원격 연결','충돌과 안전한 복구','Vite 빌드 점검','Vercel 프로젝트 연결','환경변수와 보안','배포 로그와 오류 해결','실제 URL과 운영 인수'] },
+]
+
+const makeRepresentativeCourse = ({ programId, title, outcome, tools, modules }) => ({
+  programId, title, outcome, totalWeeks: 10,
+  sessions: modules.flatMap((moduleTitle, moduleIndex) => {
+    const week = moduleIndex + 1
+    const formats = [
+      ['개념 이해', `${moduleTitle}의 역할과 필요한 이유를 설명합니다.`, `${moduleTitle}은(는) 결과물을 안전하고 순서 있게 완성하기 위한 기본 단계입니다.`],
+      ['따라 하기', `${moduleTitle}의 핵심 작업을 직접 실행합니다.`, `작은 예제를 먼저 실행하고 한 가지 값을 바꾸면 ${moduleTitle}의 작동 원리를 눈으로 확인할 수 있습니다.`],
+      ['내 프로젝트 적용', `${moduleTitle}을(를) 결과물에 적용하고 완료 기준으로 점검합니다.`, `예제를 그대로 두지 않고 내 주제와 자료로 바꾸어야 실제로 사용할 수 있는 결과물이 됩니다.`],
+    ]
+    return formats.map(([format, goal, concept], formatIndex) => {
+      const order = moduleIndex * 3 + formatIndex + 1
+      return session(
+        `${programId}-${String(order).padStart(2, '0')}`, week, order, `${moduleTitle} · ${format}`, goal, concept,
+        [`${tools}를 준비하고 이전 결과를 확인합니다.`, `${moduleTitle} 예제를 그대로 따라 합니다.`, '제목·값·조건 중 하나를 내 상황에 맞게 수정합니다.', '결과 화면 또는 문서를 저장합니다.', '완료 기준과 오류 여부를 확인합니다.'],
+        `// ${title} ${order}회차 실습 기록\nconst topic = '${moduleTitle}'\nconst result = '${format} 완료'\nconsole.log(topic, result)`,
+        `${title}의 ${order}회차입니다. ${moduleTitle} ${format} 실습을 초보자도 따라 할 수 있게 작은 단계로 진행해줘. 기존 결과는 유지하고 완료 후 확인 방법과 오류 복구 순서를 알려줘.`,
+        [`${moduleTitle}이(가) 필요한 이유를 설명할 수 있나요?`, '예제에서 직접 바꾼 부분은 무엇인가요?', '완료 결과를 어떤 방법으로 확인했나요?'],
+        `${moduleTitle} ${format} 결과물`,
+      )
+    })
+  }),
+})
+
+export const representativeCourses = representativeCourseSpecs.map(makeRepresentativeCourse)
+export const detailedCourses = [reactWebsiteCourse, ...representativeCourses]
 export const findDetailedCourse = (programId) => detailedCourses.find((course) => course.programId === programId)

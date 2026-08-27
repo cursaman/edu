@@ -1,8 +1,10 @@
 import { findManagedProgram, readManagedContent } from '../data/contentStorage.js'
 import { getProgramWeeks } from '../data/programWeeks.js'
+import { findDetailedCourse } from '../data/courseLessons.js'
 
 export default function ProgramDetailPage({ programId }) {
   const program = findManagedProgram(programId)
+  const detailedCourse = findDetailedCourse(programId)
   const fallbackImage = `${import.meta.env.BASE_URL}images/edu-hero.webp`
 
   if (!program) {
@@ -84,10 +86,10 @@ export default function ProgramDetailPage({ programId }) {
           <span className="section-eyebrow">BEFORE YOU START</span>
           <h2>수업 전 준비물</h2>
           <ul>{program.preparations.map((item) => <li key={item}>{item}</li>)}</ul>
-          {program.id === 'react-website'
-            ? <a className="button button-primary" href="#/classroom/react-website/react-01">30회차 강의 시작하기</a>
+          {detailedCourse
+            ? <a className="button button-primary" href={`#/classroom/${program.id}/${detailedCourse.sessions[0].id}`}>{detailedCourse.sessions.length}회차 강의 시작하기</a>
             : <a className="button button-primary" href="#/application">수강 신청 안내 보기</a>}
-          <p className="preparation-note">React 과정은 상세 강의실을 체험할 수 있으며 진도는 현재 브라우저에 저장됩니다.</p>
+          <p className="preparation-note">대표 과정은 상세 강의실을 체험할 수 있으며 진도는 현재 브라우저에 저장됩니다.</p>
         </aside>
       </div>
 
