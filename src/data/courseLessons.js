@@ -1,5 +1,19 @@
 const session = (id, week, order, title, goal, concept, practice, code, prompt, quiz, result) => ({
   id, week, order, title, duration: '50분', goal, concept, practice, code, prompt, quiz, result,
+  materials: ['Node.js와 npm이 설치된 노트북', '현재 EDU 프로젝트', '실습 결과를 기록할 메모장'],
+  timeline: [
+    { minutes: '0~5분', activity: '지난 회차 확인과 오늘 만들 결과 소개' },
+    { minutes: '5~15분', activity: `${title} 핵심 개념을 쉬운 예로 설명` },
+    { minutes: '15~35분', activity: '예제 실행 후 내 프로젝트에 맞게 수정' },
+    { minutes: '35~45분', activity: '오류 해결과 PC·모바일 결과 확인' },
+    { minutes: '45~50분', activity: '확인 문제, 과제 안내, 학습 완료 표시' },
+  ],
+  instructorGuide: `오늘은 “${title}”을 완성합니다. 코드를 외우는 것보다 입력값이 어디에서 와서 어떤 화면으로 바뀌는지 확인해 주세요. 먼저 예제를 그대로 실행하고, 다음에는 문구나 값을 한 가지 바꾸어 차이를 설명하게 합니다.`,
+  quizAnswers: quiz.map((_, index) => index === 0
+    ? `${title}의 핵심 목적과 화면에서 맡는 역할을 자신의 말로 설명하면 됩니다.`
+    : index === 1
+      ? '예제의 제목·문구·숫자·조건 중 하나를 바꾸고 화면 변화를 확인합니다.'
+      : '브라우저 화면보다 터미널과 개발자 도구에 표시된 첫 번째 오류 문장을 먼저 확인합니다.'),
   assignment: `${result}을(를) 내 프로젝트에 적용하고 변경 전후 화면을 한 장씩 기록합니다.`,
   completionCriteria: ['예제를 직접 실행했습니다.', '내 프로젝트에 맞게 한 가지 이상 수정했습니다.', '결과와 배운 점을 설명할 수 있습니다.'],
   errors: ['화면이 바뀌지 않으면 파일 저장 여부와 브라우저 주소를 확인합니다.', '오류가 나오면 콘솔의 첫 번째 빨간 문장부터 확인합니다.'],

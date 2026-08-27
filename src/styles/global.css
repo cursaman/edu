@@ -2557,6 +2557,17 @@ button:focus-visible {
 .classroom-content p, .classroom-content li { color: #596477; line-height: 1.8; }
 .classroom-content pre { overflow: auto; margin: 0; padding: 20px; border-radius: 13px; background: #151a2b; color: #eff2ff; font-size: 13px; line-height: 1.7; }
 .classroom-content blockquote { margin: 0; padding: 20px; border-left: 4px solid var(--violet); border-radius: 0 12px 12px 0; background: #f7f6ff; color: #4d4772; line-height: 1.8; white-space: pre-line; }
+.classroom-teaching-kit { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.classroom-teaching-kit ul { margin-bottom: 0; }
+.classroom-print { flex: 0 0 auto; }
+.classroom-timeline { display: grid; gap: 10px; }
+.classroom-timeline div { display: grid; grid-template-columns: 90px 1fr; gap: 16px; padding: 13px 16px; border-radius: 11px; background: #f8f9fd; }
+.classroom-timeline strong { color: var(--violet); font-size: 13px; }
+.classroom-timeline span { color: #596477; line-height: 1.6; }
+.classroom-quiz-list { display: grid; gap: 10px; }
+.classroom-quiz-list details { padding: 15px 17px; border: 1px solid var(--line); border-radius: 11px; }
+.classroom-quiz-list summary { cursor: pointer; color: #273247; font-weight: 750; }
+.classroom-quiz-list p { margin: 10px 0 0; padding-top: 10px; border-top: 1px solid var(--line); }
 .classroom-result { display: grid; gap: 5px; padding: 16px; border-radius: 12px; background: #f1fbf8; }
 .classroom-actions { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 28px 32px; border-top: 1px solid var(--line); }
 .classroom-actions > div { display: flex; gap: 16px; }
@@ -2583,6 +2594,18 @@ button:focus-visible {
   .classroom-actions { align-items: stretch; flex-direction: column; }
   .classroom-actions .button { width: 100%; }
   .classroom-actions > div { justify-content: space-between; }
+  .classroom-teaching-kit { align-items: stretch; flex-direction: column; }
+  .classroom-timeline div { grid-template-columns: 1fr; gap: 4px; }
+}
+
+@media print {
+  .site-header, .site-footer, .classroom-sidebar, .classroom-actions, .classroom-print { display: none !important; }
+  .course-classroom, .classroom-layout { display: block; max-width: none; padding: 0; }
+  .classroom-header { display: block; margin-bottom: 16px; }
+  .classroom-progress { display: none; }
+  .classroom-content { border: 0; }
+  .classroom-content > section, .classroom-lesson-heading { padding: 16px 0; break-inside: avoid; }
+  .classroom-content pre { white-space: pre-wrap; }
 }
 
 @media (prefers-reduced-motion: reduce) {
