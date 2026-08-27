@@ -8,16 +8,16 @@ import { readManagedContent } from '../data/contentStorage.js'
 import { readFavoriteLessons, toggleFavoriteLesson } from '../data/lessonActivity.js'
 
 const beginnerPath = [
-  { number: '01', title: '기획과 웹 기초', description: '아이디어를 정리하고 HTML·CSS로 첫 화면을 만듭니다.', accent: 'violet' },
-  { number: '02', title: 'JavaScript와 React', description: '버튼과 데이터를 연결해 실제로 동작하는 화면을 만듭니다.', accent: 'mint' },
-  { number: '03', title: '데이터와 실무 기능', description: 'Node.js·Supabase로 저장과 관리 흐름을 익힙니다.', accent: 'coral' },
-  { number: '04', title: '배포와 품질 점검', description: 'GitHub·Vercel로 공개하고 보안과 오류를 점검합니다.', accent: 'blue' },
+  { number: '01', icon: '✦', title: '기획과 웹 기초', description: '아이디어를 정리하고 HTML·CSS로 첫 화면을 만듭니다.', accent: 'violet' },
+  { number: '02', icon: '</>', title: 'JavaScript와 React', description: '버튼과 데이터를 연결해 실제로 동작하는 화면을 만듭니다.', accent: 'mint' },
+  { number: '03', icon: 'DB', title: '데이터와 실무 기능', description: 'Node.js·Supabase로 저장과 관리 흐름을 익힙니다.', accent: 'coral' },
+  { number: '04', icon: '↗', title: '배포와 품질 점검', description: 'GitHub·Vercel로 공개하고 보안과 오류를 점검합니다.', accent: 'blue' },
 ]
 
 const projectResults = [
-  { mark: '01', title: '반응형 소개 홈페이지', description: 'PC와 모바일에서 보기 좋은 나만의 웹페이지' },
-  { mark: '02', title: '데이터가 저장되는 서비스', description: '입력·수정·삭제가 가능한 실무형 웹서비스' },
-  { mark: '03', title: '공개 URL과 포트폴리오', description: '누구에게나 보여 줄 수 있는 완성 결과물' },
+  { mark: '01', image: 'images/programs/responsive-ui-basic.webp', title: '반응형 소개 홈페이지', description: 'PC와 모바일에서 보기 좋은 나만의 웹페이지', imageAlt: 'PC와 모바일에 맞춰 바뀌는 반응형 홈페이지 예시' },
+  { mark: '02', image: 'images/programs/supabase-database.webp', title: '데이터가 저장되는 서비스', description: '입력·수정·삭제가 가능한 실무형 웹서비스', imageAlt: '웹서비스와 데이터 저장소가 연결된 화면 예시' },
+  { mark: '03', image: 'images/programs/github-vercel.webp', title: '공개 URL과 포트폴리오', description: '누구에게나 보여 줄 수 있는 완성 결과물', imageAlt: '웹사이트가 공개 주소로 배포되는 과정 예시' },
 ]
 
 function SectionHeading({ eyebrow, title, description }) {
@@ -101,9 +101,9 @@ export default function HomePage() {
             <p>핵심 12개 과정은 과정당 30회차로 구성되어 있습니다. 강사용 대본, 수강생 활동지, 실행 결과와 오류 사례를 함께 확인할 수 있습니다.</p>
           </div>
           <div className="home-highlight-stats" aria-label="핵심 교육 구성">
-            <article><strong>12</strong><span>핵심 과정</span></article>
-            <article><strong>360</strong><span>전체 회차</span></article>
-            <article><strong>4종</strong><span>수업 지원자료</span></article>
+            <article><i aria-hidden="true">▦</i><strong>12</strong><span>핵심 과정</span></article>
+            <article><i aria-hidden="true">▶</i><strong>360</strong><span>전체 회차</span></article>
+            <article><i aria-hidden="true">✓</i><strong>4종</strong><span>수업 지원자료</span></article>
           </div>
           <a className="button button-primary" href="#/classroom">내 강의실 보기 →</a>
         </div>
@@ -128,7 +128,7 @@ export default function HomePage() {
         <div className="home-path-grid">
           {beginnerPath.map((path) => (
             <article className={`home-path-card home-path-${path.accent}`} key={path.number}>
-              <span>STEP {path.number}</span>
+              <div className="home-path-top"><span className="home-path-icon" aria-hidden="true">{path.icon}</span><span>STEP {path.number}</span></div>
               <h3>{path.title}</h3>
               <p>{path.description}</p>
             </article>
@@ -143,8 +143,8 @@ export default function HomePage() {
           <div className="home-result-grid">
             {projectResults.map((result) => (
               <article className="home-result-card" key={result.mark}>
-                <span aria-hidden="true">{result.mark}</span>
-                <div><h3>{result.title}</h3><p>{result.description}</p></div>
+                <img alt={result.imageAlt} src={`${import.meta.env.BASE_URL}${result.image}`} />
+                <div className="home-result-copy"><span aria-hidden="true">RESULT {result.mark}</span><h3>{result.title}</h3><p>{result.description}</p></div>
               </article>
             ))}
           </div>
@@ -225,7 +225,8 @@ export default function HomePage() {
       </section>
 
       <section className="home-quality page-shell" aria-labelledby="home-quality-title">
-        <div>
+        <span className="home-quality-icon" aria-hidden="true">✓</span>
+        <div className="home-quality-copy">
           <p className="section-eyebrow">CLASS QUALITY</p>
           <h2 id="home-quality-title">수업 후 기록하고, 더 좋은 내용으로 고칩니다.</h2>
           <p>실제 소요 시간, 반복 질문, 오류와 만족도를 기록해 과정별 공개 가능 여부를 점검합니다.</p>
