@@ -2568,6 +2568,7 @@ button:focus-visible {
 .classroom-quiz-list details { padding: 15px 17px; border: 1px solid var(--line); border-radius: 11px; }
 .classroom-quiz-list summary { cursor: pointer; color: #273247; font-weight: 750; }
 .classroom-quiz-list p { margin: 10px 0 0; padding-top: 10px; border-top: 1px solid var(--line); }
+.classroom-downloads { display: flex; flex-wrap: wrap; gap: 10px; }
 .classroom-result { display: grid; gap: 5px; padding: 16px; border-radius: 12px; background: #f1fbf8; }
 .classroom-actions { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 28px 32px; border-top: 1px solid var(--line); }
 .classroom-actions > div { display: flex; gap: 16px; }
@@ -2596,6 +2597,8 @@ button:focus-visible {
   .classroom-actions > div { justify-content: space-between; }
   .classroom-teaching-kit { align-items: stretch; flex-direction: column; }
   .classroom-timeline div { grid-template-columns: 1fr; gap: 4px; }
+  .classroom-downloads { align-items: stretch; flex-direction: column; }
+  .classroom-downloads .button { width: 100%; }
 }
 
 @media print {

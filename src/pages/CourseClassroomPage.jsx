@@ -24,11 +24,14 @@ export default function CourseClassroomPage({ programId, sessionId }) {
         <section><h3>강사용 쉬운 설명</h3><p>{active.instructorGuide}</p></section>
         <section><h3>쉽게 이해하기</h3><p>{active.concept}</p></section>
         <section><h3>직접 따라 하기</h3><ol>{active.practice.map((step) => <li key={step}>{step}</li>)}</ol></section>
+        {active.downloads?.length > 0 && <section><h3>실습 파일</h3><p>시작 파일을 내려받아 직접 작업한 다음 완성 파일과 비교하세요.</p><div className="classroom-downloads">{active.downloads.map((file) => <a className="button button-secondary" download href={`${import.meta.env.BASE_URL}${file.path}`} key={file.path}>{file.label} ↓</a>)}</div></section>}
         <section><h3>예제 코드</h3><pre><code>{active.code}</code></pre></section>
         <section><h3>Codex 요청문</h3><blockquote>{active.prompt}</blockquote></section>
         <section><h3>자주 발생하는 오류</h3><ul>{active.errors.map((error) => <li key={error}>{error}</li>)}</ul></section>
         <section><h3>확인 문제</h3><div className="classroom-quiz-list">{active.quiz.map((item, index) => <details key={item}><summary>{index + 1}. {item}</summary><p>{active.quizAnswers[index]}</p></details>)}</div><p className="classroom-result"><strong>이번 회차 결과물</strong>{active.result}</p></section>
         <section><h3>오류가 생기면</h3><ol>{active.errors.map((item) => <li key={item}>{item}</li>)}</ol></section>
+        {active.expectedResult?.length > 0 && <section><h3>예상 결과</h3><ul>{active.expectedResult.map((item) => <li key={item}>{item}</li>)}</ul></section>}
+        {active.rubric?.length > 0 && <section><h3>과제 평가 기준 · 10점</h3><ul>{active.rubric.map((item) => <li key={item}>{item}</li>)}</ul></section>}
         <section><h3>과제</h3><p>{active.assignment}</p><h3>학습 완료 기준</h3><ul>{active.completionCriteria.map((item) => <li key={item}>{item}</li>)}</ul></section>
         <div className="classroom-actions"><button className={`button ${isCompleted ? 'button-secondary' : 'button-primary'}`} onClick={toggle} type="button">{isCompleted ? '완료 취소' : '이 회차 학습 완료'}</button><div>{activeIndex > 0 && <a href={`#/classroom/${programId}/${course.sessions[activeIndex - 1].id}`}>← 이전 회차</a>}{activeIndex < course.sessions.length - 1 ? <a href={`#/classroom/${programId}/${course.sessions[activeIndex + 1].id}`}>다음 회차 →</a> : <a href="#/classroom">내 강의실로 →</a>}</div></div>
       </article>

@@ -622,6 +622,36 @@ const makeRepresentativeCourse = ({ programId, title, outcome, tools, modules })
   }),
 })
 
-export const representativeCourses = representativeCourseSpecs.map(makeRepresentativeCourse)
+const webFoundationPilot = {
+  'web-foundation-01': {
+    instructorGuide: '파일을 더블클릭했을 때 브라우저가 열리는 모습을 먼저 보여주세요. HTML은 어려운 명령어가 아니라 브라우저에 전달하는 내용표라는 점을 강조합니다. 수강생이 제목을 직접 바꾸고 저장·새로고침의 차이를 말하게 합니다.',
+    practice: ['시작 파일을 내려받아 연습용 폴더에 저장합니다.', '파일을 더블클릭해 Chrome에서 열고 현재 빈 화면을 확인합니다.', '주석 아래에 <h1>나의 첫 웹페이지</h1>을 작성하고 저장합니다.', '브라우저에서 새로고침해 제목이 나타나는지 확인합니다.', '완성 파일과 비교하고 파일명·저장 위치·화면을 활동지에 기록합니다.'],
+    expectedResult: ['브라우저 탭 제목이 “나의 첫 웹페이지”로 표시됩니다.', '화면에 큰 제목과 설명 문단이 한 번씩 표시됩니다.', '파일을 수정하고 저장한 뒤 새로고침하면 문구가 바뀝니다.'],
+    errors: ['화면이 그대로면 편집기에서 Ctrl+S로 저장했는지 확인합니다.', '코드가 글자로 보이면 파일 확장자가 .html인지 확인합니다.', '다른 파일이 열리면 주소창 끝의 파일명과 저장 위치를 확인합니다.'],
+    rubric: ['3점: HTML 파일을 올바른 브라우저에서 열었습니다.', '3점: h1과 p 문구를 직접 수정했습니다.', '2점: 저장과 새로고침의 관계를 설명했습니다.', '2점: 완성 화면과 파일 위치를 기록했습니다.'],
+    downloads: [{ label: '1회차 시작 파일', path: 'practice/web-foundation/lesson-01-start.html' }, { label: '1회차 완성 파일', path: 'practice/web-foundation/lesson-01-complete.html' }],
+  },
+  'web-foundation-02': {
+    instructorGuide: '완성된 태그를 먼저 설명하지 말고, head는 보이지 않는 문서 정보이고 body는 사용자에게 보이는 내용이라는 생활 비유로 구분합니다. 태그 하나를 추가할 때마다 브라우저에서 바로 확인하게 합니다.',
+    practice: ['2회차 시작 파일을 내려받고 Chrome에서 엽니다.', 'title을 “우리 동네 배움터”로 수정합니다.', 'header와 main을 만들고 기존 제목과 설명을 알맞은 영역으로 옮깁니다.', 'h2와 ul·li로 오늘 배울 내용 세 개를 작성합니다.', '완성 파일과 태그 구조를 비교하고 들여쓰기를 정리합니다.'],
+    expectedResult: ['브라우저 탭과 h1에 서로 알맞은 제목이 표시됩니다.', 'header와 main 안에 내용이 의미에 맞게 구분됩니다.', '세 개의 학습 항목이 글머리표 목록으로 표시됩니다.'],
+    errors: ['일부 내용이 사라지면 여는 태그와 닫는 태그의 짝을 위에서부터 확인합니다.', '한글이 깨지면 meta charset이 UTF-8인지 확인합니다.', '목록 모양이 이상하면 ul 안에 li가 들어 있는지 확인합니다.'],
+    rubric: ['2점: head와 body의 역할을 구분했습니다.', '3점: header·main·section 구조를 사용했습니다.', '3점: 제목 단계와 목록 태그를 올바르게 사용했습니다.', '2점: 들여쓰기와 한글 표시를 확인했습니다.'],
+    downloads: [{ label: '2회차 시작 파일', path: 'practice/web-foundation/lesson-02-start.html' }, { label: '2회차 완성 파일', path: 'practice/web-foundation/lesson-02-complete.html' }],
+  },
+  'web-foundation-03': {
+    instructorGuide: '복사해서 끝내지 않고 수강생 본인의 교육·가게·취미 주제로 모든 문구를 바꾸게 합니다. 완성 기준은 예제와 똑같은 화면이 아니라 대상과 제공 내용이 분명한 자기 소개 화면입니다.',
+    practice: ['3회차 시작 파일을 내려받아 자신의 주제 이름으로 새 파일에 저장합니다.', 'h1에 서비스 이름, p에 대상과 제공 결과를 작성합니다.', '링크 문구와 목적지를 연습용 이메일 주소로 변경합니다.', '제공된 CSS를 style 안에 적용하고 색상 한 가지를 직접 바꿉니다.', 'PC와 390px 모바일 화면에서 읽기와 가로 스크롤을 확인합니다.'],
+    expectedResult: ['서비스 이름·대상·제공 결과가 첫 화면에서 구분됩니다.', '문의 링크를 키보드로 선택할 수 있습니다.', 'PC와 모바일에서 가로 스크롤 없이 내용이 표시됩니다.'],
+    errors: ['CSS가 적용되지 않으면 style 태그 위치와 중괄호 짝을 확인합니다.', '링크가 이동하지 않으면 href의 따옴표와 mailto: 형식을 확인합니다.', '모바일이 넓게 보이면 viewport meta 태그가 있는지 확인합니다.'],
+    rubric: ['3점: 예제 문구를 자신의 주제로 모두 바꿨습니다.', '2점: 서비스 대상과 제공 결과가 분명합니다.', '2점: 링크와 CSS가 정상 동작합니다.', '2점: 390px 모바일 화면을 확인했습니다.', '1점: 변경한 부분과 어려웠던 점을 기록했습니다.'],
+    downloads: [{ label: '3회차 시작 파일', path: 'practice/web-foundation/lesson-03-start.html' }, { label: '3회차 완성 파일', path: 'practice/web-foundation/lesson-03-complete.html' }],
+  },
+}
+
+export const representativeCourses = representativeCourseSpecs.map((spec) => {
+  const course = makeRepresentativeCourse(spec)
+  return { ...course, sessions: course.sessions.map((item) => ({ ...item, ...(webFoundationPilot[item.id] || {}) })) }
+})
 export const detailedCourses = [reactWebsiteCourse, ...representativeCourses]
 export const findDetailedCourse = (programId) => detailedCourses.find((course) => course.programId === programId)
