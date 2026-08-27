@@ -179,6 +179,409 @@ const moduleExplanations = {
   '실제 URL과 운영 인수': '공개 URL의 메뉴·새로고침·모바일·오류 화면을 검사하고 배포·복구·담당 정보를 인수 문서에 남깁니다.',
 }
 
+const exactModuleLessons = {
+  '웹과 개발 환경': {
+    codes: ['<!-- 브라우저는 위에서 아래로 HTML을 읽습니다. -->\n<h1>첫 웹페이지</h1>', '<!doctype html>\n<html lang="ko"><body><h1>첫 웹페이지</h1></body></html>', '<h1>우리 동네 배움터</h1>\n<p>처음 만드는 소개 홈페이지입니다.</p>'],
+    question: 'HTML 파일을 화면으로 해석하는 프로그램은 무엇인가요?', answer: 'Chrome 같은 웹브라우저입니다.',
+  },
+  'HTML 문서 구조': {
+    codes: ['<!doctype html>\n<html lang="ko">\n<head></head>\n<body></body>\n</html>', '<head>\n  <meta charset="UTF-8" />\n  <title>EDU</title>\n</head>', '<body>\n  <header><h1>EDU</h1></header>\n  <main><p>교육을 시작합니다.</p></main>\n</body>'],
+    question: '사용자에게 보이는 내용은 어느 태그 안에 작성하나요?', answer: 'body 태그 안에 작성합니다.',
+  },
+  '제목·문단·링크': {
+    codes: ['<h1>가장 중요한 제목</h1>\n<h2>하위 주제</h2>', '<p>초보자도 천천히 따라 할 수 있습니다.</p>\n<a href="courses.html">과정 보기</a>', '<section>\n  <h2>웹 기초 과정</h2>\n  <p>HTML부터 시작합니다.</p>\n  <a href="#apply">수강 신청</a>\n</section>'],
+    question: '한 페이지의 핵심 제목에 주로 사용하는 태그는 무엇인가요?', answer: 'h1 태그이며 보통 페이지의 핵심 제목에 한 번 사용합니다.',
+  },
+  '이미지와 목록': {
+    codes: ['<img src="classroom.webp" alt="노트북으로 웹을 배우는 수강생" />', '<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>', '<figure>\n  <img src="result.webp" alt="완성된 반응형 홈페이지" />\n  <figcaption>4주차 완성 결과</figcaption>\n</figure>'],
+    question: '이미지를 볼 수 없는 사용자에게 의미를 전달하는 속성은 무엇인가요?', answer: 'alt 대체 설명 속성입니다.',
+  },
+  'CSS 연결과 선택자': {
+    codes: ['<link rel="stylesheet" href="styles.css" />', '.lesson-card {\n  background: white;\n}', '.program-card h2 { color: #4f5fff; }\n.program-card a { font-weight: 700; }'],
+    question: '여러 요소에 반복해서 스타일을 적용할 때 주로 사용하는 선택자는 무엇인가요?', answer: '점(.)으로 시작하는 클래스 선택자입니다.',
+  },
+  '글자·색상·여백': {
+    codes: ['body { color: #172033; background: #f7f8fc; }', '.card {\n  padding: 24px;\n  margin-bottom: 20px;\n  line-height: 1.7;\n}', '.hero h1 { font-size: 48px; }\n.hero p { max-width: 620px; color: #596477; }'],
+    question: 'padding과 margin의 차이는 무엇인가요?', answer: 'padding은 상자 안쪽 여백이고 margin은 상자 바깥쪽 여백입니다.',
+  },
+  'Flex와 Grid': {
+    codes: ['.menu { display: flex; gap: 16px; }', '.card-grid {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 20px;\n}', '.page { display: grid; grid-template-columns: 240px 1fr; gap: 32px; }'],
+    question: '여러 줄의 카드 행과 열을 배치할 때 적합한 CSS 기능은 무엇인가요?', answer: 'CSS Grid가 적합합니다.',
+  },
+  'JavaScript 변수와 함수': {
+    codes: ["const courseName = '웹 기초'\nconsole.log(courseName)", "function welcome(name) {\n  return `${name}님, 환영합니다.`\n}\nconsole.log(welcome('홍길동'))", "const programs = ['HTML', 'CSS', 'JavaScript']\nconst titles = programs.map(item => `${item} 시작하기`)\nconsole.log(titles)"],
+    question: '같은 계산이나 동작을 이름 붙여 반복 사용하는 것은 무엇인가요?', answer: '함수입니다.',
+  },
+  '클릭·폼 이벤트': {
+    codes: ["const button = document.querySelector('button')\nbutton.addEventListener('click', () => alert('시작합니다.'))", "const nameInput = document.querySelector('#name')\nnameInput.addEventListener('input', event => console.log(event.target.value))", "form.addEventListener('submit', event => {\n  event.preventDefault()\n  if (!nameInput.value.trim()) error.textContent = '이름을 입력해 주세요.'\n})"],
+    question: '폼을 검사하기 전에 기본 제출과 새로고침을 막는 메서드는 무엇인가요?', answer: 'event.preventDefault()입니다.',
+  },
+  '반응형 점검과 공개': {
+    codes: ['@media (max-width: 680px) {\n  .card-grid { grid-template-columns: 1fr; }\n}', '<meta name="viewport" content="width=device-width, initial-scale=1" />', 'npm run build\n# dist 폴더가 생성되는지 확인합니다.'],
+    question: '모바일 화면 규칙을 적용하는 CSS 조건은 무엇인가요?', answer: '@media 미디어 쿼리입니다.',
+  },
+  '서버와 개발 환경': {
+    codes: ["console.log('Node.js에서 실행됩니다.')", "const http = require('node:http')\nhttp.createServer((req, res) => res.end('Hello')).listen(3000)", 'node server.js\n# 브라우저에서 http://localhost:3000 확인'],
+    question: 'Node.js 서버가 브라우저에 돌려주는 결과를 무엇이라고 하나요?', answer: '응답(response)이라고 합니다.',
+  },
+  'Express 첫 실행': {
+    codes: ["import express from 'express'\nconst app = express()", "app.get('/', (req, res) => res.send('EDU API'))\napp.listen(3000)", "app.get('/health', (req, res) => res.json({ ok: true }))\napp.listen(3000, () => console.log('3000번 포트 실행'))"],
+    question: 'Express 서버를 특정 포트에서 기다리게 하는 메서드는 무엇인가요?', answer: 'app.listen()입니다.',
+  },
+  '주소와 요청 방식': {
+    codes: ["app.get('/api/lessons', listLessons)", "app.post('/api/lessons', createLesson)\napp.patch('/api/lessons/:id', updateLesson)", "app.delete('/api/lessons/:id', deleteLesson)\n// URL에는 동사 대신 lessons 자원을 씁니다."],
+    question: '기존 자료 일부를 수정할 때 주로 사용하는 요청 방식은 무엇인가요?', answer: 'PATCH 요청을 사용합니다.',
+  },
+  'JSON 응답': {
+    codes: ["res.json({ message: '연결되었습니다.' })", "res.status(200).json([{ id: 1, title: 'HTML 시작' }])", "res.status(201).json({ id: 2, title: 'CSS 시작', createdAt: new Date().toISOString() })"],
+    question: '새 자료 등록 성공에 주로 사용하는 HTTP 상태 코드는 무엇인가요?', answer: '201 Created입니다.',
+  },
+  '목록 조회 API': {
+    codes: ["app.get('/api/lessons', (req, res) => res.json(lessons))", "const keyword = String(req.query.q || '').trim()\nconst found = lessons.filter(item => item.title.includes(keyword))", "const page = Math.max(1, Number(req.query.page) || 1)\nres.json({ items: found.slice((page - 1) * 10, page * 10), total: found.length })"],
+    question: '검색 조건처럼 URL 뒤에 전달하는 값은 어디에서 읽나요?', answer: 'Express의 req.query에서 읽습니다.',
+  },
+  '상세 조회 API': {
+    codes: ["app.get('/api/lessons/:id', (req, res) => {})", "const lesson = lessons.find(item => item.id === req.params.id)\nif (!lesson) return res.status(404).json({ message: '자료가 없습니다.' })", "app.get('/api/lessons/:id', (req, res) => {\n  const item = lessons.find(v => v.id === req.params.id)\n  return item ? res.json(item) : res.status(404).json({ message: '자료가 없습니다.' })\n})"],
+    question: '요청한 자료가 존재하지 않을 때 사용하는 상태 코드는 무엇인가요?', answer: '404 Not Found입니다.',
+  },
+  '등록 API와 검증': {
+    codes: ["app.use(express.json())", "const title = String(req.body.title || '').trim()\nif (!title || title.length > 100) return res.status(400).json({ message: '제목을 확인해 주세요.' })", "app.post('/api/lessons', (req, res) => {\n  const item = { id: crypto.randomUUID(), title: req.body.title.trim() }\n  lessons.push(item)\n  res.status(201).json(item)\n})"],
+    question: '사용자가 보낸 JSON 본문은 Express의 어디에서 읽나요?', answer: 'express.json() 적용 후 req.body에서 읽습니다.',
+  },
+  '수정·삭제 API': {
+    codes: ["app.patch('/api/lessons/:id', updateLesson)", "const index = lessons.findIndex(item => item.id === req.params.id)\nif (index < 0) return res.status(404).json({ message: '자료가 없습니다.' })", "app.delete('/api/lessons/:id', (req, res) => {\n  const index = lessons.findIndex(v => v.id === req.params.id)\n  if (index < 0) return res.status(404).end()\n  lessons.splice(index, 1)\n  res.status(204).end()\n})"],
+    question: '삭제 성공 후 응답 본문이 없을 때 사용할 수 있는 상태 코드는 무엇인가요?', answer: '204 No Content입니다.',
+  },
+  '오류·로그·보안': {
+    codes: ["app.use((req, res, next) => {\n  console.log(new Date().toISOString(), req.method, req.path)\n  next()\n})", "app.use(express.json({ limit: '20kb' }))", "app.use((error, req, res, next) => {\n  console.error(error)\n  res.status(500).json({ message: '서버 오류가 발생했습니다.' })\n})"],
+    question: '서버 내부 오류 내용을 사용자에게 그대로 보내면 안 되는 이유는 무엇인가요?', answer: '파일 경로나 구조 같은 공격에 유용한 정보가 노출될 수 있기 때문입니다.',
+  },
+  'API 테스트와 문서화': {
+    codes: ["fetch('http://localhost:3000/api/lessons').then(res => res.json()).then(console.log)", "curl -i -X POST http://localhost:3000/api/lessons -H 'Content-Type: application/json' -d '{\"title\":\"HTML\"}'", "// GET /api/lessons/:id\n// 200: 자료 객체\n// 404: { message: '자료가 없습니다.' }"],
+    question: 'API 문서에 반드시 포함해야 하는 세 가지는 무엇인가요?', answer: '요청 주소와 방식, 입력 예시, 성공·오류 응답 예시입니다.',
+  },
+  '데이터베이스 기본': {
+    codes: ['-- 한 행은 교육자료 한 건입니다.\nselect id, title from edu_lessons;', 'select title, category\nfrom edu_lessons\norder by created_at desc;', 'select category, count(*) as lesson_count\nfrom edu_lessons\ngroup by category;'],
+    question: '테이블에서 자료 한 건을 무엇이라고 하나요?', answer: '행(row)이라고 합니다.',
+  },
+  '테이블과 자료형': {
+    codes: ['create table edu_lessons (\n  id bigint generated always as identity primary key,\n  title text not null\n);', 'alter table edu_lessons\nadd column duration_minutes integer check (duration_minutes > 0);', "insert into edu_lessons (title, duration_minutes)\nvalues ('HTML 시작', 30);"],
+    question: '값이 반드시 있어야 하는 열에 사용하는 제약조건은 무엇인가요?', answer: 'not null 제약조건입니다.',
+  },
+  '키와 관계': {
+    codes: ['create table edu_programs (\n  id uuid primary key default gen_random_uuid(),\n  title text not null\n);', 'create table edu_lessons (\n  id uuid primary key default gen_random_uuid(),\n  program_id uuid references edu_programs(id)\n);', 'alter table edu_lessons\ndrop constraint edu_lessons_program_id_fkey,\nadd foreign key (program_id) references edu_programs(id) on delete cascade;'],
+    question: '다른 테이블의 기본키를 가리키는 열을 무엇이라고 하나요?', answer: '외래키(foreign key)라고 합니다.',
+  },
+  'SELECT 조회': {
+    codes: ['select id, title from edu_lessons;', "select * from edu_lessons\nwhere category = '웹 기초'\norder by title;", "select id, title from edu_lessons\nwhere title ilike '%React%'\nlimit 10;"],
+    question: '대소문자를 구분하지 않고 일부 문자열을 찾는 PostgreSQL 연산자는 무엇인가요?', answer: 'ilike 연산자입니다.',
+  },
+  'INSERT 등록': {
+    codes: ["insert into edu_lessons (title) values ('HTML 시작');", "insert into edu_lessons (title, category)\nvalues ('CSS 카드', '웹 기초')\nreturning id, title;", "insert into edu_lessons (title, category)\nvalues ('React 상태', '프런트엔드'), ('SQL 조회', '데이터베이스')\nreturning *;"],
+    question: '등록된 행의 ID를 즉시 확인하는 PostgreSQL 문구는 무엇인가요?', answer: 'returning 절입니다.',
+  },
+  'UPDATE와 DELETE': {
+    codes: ["update edu_lessons set title = 'HTML 첫 화면' where id = 1;", "update edu_lessons\nset title = 'CSS 카드 꾸미기', updated_at = now()\nwhere id = 2\nreturning *;", "delete from edu_lessons\nwhere id = 3\nreturning id;"],
+    question: '수정과 삭제에서 반드시 확인해야 하는 조건절은 무엇인가요?', answer: '대상을 제한하는 where 절입니다.',
+  },
+  'React 연결': {
+    codes: ["import { createClient } from '@supabase/supabase-js'\nexport const supabase = createClient(url, publishableKey)", "const { data, error } = await supabase\n  .from('edu_lessons')\n  .select('id,title,category')", "useEffect(() => {\n  supabase.from('edu_lessons').select('*')\n    .then(({ data, error }) => error ? setError(error.message) : setLessons(data))\n}, [])"],
+    question: '브라우저에서 사용할 수 있지만 RLS로 제한해야 하는 키는 무엇인가요?', answer: 'Supabase publishable key입니다.',
+  },
+  'Auth 로그인': {
+    codes: ["const { data, error } = await supabase.auth.signInWithPassword({ email, password })", "const { data: { session } } = await supabase.auth.getSession()", "await supabase.auth.signOut()\nsetUser(null)\nlocation.hash = '#/admin'"],
+    question: '비밀번호를 애플리케이션 코드가 직접 저장해야 하나요?', answer: '아니요. Supabase Auth가 안전하게 처리하며 코드와 localStorage에 저장하지 않습니다.',
+  },
+  'RLS 권한 정책': {
+    codes: ['alter table public.edu_lessons enable row level security;', 'create policy "public read lessons"\non public.edu_lessons for select\nusing (true);', 'create policy "admin changes lessons"\non public.edu_lessons for all to authenticated\nusing (public.is_admin())\nwith check (public.is_admin());'],
+    question: '관리자 버튼을 숨기는 것만으로 데이터가 보호되나요?', answer: '아니요. 데이터베이스의 RLS 정책에서도 변경을 차단해야 합니다.',
+  },
+  '백업·테스트·운영': {
+    codes: ['-- schema.sql에 테이블과 정책을 기록합니다.\nselect tablename, rowsecurity from pg_tables where schemaname = \'public\';', '-- 일반 사용자로 변경이 거부되는지 시험합니다.\nselect * from edu_lessons limit 3;', '-- 복원 확인\nselect count(*) as lessons, max(updated_at) as last_update\nfrom edu_lessons;'],
+    question: '백업이 실제로 유효한지 확인하는 방법은 무엇인가요?', answer: '별도 환경에서 복원을 실행하고 자료와 권한을 확인해야 합니다.',
+  },
+  'Git 설치와 저장소': {
+    codes: ['git --version\ngit config --global user.name', 'git init\ngit status', 'git init\nAdd-Content .gitignore ".env.local"\ngit status --short'],
+    question: 'Git 저장소를 현재 폴더에 만드는 명령은 무엇인가요?', answer: 'git init입니다.',
+  },
+  '상태·추가·커밋': {
+    codes: ['git status --short\ngit diff --stat', 'git add src README.md\ngit diff --cached', 'git commit -m "Add education program page"\ngit log -1 --oneline'],
+    question: '커밋에 들어갈 변경을 미리 보는 명령은 무엇인가요?', answer: 'git diff --cached입니다.',
+  },
+  '브랜치와 병합': {
+    codes: ['git branch --show-current\ngit switch -c feature/lesson-search', 'git add .\ngit commit -m "Add lesson search"\ngit switch main', 'git merge --no-ff feature/lesson-search\ngit log --oneline --graph -5'],
+    question: '새 브랜치를 만들면서 이동하는 명령은 무엇인가요?', answer: 'git switch -c 브랜치이름입니다.',
+  },
+  'GitHub 원격 연결': {
+    codes: ['git remote -v', 'git remote add origin https://github.com/USER/REPO.git\ngit remote -v', 'git pull --rebase origin main\ngit push -u origin main'],
+    question: '원격 변경이 있을 때 강제 푸시보다 먼저 할 일은 무엇인가요?', answer: 'git pull 또는 fetch로 원격 기록을 확인하고 안전하게 통합합니다.',
+  },
+  '충돌과 안전한 복구': {
+    codes: ['git status\n# both modified로 표시된 파일을 확인합니다.', 'git diff --name-only --diff-filter=U\n# <<<<<<<, =======, >>>>>>> 구간을 직접 정리합니다.', 'git add src/App.jsx\ngit rebase --continue\nnpm run build'],
+    question: '충돌 해결 후 가장 먼저 해야 할 검증은 무엇인가요?', answer: '충돌 표시가 제거됐는지 확인하고 프로젝트 빌드와 주요 기능을 시험합니다.',
+  },
+  'Vite 빌드 점검': {
+    codes: ['npm install\nnpm run dev', 'npm run build\nGet-ChildItem dist', "export default defineConfig({\n  base: '/edu/',\n  plugins: [react()],\n})"],
+    question: 'GitHub Pages의 하위 저장소 경로에 필요한 Vite 설정은 무엇인가요?', answer: "vite.config.js의 base를 '/저장소이름/'으로 설정합니다.",
+  },
+  'Vercel 프로젝트 연결': {
+    codes: ['npm run build\n# Framework Preset: Vite', '# Build Command\nnpm run build\n# Output Directory\ndist', '{\n  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]\n}'],
+    question: 'Vite 프로젝트의 기본 배포 결과 폴더는 무엇인가요?', answer: 'dist 폴더입니다.',
+  },
+  '환경변수와 보안': {
+    codes: ['# .env.example\nVITE_PUBLIC_API_URL=', '# .gitignore\n.env\n.env.local\n.env.*.local', 'git ls-files | Select-String -Pattern "env|key|secret"\ngit diff --cached'],
+    question: 'VITE_로 시작하는 값에 비밀 키를 넣으면 안 되는 이유는 무엇인가요?', answer: '빌드된 브라우저 JavaScript에 포함되어 방문자가 확인할 수 있기 때문입니다.',
+  },
+  '배포 로그와 오류 해결': {
+    codes: ['npm ci\nnpm run build', 'git log -1 --oneline\ngit status --short\n# 배포 로그의 첫 오류와 비교합니다.', 'git revert <문제-커밋-ID>\ngit push origin main'],
+    question: '긴 배포 로그에서 우선 확인할 부분은 어디인가요?', answer: '실패한 단계에 나온 첫 번째 실제 오류 문장입니다.',
+  },
+  '실제 URL과 운영 인수': {
+    codes: ['# 공개 주소 점검\nhttps://example.vercel.app/', 'curl -I https://example.vercel.app/\n# 200 상태와 HTTPS를 확인합니다.', '# 운영 인수 항목\n# 저장소 / 배포 주소 / 환경변수 이름 / 복구 순서 / 담당자'],
+    question: '배포 완료 판단을 로컬 화면만으로 하면 안 되는 이유는 무엇인가요?', answer: '실제 URL의 경로·환경변수·캐시·HTTPS 조건은 로컬과 다를 수 있기 때문입니다.',
+  },
+  '웹 보안의 기본': {
+    codes: ['// 보호 대상 목록\nconst assets = [\'계정\', \'개인정보\', \'서비스 운영\']', '// 기밀성·무결성·가용성 점검\nconst securityGoals = { secret: true, accurate: true, available: true }', '// 위험 = 발생 가능성 × 영향\nconst riskScore = likelihood * impact'],
+    question: '정보보안의 세 가지 기본 목표는 무엇인가요?', answer: '기밀성, 무결성, 가용성입니다.',
+  },
+  '계정과 비밀번호': {
+    codes: ['// 실제 비밀번호를 코드에 쓰지 않습니다.\nconst minimumLength = 14', '// 계정마다 다른 비밀번호와 MFA를 사용합니다.\nconst mfaEnabled = true', '// 관리자 계정 점검표\nconst checks = [\'고유 비밀번호\', \'MFA\', \'복구 수단\', \'최근 로그인\']'],
+    question: '같은 비밀번호를 여러 서비스에서 사용하면 안 되는 이유는 무엇인가요?', answer: '한 서비스 유출이 다른 계정의 연쇄 침해로 이어질 수 있기 때문입니다.',
+  },
+  '환경변수와 비밀 키': {
+    codes: ['# 공개 설정 예시\nVITE_SUPABASE_URL=https://project.supabase.co', '# 서버 전용 비밀은 호스팅 환경변수에만 저장\nOPENAI_API_KEY=실제값을_코드에_쓰지_않음', 'git check-ignore .env.local\ngit grep -n -i "service_role\|password\|private_key"'],
+    question: 'Supabase service role 키를 브라우저에 넣으면 안 되는 이유는 무엇인가요?', answer: 'RLS를 우회하는 강한 권한이 노출되어 모든 데이터가 위험해질 수 있기 때문입니다.',
+  },
+  '입력 검증': {
+    codes: ["const title = String(input.title || '').trim()", "if (!title || title.length > 100) throw new Error('제목은 1~100자입니다.')", "const allowed = ['웹 기초', '프런트엔드']\nif (!allowed.includes(category)) return res.status(400).json({ message: '분야를 확인하세요.' })"],
+    question: '클라이언트에서 검사했더라도 서버에서 다시 검사해야 하는 이유는 무엇인가요?', answer: '사용자가 브라우저 검사를 우회해 서버로 직접 요청할 수 있기 때문입니다.',
+  },
+  'XSS와 안전한 출력': {
+    codes: ['const message = <p>{userInput}</p>\n// React는 기본적으로 텍스트를 이스케이프합니다.', "element.textContent = userInput\n// innerHTML 대신 textContent를 사용합니다.", "// 신뢰할 수 없는 HTML에는 dangerouslySetInnerHTML을 사용하지 않습니다.\nreturn <article>{content}</article>"],
+    question: '사용자 입력을 화면에 표시할 때 innerHTML보다 안전한 속성은 무엇인가요?', answer: 'textContent이며 React에서는 일반 JSX 중괄호 출력이 기본 이스케이프됩니다.',
+  },
+  '인증과 권한': {
+    codes: ['const { data: { user } } = await supabase.auth.getUser()', "if (!user) return res.status(401).json({ message: '로그인이 필요합니다.' })", "if (!profile.is_admin) return res.status(403).json({ message: '관리자 권한이 필요합니다.' })"],
+    question: '401과 403의 차이는 무엇인가요?', answer: '401은 로그인 확인 실패, 403은 로그인했지만 해당 작업 권한이 없는 경우입니다.',
+  },
+  'RLS와 최소 권한': {
+    codes: ['alter table edu_lessons enable row level security;', 'create policy "read lessons" on edu_lessons\nfor select using (true);', 'create policy "admin update" on edu_lessons\nfor update to authenticated\nusing (is_admin()) with check (is_admin());'],
+    question: '최소 권한 원칙은 무엇인가요?', answer: '사용자와 프로그램에 업무 수행에 꼭 필요한 권한만 주는 원칙입니다.',
+  },
+  'HTTPS·DNS·포트': {
+    codes: ['nslookup example.com\n# 도메인이 가리키는 주소를 확인합니다.', 'curl -I https://example.com\n# HTTPS와 응답 상태를 확인합니다.', '# 방화벽 허용 예\n80/tcp  → HTTPS로 이동\n443/tcp → 웹서비스\n22/tcp  → 지정 관리자 IP만'],
+    question: '일반 HTTPS 웹서비스가 사용하는 기본 포트는 무엇인가요?', answer: '443번 포트입니다.',
+  },
+  '로그와 모니터링': {
+    codes: ["console.info({ time: new Date().toISOString(), method: req.method, path: req.path })", "console.warn({ event: 'login_failed', userId, ip: req.ip })\n// 비밀번호는 기록하지 않습니다.", "if (errorRate > 0.05) notifyOperator('오류율이 5%를 넘었습니다.')"],
+    question: '로그에 비밀번호나 토큰을 기록하면 안 되는 이유는 무엇인가요?', answer: '로그 접근자나 외부 시스템을 통해 인증정보가 다시 노출될 수 있기 때문입니다.',
+  },
+  '백업·복구·사고 대응': {
+    codes: ['# 백업 기록\nbackup_date=2026-08-27\nretention_days=30', '# 복구 시험\n1. 별도 환경 복원\n2. 행 수 확인\n3. 로그인·권한 확인\n4. 결과 기록', '# 사고 대응\n1. 탐지·기록\n2. 접근 차단\n3. 영향 조사\n4. 복구·통지\n5. 재발 방지'],
+    question: '백업 파일만 만들고 복원 시험을 하지 않으면 안 되는 이유는 무엇인가요?', answer: '백업이 손상되었거나 필요한 데이터와 권한이 빠졌는지 실제 사고 전에 알 수 없기 때문입니다.',
+  },
+  '과정 목표와 아이디어 찾기': {
+    codes: ['최종 결과: 한 장 웹서비스 기획서\n대상: 코딩 초보 성인\n기간: 4주\n제외: 결제·회원가입', '불편 관찰표\n- 상황: 외출 전 볼거리를 찾을 때\n- 현재 행동: 여러 사이트 검색\n- 불편: 시간이 오래 걸림', '아이디어 후보 평가\n1. 자주 발생하는가?\n2. 대상이 분명한가?\n3. 4주 안에 시험 가능한가?'],
+    question: '좋은 첫 프로젝트 아이디어의 중요한 조건은 무엇인가요?', answer: '대상과 문제가 분명하고 정해진 기간 안에 작은 결과로 시험할 수 있어야 합니다.',
+  },
+  '사용자와 문제 정의': {
+    codes: ['사용자: 퇴근 후 짧게 쉴 콘텐츠를 찾는 직장인\n상황: 평일 저녁 9시\n불편: 선택에 20분 이상 사용', '문제 문장\n[사용자]는 [상황]에서 [어려움]을 겪는다.\n현재 [대처]하지만 [한계]가 있다.', '확정 문제\n퇴근한 직장인은 짧게 볼 작품을 고를 때 정보가 많아 선택에 시간이 오래 걸린다.'],
+    question: '문제 정의 문장에 해결 기능을 먼저 넣으면 안 되는 이유는 무엇인가요?', answer: '특정 해결책에 갇혀 사용자의 실제 문제와 다른 가능성을 놓칠 수 있기 때문입니다.',
+  },
+  '인터뷰 질문 설계': {
+    codes: ['피할 질문: 추천 서비스가 있으면 쓰실 건가요?\n좋은 질문: 최근 작품을 고른 과정을 순서대로 말씀해 주세요.', '인터뷰 질문\n1. 마지막으로 언제 찾았나요?\n2. 가장 오래 걸린 단계는?\n3. 포기한 적은?\n4. 무엇을 기준으로 골랐나요?', '인터뷰 기록\n사실 / 직접 인용 / 해석을 세 열로 분리\n해석은 인터뷰 종료 후 작성'],
+    question: '사용자의 실제 행동을 확인하기 좋은 질문 방식은 무엇인가요?', answer: '가상의 미래보다 최근 실제 경험과 행동 순서를 묻는 열린 질문입니다.',
+  },
+  '경쟁 서비스 조사': {
+    codes: ['비교 기준\n대상 | 첫 화면 | 핵심 기능 | 가격 | 불편', '서비스 A\n- 장점: 검색이 빠름\n- 불편: 필터가 복잡함\n- 기회: 초보자용 선택 단순화', '차별화 문장\n많은 결과 대신 조건에 맞는 3개만 보여주고 선택 이유를 쉽게 설명한다.'],
+    question: '경쟁 서비스 조사의 목적은 기능을 그대로 복사하는 것인가요?', answer: '아니요. 공통 기준으로 장단점과 아직 해결되지 않은 기회를 찾는 것입니다.',
+  },
+  '핵심 가치 제안': {
+    codes: ['[사용자]에게\n[문제]를 해결하도록\n[핵심 결과]를 제공한다.', '퇴근 후 선택이 어려운 사람에게\n취향·시간 조건에 맞는 작품 3개를\n1분 안에 비교하도록 돕는다.', '가치 검증 질문\n- 결과가 구체적인가?\n- 기존 방법보다 나은 점은?\n- 사용자가 이해하는 말인가?'],
+    question: '가치 제안에는 기능 목록보다 무엇이 먼저 보여야 하나요?', answer: '사용자가 얻는 구체적인 결과와 기존 방법보다 나은 점이 먼저 보여야 합니다.',
+  },
+  'MVP 기능 우선순위': {
+    codes: ['Must: 검색·조건·결과 3개\nShould: 찜\nCould: 공유\nWon\'t: 로그인·결제', '우선순위 점수 = 사용자 가치 5 + 검증 필요 5 - 개발 난이도 3', '첫 MVP 범위\n입력: 검색어·장르·평점\n출력: 카드 3개\n저장: localStorage 찜'],
+    question: 'MVP에서 Won’t 항목을 명시하는 이유는 무엇인가요?', answer: '이번 제작 범위를 지키고 중요하지 않은 기능으로 일정이 늘어나는 것을 막기 위해서입니다.',
+  },
+  '사용자 여정 작성': {
+    codes: ['단계: 발견 → 방문 → 입력 → 비교 → 저장\n각 단계에 행동·생각·불편 기록', '입력 단계\n행동: 장르 선택\n생각: 어떤 장르가 맞지?\n불편: 선택지가 너무 많음', '개선 기회\n장르를 쉬운 분위기 표현과 함께 제공하고 기본값을 안내한다.'],
+    question: '사용자 여정에는 화면 이름 외에 무엇을 함께 기록하나요?', answer: '단계별 사용자 행동, 생각, 감정 또는 불편과 개선 기회를 기록합니다.',
+  },
+  '화면 목록과 흐름': {
+    codes: ['화면 목록\n홈 / 검색 결과 / 상세 / 찜 / 오류 안내', '흐름\n홈 입력 → 결과 3개 → 상세 확인 → 찜\n결과 없음 → 조건 수정 안내', '예외 흐름\n잘못된 주소 → 404 안내 → 홈\nAPI 실패 → 오류 문구 → 다시 시도'],
+    question: '정상 화면만 설계하면 안 되는 이유는 무엇인가요?', answer: '결과 없음·오류·잘못된 주소 같은 상황에서 사용자가 다음 행동을 할 수 없기 때문입니다.',
+  },
+  '요구사항과 완료 기준': {
+    codes: ['요구사항\n사용자는 장르를 하나 선택할 수 있다.\n전체를 선택하면 모든 자료를 표시한다.', '입력: 장르 ID\n처리: 일치 항목 filter\n출력: 카드와 결과 수\n예외: 결과가 없으면 안내', '완료 기준\n- 선택 즉시 목록 변경\n- 전체 선택 정상\n- 결과 수 표시\n- 모바일 잘림 없음'],
+    question: '좋은 완료 기준은 어떤 방식으로 작성해야 하나요?', answer: '구현 방법보다 사용자가 화면과 동작에서 직접 확인할 수 있는 조건으로 작성합니다.',
+  },
+  '기획 발표와 인수 문서': {
+    codes: ['발표 5분\n1. 사용자 문제\n2. MVP\n3. 화면 흐름\n4. 시연\n5. 다음 단계', '인수 문서\n목표 / 실행 방법 / 데이터 위치 / 테스트 / 보안 / 미완료', '개발 시작 요청\n프로젝트 위치:\n오늘 범위:\n유지 기능:\n제외 범위:\n완료 기준:'],
+    question: '인수 문서에 미완료 항목을 적어야 하는 이유는 무엇인가요?', answer: '다음 담당자가 완성된 기능으로 오해하지 않고 우선순위와 위험을 정확히 판단할 수 있기 때문입니다.',
+  },
+  'Figma 환경과 프레임': {
+    codes: ['파일 구조\nPage 01 Foundations\nPage 02 Components\nPage 03 Screens', 'Desktop Frame: 1440 × 1024\nMobile Frame: 390 × 844\nLayout Grid: 12 columns', '레이어 이름\nHeader/Desktop\nHero/Desktop\nProgramCard/Default'],
+    question: '웹페이지 한 화면의 작업 영역을 Figma에서 무엇으로 만드나요?', answer: 'Frame으로 만듭니다.',
+  },
+  '색상과 대비': {
+    codes: ['Primary #5B61F6\nText #172033\nBackground #F7F8FC\nError #C73B45', '본문 대비 점검\n#596477 on #FFFFFF\n작은 글자 WCAG AA 4.5:1 이상 확인', 'Color Styles\nBrand/Primary\nText/Strong\nText/Muted\nSurface/Soft\nState/Error'],
+    question: '작은 일반 글자의 권장 최소 명도 대비는 얼마인가요?', answer: 'WCAG AA 기준으로 4.5:1 이상입니다.',
+  },
+  '글자 체계': {
+    codes: ['Display 48/60 Bold\nH1 36/46 Bold\nH2 28/38 Bold\nBody 16/28 Regular', '모바일\nH1 32/40\nH2 24/34\nBody 16/27\nCaption 13/20', 'Text Styles\nHeading/1\nHeading/2\nBody/Default\nBody/Small\nButton/Label'],
+    question: '글자 크기와 함께 반드시 정해야 읽기 편한 값은 무엇인가요?', answer: '줄 간격(line height)과 굵기입니다.',
+  },
+  '여백과 그리드': {
+    codes: ['Spacing Scale\n4 / 8 / 12 / 16 / 24 / 32 / 48 / 64', 'Desktop Grid\n12 columns\nMargin 80\nGutter 24\nContent max 1200', 'Mobile Grid\n4 columns\nMargin 20\nGutter 16\nSection gap 64'],
+    question: '여백 값을 일정한 단위로 제한하는 이유는 무엇인가요?', answer: '화면 전체의 정렬과 리듬을 일관되게 유지하고 수정하기 쉽게 만들기 위해서입니다.',
+  },
+  'Auto Layout': {
+    codes: ['Card Auto Layout\nDirection: Vertical\nGap: 16\nPadding: 24\nWidth: Fill container', 'Button Auto Layout\nDirection: Horizontal\nGap: 8\nPadding: 14 20\nHug contents', 'Card List\nDirection: Horizontal\nGap: 24\nWrap: On\nChildren: Fill container'],
+    question: '내용 길이에 맞춰 버튼 너비가 변하게 하는 크기 옵션은 무엇인가요?', answer: 'Hug contents입니다.',
+  },
+  '버튼과 입력 요소': {
+    codes: ['Button variants\nType: Primary/Secondary\nState: Default/Hover/Focus/Disabled', 'Input variants\nState: Empty/Filled/Focus/Error/Disabled\nLabel과 오류 문구 포함', 'Touch target: 최소 44 × 44\nFocus ring: 2px Primary\nError: 색상 + 문장 함께 표시'],
+    question: '오류 상태를 빨간색만으로 표현하면 안 되는 이유는 무엇인가요?', answer: '색을 구분하기 어려운 사용자가 오류를 알 수 없으므로 아이콘이나 설명 문장을 함께 제공해야 합니다.',
+  },
+  '카드 컴포넌트': {
+    codes: ['ProgramCard 구조\nImage / Category / Title / Summary / Meta / Action', 'Properties\nCategory: Text\nLevel: Text\nImage: Instance swap\nSaved: Boolean', 'Variants\nDefault / Hover / Saved\nDesktop / Mobile\nImage / No image'],
+    question: '같은 카드의 상태 차이를 한 컴포넌트 안에서 관리하는 Figma 기능은 무엇인가요?', answer: 'Variants입니다.',
+  },
+  'PC 메인 화면': {
+    codes: ['Desktop 1440\nHeader 72\nHero 560\nContent max 1200\nSection gap 120', 'Hero 구성\nEyebrow / H1 / Description / Primary CTA / Image\n텍스트 폭 520', '메인 순서\n대표 메시지 → 분야 → 프로그램 → 오늘의 자료 → 이용 순서 → Footer'],
+    question: '메인 화면의 첫 영역에서 가장 먼저 전달해야 하는 것은 무엇인가요?', answer: '서비스가 누구에게 어떤 결과를 제공하는지 보여주는 핵심 메시지입니다.',
+  },
+  '모바일 반응형 화면': {
+    codes: ['Mobile 390\nSide padding 20\nHeader 64\nSection gap 72', '변경 규칙\n메뉴 → 버튼\nHero 2열 → 1열\nCard 3열 → 1열\nCTA full width', '점검\n가로 스크롤 없음\n44px 터치 영역\n16px 이상 본문\n이미지 비율 유지'],
+    question: 'PC 화면을 단순히 축소하는 대신 모바일에서 다시 정해야 하는 것은 무엇인가요?', answer: '정보 우선순위, 열 배치, 메뉴 방식, 터치 영역과 줄바꿈입니다.',
+  },
+  '프로토타입과 개발 전달': {
+    codes: ['Prototype\nHome CTA → Programs\nCard → Detail\nMenu → Overlay\nBack → Previous', '개발 전달\nFrame 이름 / 상태 / 간격 / 색상 Style / Export asset / 예외 화면', '검수표\nPC·모바일 비교\nHover·Focus·Error\n빈 목록·로딩\n이미지 alt 문장'],
+    question: '개발 전달 시 정상 화면 외에 반드시 포함할 상태는 무엇인가요?', answer: '로딩, 결과 없음, 오류, 선택, 비활성 같은 상태입니다.',
+  },
+  'Codex와 안전 규칙': {
+    codes: ['프로젝트: EDU\n작업 위치: C:\\...\\edu\\app\n수정 허용: src\n수정 금지: outputs와 다른 프로젝트', '비밀정보 규칙\n.env.local Git 제외\n비밀번호·service role 키 코드 금지\n실제 개인정보 입력 금지', '작업 전 확인\n1. git status\n2. 기존 파일\n3. 변경 목록 보고\n4. 최소 범위 수정'],
+    question: 'Codex에 작업 위치와 수정 금지 범위를 함께 알려야 하는 이유는 무엇인가요?', answer: '다른 프로젝트나 기존 자료를 뜻하지 않게 수정하는 일을 막기 위해서입니다.',
+  },
+  '좋은 요청문 구조': {
+    codes: ['프로젝트명:\n프로젝트 위치:\n현재 상태:\n오늘 목표:', '작업 범위:\n1. 검색 입력\n2. 제목 필터\n3. 결과 수\n유지: 기존 메뉴·디자인', '완료 조건:\n- 검색 동작\n- 모바일 정상\n- npm run build 성공\n- 변경 파일 보고'],
+    question: '좋은 개발 요청문에 목표와 함께 반드시 들어갈 두 범위는 무엇인가요?', answer: '구현할 작업 범위와 이번에 구현하지 않거나 유지할 범위입니다.',
+  },
+  '작업 범위와 완료 기준': {
+    codes: ['큰 요청: 관리자 전체를 만들어줘.\n작은 요청: 교육자료 목록·등록만 만들고 수정·삭제는 제외해줘.', '완료 기준\n- 빈 검색어는 전체 표시\n- 제목·설명 검색\n- 결과 없으면 안내\n- 새로고침 정상', '테스트 요청\nPC 1280px / 모바일 390px\n정상·빈 값·잘못된 값\nnpm run build'],
+    question: '“보기 좋게 만들어줘”가 완료 기준으로 부족한 이유는 무엇인가요?', answer: '사람마다 판단이 달라 성공 여부를 같은 방법으로 확인할 수 없기 때문입니다.',
+  },
+  'React 첫 화면': {
+    codes: ['npm create vite@latest app -- --template react\ncd app\nnpm install\nnpm run dev', '요청: App.jsx에 제목과 설명, 교육 프로그램 보기 버튼을 추가해줘. TypeScript는 사용하지 마.', '확인:\n브라우저 주소 열기\n제목·버튼 확인\n모바일 너비 확인\nnpm run build'],
+    question: 'Vite 개발 화면을 실행하는 기본 명령은 무엇인가요?', answer: 'npm run dev입니다.',
+  },
+  '데이터와 카드': {
+    codes: ["const programs = [{ id: 'react', title: 'React 입문', level: '기초' }]", 'function ProgramCard({ program }) {\n  return <article><h2>{program.title}</h2><p>{program.level}</p></article>\n}', '{programs.map(program => <ProgramCard key={program.id} program={program} />)}'],
+    question: '반복 카드에 고유한 key가 필요한 이유는 무엇인가요?', answer: 'React가 각 항목을 구분하고 변경된 항목만 정확하게 갱신하기 위해서입니다.',
+  },
+  '검색·필터 기능': {
+    codes: ["const [keyword, setKeyword] = useState('')", "const visible = programs.filter(item =>\n  item.title.toLowerCase().includes(keyword.trim().toLowerCase())\n)", '<input value={keyword} onChange={event => setKeyword(event.target.value)} />\n<p>{visible.length}개 결과</p>'],
+    question: '검색 전 trim과 소문자 변환을 하는 이유는 무엇인가요?', answer: '앞뒤 공백과 영문 대소문자 차이 때문에 예상한 결과가 빠지는 일을 줄이기 위해서입니다.',
+  },
+  '오류 전달과 수정': {
+    codes: ['오류 요청\n실행: npm run dev\n주소: #/programs\n행동: 카드 클릭\n결과: 백지 화면', '첫 오류:\nTypeError: Cannot read properties of undefined\n발생 파일과 줄 번호도 함께 전달', '수정 요청:\n원인을 쉬운 말로 설명해줘.\n기존 검색과 배포 설정은 유지하고 필요한 파일만 수정해줘.\n빌드로 확인해줘.'],
+    question: '오류 로그 전체보다 먼저 전달할 핵심 문장은 무엇인가요?', answer: '실패 원인이 처음 나타난 첫 번째 오류 문장과 파일·줄 번호입니다.',
+  },
+  'Git 변경 검토': {
+    codes: ['git status --short\ngit diff --stat', 'git diff -- src/pages/ProgramPage.jsx\ngit diff --check', 'git diff | Select-String -Pattern "password|secret|service_role" -CaseSensitive:$false\nnpm run build'],
+    question: 'Codex 결과를 커밋하기 전에 확인할 세 가지는 무엇인가요?', answer: '요청 범위의 파일만 바뀌었는지, 비밀정보가 없는지, 빌드와 주요 기능이 성공하는지 확인합니다.',
+  },
+  'GitHub 업로드': {
+    codes: ['git status --short\ngit add src README.md', 'git commit -m "Add lesson search"\ngit log -1 --oneline', 'git pull --rebase origin main\ngit push origin main\n# GitHub에서 커밋 확인'],
+    question: '원격 저장소가 앞서 있을 때 바로 강제 푸시하면 안 되는 이유는 무엇인가요?', answer: '다른 사람이 올린 커밋을 잃거나 저장소 기록을 손상할 수 있기 때문입니다.',
+  },
+  '배포·발표·회고': {
+    codes: ['배포 확인\nActions 초록색 성공\n실제 URL 새로고침\n메뉴·이미지·상세·모바일 테스트', '발표\n문제 1분\n핵심 기능 2분\n시연 3분\n어려움·해결 1분\n다음 계획 1분', '회고\n잘된 점:\n막힌 점:\n도움을 받은 요청:\n다음에는 바꿀 점:\n미완료·보안 주의:'],
+    question: '프로젝트 발표에서 기능 목록보다 중요한 것은 무엇인가요?', answer: '어떤 사용자 문제를 해결했고 실제 화면에서 어떻게 동작하는지 보여주는 것입니다.',
+  },
+  '독자와 운영 목표': {
+    codes: ['핵심 독자\n- 50대 코딩 초보자\n- 노트북과 인터넷 사용 가능\n- 직접 만든 결과를 원하는 사람', '운영 목표\n방문자 수보다 “교육자료 학습 시작”과 “강좌 상세 확인”을 우선 측정', '목표표\n목표: 자료 학습 시작 증가\n지표: 시작 버튼 클릭률\n기간: 4주\n목표값: 15%'],
+    question: '콘텐츠 운영 목표를 단순 방문자 수로만 정하면 부족한 이유는 무엇인가요?', answer: '방문자가 실제로 학습하거나 신청하는 등 원하는 행동을 했는지 알 수 없기 때문입니다.',
+  },
+  '주제와 검색 의도': {
+    codes: ['검색어: React 설치 방법\n의도: 정보 탐색\n원하는 결과: 오류 없이 첫 화면 실행', '주제표\n검색어 | 독자 질문 | 글의 답 | 다음 행동\nVite 설치 | 무엇을 설치? | 순서 안내 | 첫 화면 실행', '한 글 한 질문\n제목: Node.js 설치 확인하는 3단계\n제외: React 프로젝트 전체 제작'],
+    question: '검색어가 같아도 검색 의도를 확인해야 하는 이유는 무엇인가요?', answer: '사용자가 정의·비교·구매·실행 중 어떤 결과를 원하는지에 따라 제공할 내용이 달라지기 때문입니다.',
+  },
+  '제목과 글 구조': {
+    codes: ['제목 공식\n[대상] + [해결할 문제] + [구체적 결과]\n예: 초보자를 위한 Vite 설치와 첫 화면 실행', '본문 구조\n1. 먼저 답\n2. 준비물\n3. 단계별 실습\n4. 오류 해결\n5. 완료 확인', '소제목 점검\n소제목만 읽어도 전체 순서가 보이는가?\n한 문단에 한 가지 내용만 있는가?'],
+    question: '초보자용 글에서 결론을 앞부분에 배치하는 이유는 무엇인가요?', answer: '독자가 자신에게 필요한 글인지 빠르게 판단하고 전체 진행 방향을 이해할 수 있기 때문입니다.',
+  },
+  '이미지와 저작권': {
+    codes: ['이미지 기록표\n파일: react-install.webp\n출처: 직접 제작\n사용 범위: EDU\n대체 설명: Vite 설치가 완료된 터미널', '<img src="react-install.webp" alt="Vite 설치 완료 메시지가 표시된 터미널" loading="lazy" />', '최적화 점검\n형식: WebP\n너비: 표시 크기의 2배 이하\n용량: 300KB 이하\n파일명: 내용 설명'],
+    question: '이미지 출처와 사용 범위를 기록해야 하는 이유는 무엇인가요?', answer: '나중에 저작권과 재사용 가능 여부를 확인하고 문제가 있는 이미지를 교체하기 위해서입니다.',
+  },
+  '발행 체크리스트': {
+    codes: ['내용 확인\n□ 제목과 본문 일치\n□ 실행 순서 검증\n□ 코드 복사 가능\n□ 날짜·버전 표시', '화면 확인\n□ 링크 정상\n□ 이미지 alt\n□ 모바일 줄바꿈\n□ 키보드 사용\n□ 오류 주소 안내', '발행 기록\n작성자:\n검수자:\n발행일:\n수정일:\n관련 강좌:\n다음 검토일:'],
+    question: '교육자료의 코드를 발행 전에 직접 실행해야 하는 이유는 무엇인가요?', answer: '오탈자와 버전 차이로 학습자가 첫 단계부터 막히는 일을 방지하기 위해서입니다.',
+  },
+  '콘텐츠 달력': {
+    codes: ['열 구성\n주제 | 독자 | 형식 | 담당자 | 마감일 | 상태 | URL', '1주차 월: HTML 첫 화면 / 신규 / 실습 / 작성 중\n1주차 목: 오류 해결 / 재방문 / FAQ / 예정', '상태 규칙\n아이디어 → 작성 → 기술 검수 → 발행 예약 → 발행 → 개선'],
+    question: '콘텐츠 달력에 담당자와 상태를 함께 기록하는 이유는 무엇인가요?', answer: '작업이 누구에게 멈춰 있는지 파악하고 발행 누락과 중복 작업을 막기 위해서입니다.',
+  },
+  '조회·클릭·전환': {
+    codes: ['조회수 1,000\n버튼 클릭 180\n학습 시작 90', '클릭률 = 180 / 1,000 × 100 = 18%\n전환율 = 90 / 1,000 × 100 = 9%', '비교표\n이번 주 전환율 9%\n지난주 전환율 7%\n변화 +2%p\n원인 후보: CTA 문구 변경'],
+    question: '클릭률과 전환율의 분모를 함께 기록해야 하는 이유는 무엇인가요?', answer: '어떤 전체 집단을 기준으로 계산했는지 달라지면 수치를 정확히 비교할 수 없기 때문입니다.',
+  },
+  '데이터 정리와 시각화': {
+    codes: ['정리 전\nReact / react / React \n정리 후\nReact 한 값으로 통일', '주간 표\n주차 | 조회 | 시작 | 완료\n1 | 1000 | 90 | 30\n2 | 1200 | 132 | 48', '차트 선택\n시간 변화 → 선 그래프\n항목 비교 → 막대 그래프\n구성 비율 → 제한적으로 원 그래프'],
+    question: '차트를 만들기 전에 중복과 빈 값을 정리해야 하는 이유는 무엇인가요?', answer: '같은 항목이 나뉘거나 누락되어 잘못된 합계와 비율이 표시될 수 있기 때문입니다.',
+  },
+  '개선 가설과 실험': {
+    codes: ['관찰: 모바일에서 시작 클릭률이 낮다.\n가설: 첫 버튼을 화면 위로 옮기면 클릭률이 높아질 것이다.', '실험\n대상: 모바일 방문자\n변경: CTA 위치만 변경\n지표: 클릭률\n기간: 2주\n중단 조건: 오류 증가', '결과\n기존 12% / 변경 15%\n차이 +3%p\n한계: 표본 200명\n결정: 2주 추가 관찰'],
+    question: '한 실험에서 여러 요소를 동시에 바꾸면 안 되는 이유는 무엇인가요?', answer: '어떤 변경이 결과에 영향을 주었는지 구분하기 어렵기 때문입니다.',
+  },
+  '성과 보고와 다음 계획': {
+    codes: ['보고 순서\n목표 → 실행 → 결과 수치 → 해석 → 한계 → 다음 행동', '요약\n목표: 학습 시작률 10%\n결과: 9%\n잘된 점: 조회 증가\n문제: 모바일 이탈\n다음: CTA 개선 실험', '다음 달 계획\n유지: 인기 10분 실습\n개선: 모바일 첫 화면\n중단: 클릭 없는 배너\n신규: 최근 본 자료'],
+    question: '성과 보고서에 한계와 다음 행동을 함께 적는 이유는 무엇인가요?', answer: '수치를 과장하지 않고 다음 운영자가 근거를 이어서 검증하고 개선할 수 있게 하기 위해서입니다.',
+  },
+  'React 프로젝트 점검': {
+    codes: ['npm install\nnpm run dev\n# package.json의 scripts와 로컬 주소 확인', 'src/\n├─ components/\n├─ pages/\n├─ data/\n└─ App.jsx', 'npm run build\ngit status --short\n# 빌드 오류와 예상 밖 생성 파일 확인'],
+    question: 'React 수정 전에 package.json의 scripts를 확인하는 이유는 무엇인가요?', answer: '프로젝트마다 실행·빌드·테스트 명령이 다를 수 있기 때문입니다.',
+  },
+  '컴포넌트와 props': {
+    codes: ['function Badge({ children }) {\n  return <span className="badge">{children}</span>\n}', 'function ProgramCard({ title, level }) {\n  return <article><Badge>{level}</Badge><h2>{title}</h2></article>\n}', '<ProgramCard title="React API 활용" level="기초" />\n<ProgramCard title="관리자 대시보드" level="실전" />'],
+    question: 'props를 직접 수정하지 않고 읽기 전용으로 다루는 이유는 무엇인가요?', answer: '데이터가 부모에서 자식으로 흐르는 규칙을 유지해 변경 원인을 예측하기 쉽게 하기 위해서입니다.',
+  },
+  'useState와 입력': {
+    codes: ["const [keyword, setKeyword] = useState('')", '<label htmlFor="search">검색</label>\n<input id="search" value={keyword} onChange={event => setKeyword(event.target.value)} />', "const [filters, setFilters] = useState({ category: 'all', level: 'all' })\nsetFilters(current => ({ ...current, level: '기초' }))"],
+    question: '객체 상태의 한 항목만 바꿀 때 이전 값을 펼쳐 쓰는 이유는 무엇인가요?', answer: '다른 상태 항목이 사라지지 않게 유지하면서 필요한 값만 변경하기 위해서입니다.',
+  },
+  '목록 검색': {
+    codes: ["const normalized = keyword.trim().toLowerCase()", "const searched = programs.filter(item =>\n  `${item.title} ${item.description}`.toLowerCase().includes(normalized)\n)", '<p aria-live="polite">{searched.length}개 프로그램</p>\n{searched.length ? <ProgramGrid items={searched} /> : <EmptyResult />}'],
+    question: '검색 결과 개수를 aria-live로 안내하면 어떤 사용자를 도울 수 있나요?', answer: '화면낭독기를 사용하는 사용자가 입력 후 결과가 바뀐 사실을 알 수 있습니다.',
+  },
+  '복합 필터': {
+    codes: ["const categoryMatches = category === 'all' || item.categoryId === category", "const visible = programs.filter(item =>\n  (category === 'all' || item.categoryId === category) &&\n  (level === 'all' || item.level === level)\n)", "function resetFilters() {\n  setCategory('all')\n  setLevel('all')\n  setPage(1)\n}"],
+    question: '필터 조건을 바꿀 때 페이지를 1로 돌리는 이유는 무엇인가요?', answer: '새 결과의 페이지 수가 줄어 현재 페이지가 빈 화면이 되는 것을 막기 위해서입니다.',
+  },
+  '정렬과 페이지네이션': {
+    codes: ["const sorted = [...visible].sort((a, b) => a.title.localeCompare(b.title, 'ko'))", 'const pageSize = 9\nconst pageCount = Math.ceil(sorted.length / pageSize)\nconst pageItems = sorted.slice((page - 1) * pageSize, page * pageSize)', '<button disabled={page === 1} onClick={() => setPage(page - 1)}>이전</button>\n<span>{page} / {pageCount}</span>'],
+    question: 'sort 전에 배열을 복사해야 하는 이유는 무엇인가요?', answer: 'sort가 원본 배열 자체를 변경해 다른 화면 상태에 예상하지 않은 영향을 줄 수 있기 때문입니다.',
+  },
+  '비동기와 fetch': {
+    codes: ["const response = await fetch('https://api.tvmaze.com/search/shows?q=office')", "if (!response.ok) throw new Error(`요청 실패: ${response.status}`)\nconst data = await response.json()", "useEffect(() => {\n  const controller = new AbortController()\n  loadShows(controller.signal)\n  return () => controller.abort()\n}, [keyword])"],
+    question: '컴포넌트가 사라질 때 진행 중인 요청을 취소하는 이유는 무엇인가요?', answer: '필요 없는 응답이 뒤늦게 상태를 바꾸거나 네트워크를 낭비하는 일을 줄이기 위해서입니다.',
+  },
+  '로딩·오류·빈 상태': {
+    codes: ["if (loading) return <p role='status'>자료를 불러오는 중입니다.</p>", "if (error) return <div role='alert'><p>{error}</p><button onClick={retry}>다시 시도</button></div>", "if (!items.length) return <div><strong>결과가 없습니다.</strong><button onClick={resetFilters}>조건 초기화</button></div>"],
+    question: '오류 화면에 오류 문장만 표시하는 것보다 다시 시도 버튼을 제공해야 하는 이유는 무엇인가요?', answer: '사용자가 페이지를 떠나지 않고 문제에서 복구할 다음 행동을 선택할 수 있기 때문입니다.',
+  },
+  'localStorage 저장': {
+    codes: ["localStorage.setItem('edu:favorites', JSON.stringify(favoriteIds))", "function readFavorites() {\n  try { return JSON.parse(localStorage.getItem('edu:favorites')) || [] }\n  catch { return [] }\n}", "setFavoriteIds(current => {\n  const next = current.includes(id) ? current.filter(v => v !== id) : [...current, id]\n  localStorage.setItem('edu:favorites', JSON.stringify(next))\n  return next\n})"],
+    question: 'localStorage 값을 읽을 때 try/catch가 필요한 이유는 무엇인가요?', answer: '저장값이 손상되거나 JSON 형식이 아니면 JSON.parse가 오류를 발생시킬 수 있기 때문입니다.',
+  },
+  '통합 테스트와 배포': {
+    codes: ['테스트 흐름\n홈 → 프로그램 → 검색 → 필터 → 2페이지 → 상세 → 찜 → 새로고침', 'npm run build\ngit diff --check\ngit status --short', '배포 점검\n실제 URL 직접 접속\n상세 주소 새로고침\n390px 모바일\n키보드 Tab\n저장 복원'],
+    question: '개별 기능뿐 아니라 사용자 흐름 전체를 테스트해야 하는 이유는 무엇인가요?', answer: '각 기능이 단독으로 동작해도 화면 이동과 상태 조합에서 오류가 발생할 수 있기 때문입니다.',
+  },
+}
+
 const makeRepresentativeCourse = ({ programId, title, outcome, tools, modules }) => ({
   programId, title, outcome, totalWeeks: 10,
   sessions: modules.flatMap((moduleTitle, moduleIndex) => {
@@ -191,23 +594,30 @@ const makeRepresentativeCourse = ({ programId, title, outcome, tools, modules })
     return formats.map(([format, goal], formatIndex) => {
       const order = moduleIndex * 3 + formatIndex + 1
       const exactExplanation = moduleExplanations[moduleTitle]
+      const exactLesson = exactModuleLessons[moduleTitle]
       const concepts = [
         exactExplanation,
         `${exactExplanation} 이번 회차에서는 ${tools}에서 작은 예제를 직접 실행해 입력과 결과의 연결을 확인합니다.`,
         `${exactExplanation} 마지막으로 예제를 자신의 주제와 자료에 맞게 바꾸고 결과물에 반영합니다.`,
       ]
-      return session(
+      const generated = session(
         `${programId}-${String(order).padStart(2, '0')}`, week, order, `${moduleTitle} · ${format}`, goal, concepts[formatIndex],
         formatIndex === 0
           ? [`${tools}를 준비하고 ${moduleTitle}과 관련된 현재 상태를 기록합니다.`, exactExplanation, '핵심 용어와 역할을 자신의 말로 한 문장씩 적습니다.', '좋은 예와 잘못된 예를 하나씩 비교합니다.', '오늘 적용할 한 가지 목표를 정합니다.']
           : formatIndex === 1
             ? [`${tools}에서 ${moduleTitle} 실습 위치를 엽니다.`, '제공된 예제의 입력·처리·결과를 구분합니다.', '예제를 그대로 실행하고 첫 결과를 저장합니다.', '값이나 조건 한 가지를 바꾸어 다시 실행합니다.', '변경 전후 차이와 오류 여부를 기록합니다.']
             : [`이전 회차의 ${moduleTitle} 예제를 엽니다.`, '내 서비스의 사용자·자료·조건으로 예제를 바꿉니다.', 'PC와 모바일 또는 정상·오류 조건을 각각 확인합니다.', `완성된 ${moduleTitle} 결과를 프로젝트에 저장합니다.`, '완료 기준 세 항목을 확인하고 다음 주차 준비를 기록합니다.'],
-        `// ${title} ${order}회차 실습 기록\nconst topic = '${moduleTitle}'\nconst result = '${format} 완료'\nconsole.log(topic, result)`,
+        exactLesson?.codes[formatIndex] || `// ${title} ${order}회차 실습 기록\nconst topic = '${moduleTitle}'\nconst result = '${format} 완료'\nconsole.log(topic, result)`,
         `${title}의 ${order}회차입니다. ${moduleTitle} ${format} 실습을 초보자도 따라 할 수 있게 작은 단계로 진행해줘. 기존 결과는 유지하고 완료 후 확인 방법과 오류 복구 순서를 알려줘.`,
         [`${moduleTitle}이(가) 필요한 이유를 설명할 수 있나요?`, '예제에서 직접 바꾼 부분은 무엇인가요?', '완료 결과를 어떤 방법으로 확인했나요?'],
         `${moduleTitle} ${format} 결과물`,
       )
+      if (!exactLesson) return generated
+      return {
+        ...generated,
+        quiz: [exactLesson.question, `이번 ${format} 회차에서 직접 확인한 결과는 무엇인가요?`, '오류가 생겼을 때 먼저 기록할 정보는 무엇인가요?'],
+        quizAnswers: [exactLesson.answer, generated.result, '실행 명령·브라우저 주소·재현 순서와 첫 번째 오류 문장입니다.'],
+      }
     })
   }),
 })
