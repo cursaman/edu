@@ -170,6 +170,17 @@ RLS(Row Level Security: 데이터 한 줄마다 읽기·쓰기 권한을 검사�
 5. 다른 테스트 계정으로 로그인해 앞 계정의 과정과 진도가 보이지 않는지 확인합니다.
 6. 네트워크를 끈 상태에서 완료 버튼을 눌러 저장 실패 안내가 표시되는지 확인합니다.
 
+### 회원가입 오류 확인 순서
+
+1. `Authentication` → `Providers` → `Email`이 활성화되어 있는지 확인합니다.
+2. 최신 `supabase/schema.sql`을 SQL Editor에서 다시 실행해 프로필 생성 함수와 트리거를 복원합니다.
+3. `Authentication` → `Logs`에서 실패한 가입 요청의 오류 코드를 확인합니다.
+4. `Database error saving new user`라면 `user_profiles` 테이블과 `on_auth_user_created_edu_profile` 트리거를 확인합니다.
+5. `Email rate limit exceeded`라면 잠시 기다린 뒤 다시 시도합니다. 무료 기본 이메일 발송에는 제한이 있습니다.
+6. 가입 확인 이메일이 오지 않으면 스팸함과 `URL Configuration`의 Site URL·Redirect URLs를 확인합니다.
+
+화면의 개발자 도구 Console에는 Supabase 오류 코드·상태·메시지만 표시하며 입력한 이메일과 비밀번호는 기록하지 않습니다.
+
 ## 관리자 계정과 권한 등록
 
 1. Supabase의 `Authentication` → `Users`에서 `Add user`를 선택합니다.

@@ -3,12 +3,16 @@ import { isSupabaseConfigured, supabase } from '../lib/supabase.js'
 
 function readableAuthError(error) {
   const message = String(error?.message || '')
+  const code = String(error?.code || '')
   if (/invalid login credentials/i.test(message)) return '이메일 또는 비밀번호를 확인해 주세요.'
   if (/email not confirmed/i.test(message)) return '가입 확인 이메일에서 인증을 완료해 주세요.'
   if (/already registered/i.test(message)) return '이미 가입된 이메일입니다. 로그인해 주세요.'
+  if (/invalid.*email|email.*invalid|validate email/i.test(message) || code === 'email_address_invalid') return '사용할 수 있는 이메일 주소 형식인지 확인해 주세요.'
+  if (/database error saving new user/i.test(message) || code === 'unexpected_failure') return '회원 프로필을 만드는 데이터베이스 단계에서 오류가 발생했습니다. Supabase에서 최신 schema.sql을 다시 실행한 뒤 Auth 로그를 확인해 주세요.'
+  if (/signup.*disabled/i.test(message) || code === 'signup_disabled') return '현재 이메일 회원가입이 꺼져 있습니다. Supabase Email Provider 설정을 확인해 주세요.'
   if (/password/i.test(message)) return '비밀번호는 8자 이상으로 입력해 주세요.'
   if (/rate limit/i.test(message)) return '요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.'
-  return '인증 처리 중 문제가 발생했습니다. 인터넷 연결과 Supabase 설정을 확인해 주세요.'
+  return `인증 처리 중 문제가 발생했습니다. Supabase Auth 로그를 확인해 주세요.${code ? ` (오류 코드: ${code})` : ''}`
 }
 
 export default function UserAuthPage({ mode = 'login', nextPath = '/classroom', session }) {
@@ -40,6 +44,7 @@ export default function UserAuthPage({ mode = 'login', nextPath = '/classroom', 
         window.location.hash = nextPath
       }
     } catch (authError) {
+      console.error('Supabase 회원 인증 실패', { code: authError?.code, status: authError?.status, message: authError?.message })
       setError(readableAuthError(authError))
     } finally {
       setSubmitting(false)
