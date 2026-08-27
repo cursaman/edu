@@ -178,7 +178,7 @@ export default function App() {
       <footer className="site-footer">
         <div className="page-shell footer-inner">
           <div>
-            <strong>EDU</strong>
+            <img className="footer-brand-logo" src={`${import.meta.env.BASE_URL}images/cursamanworks-logo.png`} alt="cursamanworks" />
             <span>AI와 함께 배우는 실전 웹개발 교육</span>
           </div>
           <div className="footer-links"><span>한 번에 한 단계씩, 직접 만들고 확인합니다.</span><a href="#/admin">{isSupabaseConfigured ? '관리자 로그인' : '관리자 체험'}</a></div>

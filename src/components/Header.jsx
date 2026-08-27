@@ -36,11 +36,8 @@ export default function Header({ currentPath }) {
       </a>
       <header className="site-header">
       <div className="header-inner page-shell">
-        <a className="brand" href="#/" aria-label="EDU 웹개발 교육 플랫폼 홈">
-          <span className="brand-mark" aria-hidden="true">
-            E
-          </span>
-          <span className="brand-name">EDU</span>
+        <a className="brand" href="#/" aria-label="cursamanworks EDU 웹개발 교육 플랫폼 홈">
+          <img className="brand-logo" src={`${import.meta.env.BASE_URL}images/cursamanworks-logo.png`} alt="cursamanworks" />
         </a>
 
         <button

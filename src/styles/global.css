@@ -69,6 +69,14 @@ button:focus-visible {
   gap: 11px;
 }
 
+.brand-logo {
+  display: block;
+  width: 178px;
+  height: 45px;
+  object-fit: contain;
+  object-position: left center;
+}
+
 .brand-mark {
   display: grid;
   width: 34px;
@@ -724,6 +732,11 @@ button:focus-visible {
 .page-introduction {
   max-width: 680px;
   margin-bottom: 43px;
+}
+
+.page-introduction.catalog-hero {
+  width: 100%;
+  max-width: none;
 }
 
 .page-introduction h1,
@@ -2113,6 +2126,14 @@ button:focus-visible {
   gap: 13px;
 }
 
+.footer-brand-logo {
+  display: block;
+  width: 142px;
+  height: 38px;
+  object-fit: contain;
+  object-position: left center;
+}
+
 .footer-inner strong {
   color: var(--ink);
   font-size: 16px;
@@ -2183,6 +2204,8 @@ button:focus-visible {
     flex-wrap: wrap;
     gap: 0;
   }
+
+  .brand-logo { width: 143px; height: 39px; }
 
   .main-navigation {
     display: none;
