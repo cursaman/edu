@@ -6,6 +6,8 @@ import { categories, learningSteps } from '../data/catalog.js'
 import { readCompletedLessons } from '../data/learningProgress.js'
 import { readManagedContent } from '../data/contentStorage.js'
 import { readFavoriteLessons, toggleFavoriteLesson } from '../data/lessonActivity.js'
+import { featuredLearningPrograms } from '../data/featuredLearning.js'
+import { findDetailedCourse } from '../data/courseLessons.js'
 
 const beginnerPath = [
   { number: '01', icon: '✦', title: '기획과 웹 기초', description: '아이디어를 정리하고 HTML·CSS로 첫 화면을 만듭니다.', accent: 'violet' },
@@ -108,6 +110,20 @@ export default function HomePage() {
           <a className="button button-primary" href="#/classroom">내 강의실 보기 →</a>
         </div>
       </section>
+
+      <section className="section page-shell featured-learning-section" aria-labelledby="featured-learning-title">
+        <SectionHeading eyebrow="START FREE" title="검증한 대표 과정 3개부터 무료로 시작하세요" description="과정마다 첫 3회차의 설명·실습 파일·예상 결과를 점검했습니다. 실제 시범수업 결과도 계속 반영합니다." />
+        <div className="featured-learning-grid">
+          {featuredLearningPrograms.map((featured) => {
+            const course = findDetailedCourse(featured.programId)
+            const program = programs.find((item) => item.id === featured.programId)
+            if (!course || !program) return null
+            return <article className="featured-learning-card" key={featured.programId}><div className="featured-learning-image"><img alt={featured.imageAlt} src={`${import.meta.env.BASE_URL}${featured.image}`} /><span>1~3회차 무료</span></div><div className="featured-learning-copy"><p className="section-eyebrow">{program.category} · {program.level}</p><h3>{featured.shortTitle}</h3><p>{featured.promise}</p><div className="featured-quality-line"><span aria-hidden="true">✓</span><strong>{featured.quality.status}</strong></div><dl><div><dt>완성 결과</dt><dd>{featured.resultTitle}</dd></div><div><dt>전체 구성</dt><dd>{course.sessions.length}회차</dd></div></dl><div className="featured-learning-actions"><a className="button button-primary" href={`#/classroom/${featured.programId}/${course.sessions[0].id}`}>무료 체험 →</a><a href={`#/programs/${featured.programId}`}>상세 보기</a></div></div></article>
+          })}
+        </div>
+      </section>
+
+      <section className="home-recommendation"><div className="page-shell home-recommendation-inner"><div><span className="home-recommendation-icon" aria-hidden="true">✦</span><p className="section-eyebrow">PERSONAL LEARNING PATH</p><h2>100개 과정 앞에서 고민하지 마세요.</h2><p>코딩 경험, 만들고 싶은 결과, 학습 방식과 가능한 시간을 확인해 첫 과정을 추천합니다.</p></div><a className="button button-primary" href="#/recommend">60초 과정 추천받기 →</a></div></section>
 
       <section className="learning-strip" aria-label="학습 진행 방식">
         <div className="page-shell steps-grid">

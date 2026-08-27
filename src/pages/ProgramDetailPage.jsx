@@ -1,10 +1,12 @@
 import { findManagedProgram, readManagedContent } from '../data/contentStorage.js'
 import { getProgramWeeks } from '../data/programWeeks.js'
 import { findDetailedCourse } from '../data/courseLessons.js'
+import { findFeaturedLearning } from '../data/featuredLearning.js'
 
 export default function ProgramDetailPage({ programId }) {
   const program = findManagedProgram(programId)
   const detailedCourse = findDetailedCourse(programId)
+  const featured = findFeaturedLearning(programId)
   const fallbackImage = `${import.meta.env.BASE_URL}images/edu-hero.webp`
 
   if (!program) {
@@ -18,7 +20,21 @@ export default function ProgramDetailPage({ programId }) {
   }
 
   const selectedLessonIds = program.relatedLessonIds || []
-  const weeklyCurriculum = getProgramWeeks(program)
+  const weeklyCurriculum = detailedCourse
+    ? Array.from({ length: detailedCourse.totalWeeks }, (_, index) => {
+      const sessions = detailedCourse.sessions.filter((session) => session.week === index + 1)
+      return {
+        week: index + 1,
+        title: sessions.map((session) => session.title.split(' · ')[0]).join(' → '),
+        summary: `${sessions.length}개 회차에서 개념을 이해하고, 따라 한 뒤 내 결과물에 적용합니다.`,
+        topics: sessions.map((session) => session.title),
+        tools: ['Codex', '실습 파일', '웹브라우저'],
+        result: sessions.at(-1)?.result || detailedCourse.outcome,
+        lessonIds: [],
+      }
+    })
+    : getProgramWeeks(program)
+  const displayedDuration = detailedCourse ? `${detailedCourse.totalWeeks}주 · ${detailedCourse.sessions.length}회차` : program.duration
   const relatedLessons = readManagedContent('lessons').filter((lesson) => (
     selectedLessonIds.length > 0
       ? selectedLessonIds.includes(lesson.id)
@@ -46,10 +62,12 @@ export default function ProgramDetailPage({ programId }) {
         <div className="detail-summary" aria-label="교육 기본 정보">
           <span>교육 분야 <strong>{program.category}</strong></span>
           <span>난이도 <strong>{program.level}</strong></span>
-          <span>교육 기간 <strong>{program.duration}</strong></span>
+          <span>교육 기간 <strong>{displayedDuration}</strong></span>
           <span>진행 상태 <strong>{program.status}</strong></span>
         </div>
       </header>
+
+      {featured && detailedCourse && <section className="program-experience-panel" aria-labelledby="program-experience-title"><div><span className="section-eyebrow">VERIFIED FREE EXPERIENCE</span><h2 id="program-experience-title">첫 3회차를 무료로 확인하고 결정하세요</h2><p>{featured.promise}</p><ul>{featured.quality.checked.map((item) => <li key={item}>✓ {item}</li>)}</ul><small>{featured.quality.next}</small></div><aside><img alt={featured.imageAlt} src={`${import.meta.env.BASE_URL}${featured.image}`} /><strong>{featured.resultTitle}</strong><span>{featured.resultDescription}</span><a className="button button-primary" href={`#/classroom/${program.id}/${detailedCourse.sessions[0].id}`}>무료 체험 시작하기 →</a></aside></section>}
 
       <div className="detail-layout">
         <div className="detail-main">
@@ -95,7 +113,7 @@ export default function ProgramDetailPage({ programId }) {
 
       <section className="weekly-curriculum-section" aria-labelledby="weekly-curriculum-title">
         <div className="weekly-curriculum-heading">
-          <span className="section-eyebrow">4 WEEK CURRICULUM</span>
+          <span className="section-eyebrow">{weeklyCurriculum.length} WEEK CURRICULUM</span>
           <h2 id="weekly-curriculum-title">주차별 커리큘럼</h2>
           <p>매주 무엇을 배우고 어떤 결과물을 완성하는지 한눈에 확인하세요.</p>
         </div>

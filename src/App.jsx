@@ -13,6 +13,7 @@ const CategoriesPage = lazy(() => import('./pages/CategoriesPage.jsx'))
 const CourseClassroomPage = lazy(() => import('./pages/CourseClassroomPage.jsx'))
 const HomePage = lazy(() => import('./pages/HomePage.jsx'))
 const LessonDetailPage = lazy(() => import('./pages/LessonDetailPage.jsx'))
+const LearningRecommendationPage = lazy(() => import('./pages/LearningRecommendationPage.jsx'))
 const LessonsPage = lazy(() => import('./pages/LessonsPage.jsx'))
 const MyClassroomPage = lazy(() => import('./pages/MyClassroomPage.jsx'))
 const NoticeDetailPage = lazy(() => import('./pages/NoticeDetailPage.jsx'))
@@ -139,6 +140,8 @@ export default function App() {
     />
   } else if (route.pathname.startsWith('/lessons/')) {
     page = <LessonDetailPage key={route.pathname} lessonId={route.pathname.split('/')[2]} />
+  } else if (route.pathname === '/recommend') {
+    page = <LearningRecommendationPage />
   } else if (route.pathname === '/classroom') {
     page = <MyClassroomPage />
   } else if (route.pathname.startsWith('/classroom/')) {

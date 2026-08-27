@@ -2890,3 +2890,79 @@ button:focus-visible {
 #main-content:focus {
   outline: none;
 }
+
+/* 대표 과정 무료 체험과 개인 추천 */
+.featured-learning-section { padding-block: 84px; }
+.featured-learning-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.featured-learning-card { overflow: hidden; border: 1px solid #dfe3ef; border-radius: 23px; background: #fff; box-shadow: 0 16px 45px rgba(45, 55, 91, .08); }
+.featured-learning-image { position: relative; height: 190px; overflow: hidden; background: #eef0fb; }
+.featured-learning-image img { width: 100%; height: 100%; object-fit: cover; }
+.featured-learning-image > span { position: absolute; top: 14px; left: 14px; padding: 8px 11px; border-radius: 99px; background: #11182a; color: #fff; font-size: 11px; font-weight: 800; }
+.featured-learning-copy { padding: 25px; }
+.featured-learning-copy h3 { margin: 8px 0 10px; font-size: 24px; }
+.featured-learning-copy > p:not(.section-eyebrow) { min-height: 70px; color: var(--muted); line-height: 1.7; }
+.featured-quality-line { display: flex; align-items: center; gap: 8px; margin: 18px 0; color: #267b63; font-size: 12px; }
+.featured-quality-line span { display: grid; width: 24px; height: 24px; place-items: center; border-radius: 50%; background: #e5f8f1; }
+.featured-learning-copy dl { display: grid; gap: 8px; margin: 0 0 21px; padding-top: 15px; border-top: 1px solid var(--line); }
+.featured-learning-copy dl div { display: flex; justify-content: space-between; gap: 15px; font-size: 12px; }
+.featured-learning-copy dt { color: var(--muted); }
+.featured-learning-copy dd { margin: 0; font-weight: 750; text-align: right; }
+.featured-learning-actions { display: flex; align-items: center; gap: 17px; }
+.featured-learning-actions > a:not(.button) { color: var(--violet); font-size: 13px; font-weight: 750; }
+.home-recommendation { padding: 54px 0; background: linear-gradient(115deg, #141a2e, #303b75 58%, #395f67); color: #fff; }
+.home-recommendation-inner { display: flex; align-items: center; justify-content: space-between; gap: 40px; }
+.home-recommendation-icon { display: grid; width: 48px; height: 48px; place-items: center; float: left; margin-right: 18px; border-radius: 15px; background: rgba(255,255,255,.13); color: #a8f0db; font-size: 22px; }
+.home-recommendation .section-eyebrow { color: #a8f0db; }
+.home-recommendation h2 { margin: 7px 0; font-size: clamp(25px, 3vw, 36px); }
+.home-recommendation p:not(.section-eyebrow) { margin: 0; color: #d9deed; }
+.program-experience-panel { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(270px, .7fr); gap: 38px; margin-bottom: 34px; padding: 36px; border: 1px solid #dce1ef; border-radius: 24px; background: linear-gradient(135deg, #f6f5ff, #eefaf6); }
+.program-experience-panel h2 { margin: 9px 0; font-size: 28px; }
+.program-experience-panel p, .program-experience-panel li { color: var(--muted); line-height: 1.7; }
+.program-experience-panel ul { padding: 0; list-style: none; }
+.program-experience-panel small { color: #7a6d5d; }
+.program-experience-panel aside { display: grid; align-content: start; gap: 10px; padding: 16px; border-radius: 18px; background: #fff; box-shadow: 0 12px 30px rgba(45,55,91,.08); }
+.program-experience-panel img { width: 100%; height: 150px; border-radius: 12px; object-fit: cover; }
+.program-experience-panel aside span { color: var(--muted); font-size: 12px; line-height: 1.6; }
+.recommendation-page { max-width: 1050px; }
+.recommendation-hero { max-width: 720px; margin-bottom: 35px; }
+.recommendation-hero h1 { margin: 10px 0; font-size: clamp(35px, 5vw, 55px); letter-spacing: -.06em; }
+.recommendation-hero p { color: var(--muted); line-height: 1.8; }
+.recommendation-form { display: grid; gap: 16px; }
+.recommendation-form fieldset { padding: 24px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
+.recommendation-form legend { padding: 0 8px; font-size: 17px; font-weight: 800; }
+.recommendation-form legend span { margin-right: 9px; color: var(--violet); font-size: 11px; }
+.recommendation-form fieldset > div { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 12px; }
+.recommendation-form label { padding: 12px 16px; border: 1px solid #dfe2ec; border-radius: 12px; cursor: pointer; color: #4d586b; }
+.recommendation-form label:has(input:focus-visible) { outline: 3px solid rgba(92,103,246,.25); }
+.recommendation-form label.recommendation-option-active { border-color: var(--violet); background: #f0f1ff; color: var(--violet); font-weight: 750; }
+.recommendation-form input { margin-right: 7px; }
+.recommendation-form > button { justify-self: start; margin-top: 8px; }
+.recommendation-result { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 35px; margin-top: 35px; padding: 35px; border-radius: 24px; background: #171d32; color: #fff; }
+.recommendation-result h2 { margin: 8px 0; font-size: 34px; }
+.recommendation-result p, .recommendation-result li { color: #dce1ef; line-height: 1.7; }
+.recommendation-result img { width: 100%; height: 100%; min-height: 260px; border-radius: 17px; object-fit: cover; }
+.recommendation-result-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.free-trial-complete { display: flex; align-items: center; gap: 15px; background: #fff9ec; }
+.free-trial-complete > span { display: grid; flex: 0 0 42px; height: 42px; place-items: center; border-radius: 50%; background: #ffe09a; font-weight: 900; }
+.free-trial-complete h3 { margin-bottom: 4px; }
+.free-trial-complete p { margin: 0; }
+.free-trial-complete .button { flex: 0 0 auto; margin-left: auto; }
+
+@media (max-width: 900px) {
+  .featured-learning-grid { grid-template-columns: 1fr; }
+  .featured-learning-card { display: grid; grid-template-columns: 260px 1fr; }
+  .featured-learning-image { height: 100%; }
+  .program-experience-panel, .recommendation-result { grid-template-columns: 1fr; }
+  .recommendation-result img { max-height: 320px; }
+}
+
+@media (max-width: 680px) {
+  .featured-learning-section { padding-block: 60px; }
+  .featured-learning-card { display: block; }
+  .featured-learning-image { height: 180px; }
+  .home-recommendation-inner, .free-trial-complete { align-items: stretch; flex-direction: column; }
+  .home-recommendation .button, .free-trial-complete .button { width: 100%; margin-left: 0; }
+  .program-experience-panel, .recommendation-result { padding: 24px; }
+  .recommendation-form fieldset > div { display: grid; }
+  .recommendation-form label { width: 100%; }
+}
