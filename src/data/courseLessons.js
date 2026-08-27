@@ -1,10 +1,19 @@
 const session = (id, week, order, title, goal, concept, practice, code, prompt, quiz, result) => ({
   id, week, order, title, duration: '50분', goal, concept, practice, code, prompt, quiz, result,
+  assignment: `${result}을(를) 내 프로젝트에 적용하고 변경 전후 화면을 한 장씩 기록합니다.`,
+  completionCriteria: ['예제를 직접 실행했습니다.', '내 프로젝트에 맞게 한 가지 이상 수정했습니다.', '결과와 배운 점을 설명할 수 있습니다.'],
   errors: ['화면이 바뀌지 않으면 파일 저장 여부와 브라우저 주소를 확인합니다.', '오류가 나오면 콘솔의 첫 번째 빨간 문장부터 확인합니다.'],
 })
 
+const practiceSession = (id, week, order, title, goal, concept, code, prompt, result) => session(
+  id, week, order, title, goal, concept,
+  [`${title}에 필요한 입력과 결과를 먼저 적습니다.`, '제공된 예제 코드를 실행합니다.', '값이나 문구를 한 가지 바꿔 다시 실행합니다.', 'PC와 모바일에서 결과를 비교합니다.', '오류가 있으면 첫 오류와 재현 순서를 기록합니다.'],
+  code, prompt,
+  [`${title}의 핵심 역할을 말할 수 있나요?`, '예제의 어느 값을 바꾸면 화면이 달라지나요?', '오류가 생겼을 때 가장 먼저 확인할 것은 무엇인가요?'], result,
+)
+
 export const reactWebsiteCourse = {
-  programId: 'react-website', title: 'React 웹사이트 만들기', totalWeeks: 4,
+  programId: 'react-website', title: 'React 웹사이트 만들기', totalWeeks: 10,
   outcome: '교육 프로그램을 소개하는 PC·모바일 반응형 React 홈페이지',
   sessions: [
     session('react-01',1,1,'개발 환경과 첫 화면 실행','Node.js·npm·Vite의 역할을 알고 프로젝트를 실행합니다.','Node.js는 작업 도구를 움직이는 전기, npm은 필요한 도구를 가져오는 상자, Vite는 빠른 작업대입니다.',['터미널에서 node -v와 npm -v를 확인합니다.','프로젝트 폴더에서 npm install을 실행합니다.','npm run dev를 실행하고 안내 주소를 엽니다.','App.jsx 제목을 내 문구로 바꿉니다.'],'npm install\nnpm run dev','React 초보자입니다. 현재 프로젝트를 확인하고 App.jsx 제목만 수정해줘. 기존 파일은 삭제하지 말고 실행 방법도 알려줘.',['로컬 주소가 열리나요?','수정한 제목이 보이나요?'],'내 문구가 표시되는 첫 React 화면'),
@@ -15,6 +24,28 @@ export const reactWebsiteCourse = {
     session('react-06',3,6,'상세 화면과 주소 연결','카드를 누르면 해당 프로그램의 상세 내용을 보여줍니다.','라우팅은 건물의 호수 안내처럼 주소에 맞는 화면을 연결하는 규칙입니다.',['카드 링크에 프로그램 ID를 넣습니다.','주소에서 ID를 읽습니다.','find로 프로그램을 찾습니다.','없는 ID에는 안내 화면을 표시합니다.'],'const program = programs.find(item => item.id === programId)','프로그램 카드에서 상세 주소로 이동하고 ID에 맞는 내용을 보여줘. 잘못된 ID 안내도 만들어줘.',['카드별 상세 내용이 다른가요?','잘못된 주소에서 백지 화면이 아닌가요?'],'프로그램 목록과 상세 화면 연결'),
     session('react-07',4,7,'입력 폼과 유효성 검사','필수 입력과 길이를 검사하는 수강 신청 체험 폼을 만듭니다.','유효성 검사는 접수 전에 빠진 내용이나 너무 긴 문장을 확인하는 과정입니다.',['이름과 관심 과정 입력을 만듭니다.','필수값을 검사합니다.','신청 동기를 300자로 제한합니다.','오류를 입력 항목 가까이에 표시합니다.'],"if (!name.trim()) setError('이름을 입력해 주세요.')",'이름과 프로그램이 필수인 체험 신청 폼을 만들어줘. 신청 동기는 300자로 제한하고 오류를 쉽게 표시해줘.',['빈 이름이 차단되나요?','오류 문장을 읽고 고칠 수 있나요?'],'입력 검사가 적용된 체험 폼'),
     session('react-08',4,8,'빌드·모바일 점검과 발표','완성 화면을 검사하고 배포 가능한 결과물을 준비합니다.','빌드는 작성한 소스를 인터넷 공개에 알맞은 파일로 정리하는 과정입니다.',['npm run build를 실행합니다.','전체 메뉴와 잘못된 주소를 확인합니다.','PC와 모바일 화면을 점검합니다.','완성 결과와 어려웠던 점을 발표합니다.'],'npm run build\ngit status','전체 화면을 점검하고 빌드해줘. 변경 파일, 성공 결과, 남은 문제를 초보자에게 설명해줘.',['빌드가 성공했나요?','모바일과 키보드 사용을 확인했나요?'],'발표 가능한 반응형 React 홈페이지'),
+    practiceSession('react-09',5,9,'React 프로젝트 구조 정리','components·pages·data 폴더의 역할을 구분합니다.','폴더 구조는 서류함을 용도별로 나누는 일과 같습니다. 화면, 부품, 데이터를 분리하면 수정 위치를 찾기 쉽습니다.','src/\n├─ components/\n├─ pages/\n└─ data/','현재 React 파일을 components, pages, data 역할로 나누되 기존 기능은 유지해줘.','역할별로 정리된 React 프로젝트'),
+    practiceSession('react-10',5,10,'props로 데이터 전달하기','부모 화면에서 자식 컴포넌트로 필요한 값을 전달합니다.','props는 부모가 자식에게 건네는 이름표가 붙은 준비물입니다. 자식은 받은 값을 화면에 표시합니다.','<ProgramCard title="React 입문" level="기초" />','title과 level을 props로 받는 프로그램 카드를 만들고 전달 흐름을 설명해줘.','데이터를 받아 표시하는 카드'),
+    practiceSession('react-11',5,11,'조건부 화면 표시','조건에 따라 로딩·빈 목록·완료 화면을 다르게 표시합니다.','조건부 렌더링은 상황에 맞는 안내판을 골라 보여주는 방식입니다.','{items.length === 0 ? <p>자료가 없습니다.</p> : <ProgramList items={items} />}','목록이 비었을 때 안내 문구가 보이도록 조건부 화면을 추가해줘.','빈 상태 안내가 있는 목록'),
+    practiceSession('react-12',6,12,'검색 기능 구현','입력한 검색어가 제목과 설명에 포함된 프로그램만 표시합니다.','검색은 모든 카드를 하나씩 살펴 조건에 맞는 것만 새 바구니에 담는 작업입니다.',"const found = items.filter(item => item.title.toLowerCase().includes(keyword.toLowerCase()))",'제목과 설명을 검색하는 React 입력창을 만들고 검색어가 없으면 전체를 보여줘.','실시간 프로그램 검색'),
+    practiceSession('react-13',6,13,'복합 필터 만들기','분야와 난이도 조건을 동시에 적용합니다.','복합 필터는 두 개 이상의 체를 차례로 통과시키는 과정입니다. 각 조건은 전체 선택도 허용해야 합니다.',"const visible = items.filter(item => (category === 'all' || item.category === category) && (level === 'all' || item.level === level))",'분야와 난이도를 함께 선택하는 복합 필터를 만들어줘. 조건 변경 시 결과 수도 보여줘.','분야·난이도 복합 필터'),
+    practiceSession('react-14',6,14,'정렬 기능 구현','이름·난이도·최신 순으로 목록 순서를 바꿉니다.','정렬은 자료를 없애지 않고 줄 서는 기준만 바꾸는 기능입니다. 원본 배열을 복사한 뒤 정렬해야 안전합니다.',"const sorted = [...items].sort((a, b) => a.title.localeCompare(b.title, 'ko'))",'원본 배열을 바꾸지 않고 이름 순과 최신 순 정렬을 추가해줘.','목록 정렬 선택 기능'),
+    practiceSession('react-15',6,15,'페이지네이션 구현','많은 카드를 페이지 단위로 잘라 표시합니다.','페이지네이션은 두꺼운 명단을 여러 장으로 나눠 보는 방법입니다. 전체 개수와 현재 범위를 함께 알려줘야 합니다.','const start = (page - 1) * 9\nconst pageItems = items.slice(start, start + 9)','카드를 9개씩 나누고 이전·다음과 페이지 번호를 만들어줘. 필터 변경 시 1페이지로 이동해줘.','9개 단위 페이지네이션'),
+    practiceSession('react-16',7,16,'해시 라우팅과 검색조건 유지','새로고침해도 검색·필터·페이지 조건이 주소에 남게 합니다.','URLSearchParams는 주소 뒤의 조건표를 읽고 쓰는 도구입니다. 링크를 공유해도 같은 목록을 보여줄 수 있습니다.',"const params = new URLSearchParams('category=frontend&page=2')\nparams.get('page')",'검색·필터·페이지를 해시 주소의 쿼리로 저장하고 다시 읽게 해줘.','공유 가능한 검색 결과 주소'),
+    practiceSession('react-17',7,17,'localStorage 찜 기능','찜한 프로그램 ID를 브라우저에 저장하고 다시 불러옵니다.','localStorage는 지금 사용하는 브라우저 안의 작은 보관함입니다. 다른 기기에는 자동으로 옮겨지지 않습니다.',"localStorage.setItem('favorites', JSON.stringify(ids))",'프로그램 찜 ID를 localStorage에 저장하고 새로고침 후 복원해줘.','새로고침해도 유지되는 찜 목록'),
+    practiceSession('react-18',7,18,'학습 완료와 진도율','완료한 회차를 저장하고 백분율로 계산합니다.','진도율은 완료 개수를 전체 개수로 나눈 뒤 100을 곱한 값입니다. 완료 취소도 가능해야 합니다.','const percent = Math.round(completed.length / sessions.length * 100)','회차 완료와 취소 버튼, 전체 진도율 막대를 만들어줘. localStorage에 저장해줘.','회차별 완료와 전체 진도율'),
+    practiceSession('react-19',8,19,'외부 API 요청 기초','fetch로 공개 API를 요청하고 JSON 결과를 확인합니다.','API 요청은 다른 서비스 창구에 정해진 형식으로 자료를 부탁하는 일입니다. 로딩과 실패 상황도 함께 처리합니다.',"const response = await fetch(url)\nif (!response.ok) throw new Error('요청 실패')\nconst data = await response.json()",'공개 API를 fetch로 호출하고 로딩·오류·성공 화면을 각각 보여줘.','API 데이터를 표시하는 화면'),
+    practiceSession('react-20',8,20,'로딩과 오류 화면','요청 중·성공·실패 상태를 사용자가 이해하도록 표시합니다.','네트워크 작업은 시간이 걸리거나 실패할 수 있습니다. 빈 화면 대신 현재 상황과 다시 시도 방법을 알려줘야 합니다.',"if (loading) return <p>자료를 불러오는 중입니다.</p>\nif (error) return <p role=\"alert\">{error}</p>",'API 화면에 로딩 문구, 오류 안내, 다시 시도 버튼을 추가해줘.','안내가 분명한 비동기 화면'),
+    practiceSession('react-21',8,21,'폼 상태와 여러 입력 관리','하나의 객체로 여러 입력값을 관리합니다.','입력 객체는 신청서 한 장처럼 이름·연락처·동기를 한 곳에 모아 관리합니다.',"const [form, setForm] = useState({ name: '', motivation: '' })",'이름과 신청 동기를 하나의 form 상태로 관리하고 입력할 때 해당 항목만 수정해줘.','여러 입력을 관리하는 신청 폼'),
+    practiceSession('react-22',8,22,'접근성 있는 폼 만들기','label·오류 연결·키보드 사용을 점검합니다.','접근성 있는 폼은 입력 이름과 오류 이유를 화면을 보지 못하는 사용자에게도 전달합니다.','<label htmlFor="name">이름</label>\n<input id="name" aria-describedby="name-error" />','모든 입력에 label을 연결하고 오류를 aria-describedby로 안내해줘.','키보드와 화면낭독기 친화 폼'),
+    practiceSession('react-23',9,23,'Supabase 조회 흐름 이해','공동 데이터 조회와 로컬 임시 데이터의 차이를 이해합니다.','Supabase는 여러 사용자가 함께 보는 온라인 자료 보관함입니다. 브라우저 공개 키와 비밀 키를 구분해야 합니다.',"const { data, error } = await supabase.from('edu_programs').select('*')",'Supabase에서 공개 프로그램 목록을 조회하고 연결 정보가 없으면 기본 데이터를 보여줘.','공동 프로그램 목록 조회'),
+    practiceSession('react-24',9,24,'환경변수와 비밀정보 보호','공개 가능한 설정과 서버 비밀정보를 구분합니다.','환경변수는 설정을 코드 밖에 두는 방법입니다. 브라우저에 들어간 값은 사용자가 볼 수 있으므로 비밀 키를 넣으면 안 됩니다.','VITE_SUPABASE_URL=프로젝트_URL\nVITE_SUPABASE_PUBLISHABLE_KEY=브라우저용_키','환경변수 사용 위치를 점검하고 비밀번호와 service role key가 브라우저 코드에 없는지 확인해줘.','비밀정보가 제외된 환경 설정'),
+    practiceSession('react-25',9,25,'관리자 CRUD 화면 이해','등록·조회·수정·삭제 흐름과 입력 검사를 연결합니다.','CRUD는 주소록을 적고 찾고 고치고 지우는 네 가지 기본 작업입니다. 화면 제한과 DB 권한을 함께 적용해야 합니다.',"await supabase.from('edu_programs').insert(program)",'관리자 프로그램 등록 폼에 필수값 검사와 Supabase insert를 연결해줘. 오류도 표시해줘.','프로그램 등록 관리 화면'),
+    practiceSession('react-26',9,26,'RLS와 관리자 권한','화면 숨김이 아닌 데이터베이스 정책으로 변경을 차단합니다.','RLS는 데이터 행마다 출입 규칙을 확인하는 경비원입니다. 버튼을 숨기는 것만으로는 보안이 되지 않습니다.','alter table edu_programs enable row level security;','공개 조회와 관리자 변경만 허용하는 RLS 정책을 점검하는 순서를 알려줘.','RLS가 적용된 데이터 관리'),
+    practiceSession('react-27',10,27,'컴포넌트 통합 테스트','주요 메뉴와 사용자 행동이 계속 작동하는지 확인합니다.','회귀 테스트는 새 기능을 추가한 뒤 기존 기능이 망가지지 않았는지 다시 보는 검사입니다.','npm run build','홈·프로그램·교육자료·강의실의 주요 사용자 흐름을 테스트 목록으로 만들고 점검해줘.','전체 기능 테스트 체크리스트'),
+    practiceSession('react-28',10,28,'성능과 이미지 최적화','이미지 용량과 렌더링 수를 줄여 화면을 빠르게 만듭니다.','성능 최적화는 사용자가 기다리는 시간을 줄이는 작업입니다. 먼저 측정한 뒤 큰 이미지와 불필요한 작업부터 줄입니다.','<img loading="lazy" src={image} alt={imageAlt} />','프로그램 이미지에 lazy loading과 대체 설명을 적용하고 큰 번들 원인을 알려줘.','빠르게 열리는 이미지 목록'),
+    practiceSession('react-29',10,29,'GitHub Pages 자동 배포','GitHub Actions로 빌드하고 실제 주소에 공개합니다.','자동 배포는 소스를 올리면 작업자가 빌드와 공개를 정해진 순서로 수행하는 과정입니다.','npm run build\ngit status\ngit push origin main','Vite base와 GitHub Pages Actions 설정을 점검하고 배포 실패 시 확인 순서를 알려줘.','자동 배포되는 React 홈페이지'),
+    practiceSession('react-30',10,30,'최종 발표와 인수 점검','완성 결과를 설명하고 다른 사람이 이어서 운영할 문서를 만듭니다.','인수 문서는 무엇을 만들었고 어떻게 실행·검사·수정하는지 다음 담당자에게 전달하는 안내서입니다.','npm install\nnpm run dev\nnpm run build','프로젝트 기능, 실행법, 테스트 결과, 보안 주의사항, 미완료 항목을 README에 정리해줘.','발표·배포·운영 문서를 갖춘 최종 프로젝트'),
   ],
 }
 
