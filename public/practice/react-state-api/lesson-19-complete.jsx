@@ -1,0 +1,2 @@
+import { useState } from 'react'
+export default function Parallel(){const [summary,setSummary]=useState(null);async function load(){const [lessonsResponse,noticesResponse]=await Promise.all([fetch('/api/lessons'),fetch('/api/notices')]);const [lessons,notices]=await Promise.all([lessonsResponse.json(),noticesResponse.json()]);setSummary({lessons:lessons.length,notices:notices.length})}return <><button onClick={load}>현황 불러오기</button>{summary&&<p>{summary.lessons}개 · 공지 {summary.notices}개</p>}</>}

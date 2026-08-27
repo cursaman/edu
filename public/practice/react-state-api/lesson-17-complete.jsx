@@ -1,0 +1,2 @@
+import { useEffect,useState } from 'react'
+export default function SearchRequest({query}){const [result,setResult]=useState([]);useEffect(()=>{const controller=new AbortController();fetch(`/api/search?q=${encodeURIComponent(query)}`,{signal:controller.signal}).then((r)=>r.json()).then(setResult).catch((error)=>{if(error.name!=='AbortError')console.error(error)});return()=>controller.abort()},[query]);return <p>결과 {result.length}개</p>}

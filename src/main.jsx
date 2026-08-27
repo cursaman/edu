@@ -25,7 +25,7 @@ class ScreenErrorBoundary extends React.Component {
           <h1>화면을 불러오는 중 문제가 발생했습니다.</h1>
           <p>브라우저를 새로고침하거나 개발 서버를 다시 실행해 주세요.</p>
           <p className="startup-error-detail">오류 내용: {this.state.error.message}</p>
-          <button className="button button-primary" onClick={() => window.location.reload()}>
+          <button className="button button-primary" onClick={() => window.location.reload()} type="button">
             화면 다시 불러오기
           </button>
         </main>

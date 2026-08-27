@@ -1,0 +1,2 @@
+import { useState } from 'react'
+export default function ReleaseCheck(){const checks=['검색','필터','API 오류','모바일','새로고침 저장','npm run build','배포 URL'];const [done,setDone]=useState([]);return <fieldset><legend>배포 전 점검 {done.length}/{checks.length}</legend>{checks.map((item)=><label key={item}><input type="checkbox" checked={done.includes(item)} onChange={()=>setDone((current)=>current.includes(item)?current.filter((value)=>value!==item):[...current,item])} /> {item}</label>)}</fieldset>}

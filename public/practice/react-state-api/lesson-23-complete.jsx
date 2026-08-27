@@ -1,0 +1,2 @@
+import { useEffect,useState } from 'react'
+export default function Favorite({id='react-01'}){const [ids,setIds]=useState(()=>JSON.parse(localStorage.getItem('edu-favorites')??'[]'));const active=ids.includes(id);useEffect(()=>localStorage.setItem('edu-favorites',JSON.stringify(ids)),[ids]);function toggle(){setIds((current)=>active?current.filter((item)=>item!==id):[...current,id])}return <button onClick={toggle} aria-pressed={active}>{active?'찜 해제':'찜하기'}</button>}

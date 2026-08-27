@@ -1,0 +1,1 @@
+export default function EmptyState({lessons=[],onReset=()=>{}}){if(lessons.length===0)return <section><p>조건에 맞는 자료가 없습니다.</p><button onClick={onReset}>검색 초기화</button></section>;return <ul>{lessons.map((item)=><li key={item.id}>{item.title}</li>)}</ul>}

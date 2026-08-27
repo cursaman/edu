@@ -1,21 +1,25 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import Header from './components/Header.jsx'
-import { loadSharedContent } from './data/contentStorage.js'
-import { checkAdminAccess, isSupabaseConfigured, supabase } from './lib/supabase.js'
-import AdminLoginPage from './pages/AdminLoginPage.jsx'
-import AdminPage from './pages/AdminPage.jsx'
-import ApplicationPage from './pages/ApplicationPage.jsx'
-import CategoriesPage from './pages/CategoriesPage.jsx'
-import CourseClassroomPage from './pages/CourseClassroomPage.jsx'
-import HomePage from './pages/HomePage.jsx'
-import LessonDetailPage from './pages/LessonDetailPage.jsx'
-import LessonsPage from './pages/LessonsPage.jsx'
-import MyClassroomPage from './pages/MyClassroomPage.jsx'
-import NoticeDetailPage from './pages/NoticeDetailPage.jsx'
-import NoticesPage from './pages/NoticesPage.jsx'
-import NotFoundPage from './pages/NotFoundPage.jsx'
-import ProgramDetailPage from './pages/ProgramDetailPage.jsx'
-import ProgramsPage from './pages/ProgramsPage.jsx'
+
+const isSupabaseConfigured = Boolean(
+  import.meta.env.VITE_SUPABASE_URL?.trim()
+  && import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY?.trim(),
+)
+
+const AdminLoginPage = lazy(() => import('./pages/AdminLoginPage.jsx'))
+const AdminPage = lazy(() => import('./pages/AdminPage.jsx'))
+const ApplicationPage = lazy(() => import('./pages/ApplicationPage.jsx'))
+const CategoriesPage = lazy(() => import('./pages/CategoriesPage.jsx'))
+const CourseClassroomPage = lazy(() => import('./pages/CourseClassroomPage.jsx'))
+const HomePage = lazy(() => import('./pages/HomePage.jsx'))
+const LessonDetailPage = lazy(() => import('./pages/LessonDetailPage.jsx'))
+const LessonsPage = lazy(() => import('./pages/LessonsPage.jsx'))
+const MyClassroomPage = lazy(() => import('./pages/MyClassroomPage.jsx'))
+const NoticeDetailPage = lazy(() => import('./pages/NoticeDetailPage.jsx'))
+const NoticesPage = lazy(() => import('./pages/NoticesPage.jsx'))
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage.jsx'))
+const ProgramDetailPage = lazy(() => import('./pages/ProgramDetailPage.jsx'))
+const ProgramsPage = lazy(() => import('./pages/ProgramsPage.jsx'))
 
 function readCurrentRoute() {
   const legacyRoutes = {
@@ -38,12 +42,14 @@ export default function App() {
   const [session, setSession] = useState(null)
   const [adminAccess, setAdminAccess] = useState(false)
   const [checkingAccess, setCheckingAccess] = useState(isSupabaseConfigured)
+  const [supabaseClient, setSupabaseClient] = useState(null)
   const [, setContentVersion] = useState(0)
 
   useEffect(() => {
     function handleHashChange() {
       setRoute(readCurrentRoute())
       window.scrollTo({ top: 0, behavior: 'smooth' })
+      window.requestAnimationFrame(() => document.getElementById('main-content')?.focus())
     }
 
     window.addEventListener('hashchange', handleHashChange)
@@ -57,37 +63,50 @@ export default function App() {
 
     window.addEventListener('edu-content-updated', refreshPages)
     if (isSupabaseConfigured) {
-      void loadSharedContent('programs')
-      void loadSharedContent('lessons')
-      void loadSharedContent('notices')
+      void import('./data/contentStorage.js').then(({ loadSharedContent }) => Promise.all([
+        loadSharedContent('programs'),
+        loadSharedContent('lessons'),
+        loadSharedContent('notices'),
+      ])).catch((error) => console.error('공동 콘텐츠를 불러오지 못했습니다.', error))
     }
 
     return () => window.removeEventListener('edu-content-updated', refreshPages)
   }, [])
 
   useEffect(() => {
-    if (!supabase) return undefined
+    if (!isSupabaseConfigured) return undefined
 
     let active = true
+    let subscription
 
-    async function updateSession(nextSession) {
+    void import('./lib/supabase.js').then(({ checkAdminAccess, supabase }) => {
+      if (!active || !supabase) return
+      setSupabaseClient(supabase)
+
+      async function updateSession(nextSession) {
+        if (!active) return
+        setSession(nextSession)
+        setCheckingAccess(true)
+        const allowed = await checkAdminAccess(nextSession?.user)
+        if (!active) return
+        setAdminAccess(allowed)
+        setCheckingAccess(false)
+      }
+
+      const authListener = supabase.auth.onAuthStateChange((_event, nextSession) => {
+        // 권한 조회는 인증 상태 처리 직후 별도 순서에서 실행합니다.
+        window.setTimeout(() => void updateSession(nextSession), 0)
+      })
+      subscription = authListener.data.subscription
+    }).catch((error) => {
       if (!active) return
-      setSession(nextSession)
-      setCheckingAccess(true)
-      const allowed = await checkAdminAccess(nextSession?.user)
-      if (!active) return
-      setAdminAccess(allowed)
+      console.error('관리자 인증 연결을 시작하지 못했습니다.', error)
       setCheckingAccess(false)
-    }
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, nextSession) => {
-      // 권한 조회는 인증 상태 처리 직후 별도 순서에서 실행합니다.
-      window.setTimeout(() => void updateSession(nextSession), 0)
     })
 
     return () => {
       active = false
-      subscription.unsubscribe()
+      subscription?.unsubscribe()
     }
   }, [])
 
@@ -139,7 +158,7 @@ export default function App() {
     } else if (!session || !adminAccess) {
       page = <AdminLoginPage denied={Boolean(session && !adminAccess)} />
     } else {
-      page = <AdminPage session={session} onLogout={() => supabase.auth.signOut()} />
+      page = <AdminPage session={session} onLogout={() => supabaseClient?.auth.signOut()} />
     }
   } else if (route.pathname === '/admin/login' && isSupabaseConfigured) {
     page = <AdminLoginPage denied={Boolean(session && !adminAccess)} />
@@ -150,7 +169,11 @@ export default function App() {
   return (
     <>
       <Header currentPath={route.pathname} />
-      <main>{page}</main>
+      <main id="main-content" tabIndex="-1">
+        <Suspense fallback={<section className="content-page page-shell"><p role="status">화면을 불러오고 있습니다...</p></section>}>
+          {page}
+        </Suspense>
+      </main>
 
       <footer className="site-footer">
         <div className="page-shell footer-inner">

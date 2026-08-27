@@ -1,0 +1,2 @@
+import { useEffect,useState } from 'react'
+export default function Recent(){const [recent,setRecent]=useState(()=>JSON.parse(localStorage.getItem('edu-recent')??'[]'));useEffect(()=>localStorage.setItem('edu-recent',JSON.stringify(recent)),[recent]);function visit(item){setRecent((current)=>[item,...current.filter((saved)=>saved.id!==item.id)].slice(0,5))}return <><button onClick={()=>visit({id:'1',title:'React 기초'})}>자료 보기</button><ol>{recent.map((item)=><li key={item.id}>{item.title}</li>)}</ol></>}

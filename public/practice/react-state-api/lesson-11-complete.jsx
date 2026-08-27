@@ -1,0 +1,1 @@
+export default function FetchButton(){async function load(){const response=await fetch('/api/lessons');const data=await response.json();console.log(data)}return <button onClick={load}>교육자료 불러오기</button>}

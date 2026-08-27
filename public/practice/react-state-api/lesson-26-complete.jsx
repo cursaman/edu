@@ -1,0 +1,2 @@
+import { useEffect,useState } from 'react'
+export default function DebouncedSearch(){const [query,setQuery]=useState('');const [result,setResult]=useState([]);useEffect(()=>{if(!query.trim()){setResult([]);return}const timer=setTimeout(()=>{fetch(`/api/search?q=${encodeURIComponent(query)}`).then((r)=>r.json()).then(setResult)},400);return()=>clearTimeout(timer)},[query]);return <><input aria-label="검색" value={query} onChange={(e)=>setQuery(e.target.value)} /><p>결과 {result.length}개</p></>}

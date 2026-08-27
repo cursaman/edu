@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const navigationItems = [
   { label: '홈', href: '#/', path: '/' },
@@ -13,8 +13,28 @@ const navigationItems = [
 export default function Header({ currentPath }) {
   const [menuOpen, setMenuOpen] = useState(false)
 
+  useEffect(() => {
+    function closeMenu(event) {
+      if (event.key === 'Escape') setMenuOpen(false)
+    }
+
+    document.addEventListener('keydown', closeMenu)
+    return () => document.removeEventListener('keydown', closeMenu)
+  }, [])
+
   return (
-    <header className="site-header">
+    <>
+      <a
+        className="skip-link"
+        href="#main-content"
+        onClick={(event) => {
+          event.preventDefault()
+          document.getElementById('main-content')?.focus()
+        }}
+      >
+        본문 바로가기
+      </a>
+      <header className="site-header">
       <div className="header-inner page-shell">
         <a className="brand" href="#/" aria-label="EDU 웹개발 교육 플랫폼 홈">
           <span className="brand-mark" aria-hidden="true">
@@ -48,6 +68,7 @@ export default function Header({ currentPath }) {
           ))}
         </nav>
       </div>
-    </header>
+      </header>
+    </>
   )
 }
