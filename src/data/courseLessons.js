@@ -67,6 +67,7 @@ const representativeCourseSpecs = [
   { programId: 'service-planning-basic', title: '아이디어를 웹서비스 기획서로 만들기', outcome: '사용자 문제·MVP·화면 흐름·개발 요청서가 담긴 웹서비스 기획서', tools: 'Codex와 문서 도구', modules: ['과정 목표와 아이디어 찾기','사용자와 문제 정의','인터뷰 질문 설계','경쟁 서비스 조사','핵심 가치 제안','MVP 기능 우선순위','사용자 여정 작성','화면 목록과 흐름','요구사항과 완료 기준','기획 발표와 인수 문서'] },
   { programId: 'uiux-figma-basic', title: 'Figma로 웹서비스 화면 설계하기', outcome: 'PC·모바일 화면과 디자인 규칙이 포함된 Figma 시안', tools: 'Figma와 웹브라우저', modules: ['Figma 환경과 프레임','색상과 대비','글자 체계','여백과 그리드','Auto Layout','버튼과 입력 요소','카드 컴포넌트','PC 메인 화면','모바일 반응형 화면','프로토타입과 개발 전달'] },
   { programId: 'web-foundation', title: '웹 기초부터 첫 홈페이지 만들기', outcome: 'HTML·CSS·JavaScript로 만든 반응형 소개 홈페이지', tools: 'VS Code와 Chrome', modules: ['웹과 개발 환경','HTML 문서 구조','제목·문단·링크','이미지와 목록','CSS 연결과 선택자','글자·색상·여백','Flex와 Grid','JavaScript 변수와 함수','클릭·폼 이벤트','반응형 점검과 공개'] },
+  { programId: 'javascript-practical', title: '실무 JavaScript 완성 과정', outcome: '검색·폼·저장·API 기능이 동작하는 브라우저 업무 도구', tools: 'JavaScript·Chrome·VS Code', modules: ['값과 변수','문자열과 숫자','조건과 논리','반복과 함수','배열 실무 처리','객체와 불변성','DOM과 이벤트','폼과 브라우저 저장','비동기와 API','통합 도구와 품질 점검'] },
   { programId: 'react-state-api', title: 'React 상태관리와 API 활용', outcome: '검색·필터·정렬과 외부 API가 동작하는 React 데이터 서비스', tools: 'React·Vite·Fetch API', modules: ['React 프로젝트 점검','컴포넌트와 props','useState와 입력','목록 검색','복합 필터','정렬과 페이지네이션','비동기와 fetch','로딩·오류·빈 상태','localStorage 저장','통합 테스트와 배포'] },
   { programId: 'node-backend', title: 'Node.js로 백엔드 시작하기', outcome: '입력 검증과 오류 처리가 적용된 교육자료 REST API', tools: 'Node.js·Express·API 도구', modules: ['서버와 개발 환경','Express 첫 실행','주소와 요청 방식','JSON 응답','목록 조회 API','상세 조회 API','등록 API와 검증','수정·삭제 API','오류·로그·보안','API 테스트와 문서화'] },
   { programId: 'supabase-database', title: 'Supabase로 데이터 저장하기', outcome: '관리자만 변경하고 누구나 조회할 수 있는 공동 교육자료 저장소', tools: 'Supabase·PostgreSQL·React', modules: ['데이터베이스 기본','테이블과 자료형','키와 관계','SELECT 조회','INSERT 등록','UPDATE와 DELETE','React 연결','Auth 로그인','RLS 권한 정책','백업·테스트·운영'] },
@@ -77,6 +78,16 @@ const representativeCourseSpecs = [
 ]
 
 const moduleExplanations = {
+  '값과 변수': '값은 프로그램이 다루는 정보이고 변수는 그 값에 알아보기 쉬운 이름을 붙여 다시 사용하는 보관함입니다.',
+  '문자열과 숫자': '문자열은 화면에 보여줄 글, 숫자는 계산할 값이며 입력값을 알맞은 형식으로 바꿔야 예상한 결과가 나옵니다.',
+  '조건과 논리': '조건문은 상황을 비교해 서로 다른 행동을 선택하고 논리 연산자는 여러 조건을 함께 판단합니다.',
+  '반복과 함수': '반복은 같은 작업을 여러 값에 적용하고 함수는 입력·처리·결과를 이름 붙인 재사용 작업으로 묶습니다.',
+  '배열 실무 처리': '배열은 여러 자료의 순서를 관리하며 map·filter·find 같은 메서드로 원본을 안전하게 가공합니다.',
+  '객체와 불변성': '객체는 한 대상의 관련 값을 이름으로 묶고 전개 문법은 기존 값을 직접 바꾸지 않고 새 결과를 만듭니다.',
+  'DOM과 이벤트': 'DOM은 HTML 화면을 JavaScript가 찾고 바꾸는 연결 구조이며 이벤트는 클릭과 입력 같은 사용자 행동입니다.',
+  '폼과 브라우저 저장': '폼은 사용자 입력을 모아 검사하고 localStorage는 작은 설정과 목록을 현재 브라우저에 유지합니다.',
+  '비동기와 API': '비동기는 기다리는 동안 화면을 멈추지 않게 하며 API 요청은 로딩·성공·빈 결과·오류를 모두 처리해야 합니다.',
+  '통합 도구와 품질 점검': '여러 기능을 한 도구로 합친 뒤 정상·경계·오류 상황과 모바일·접근성·빌드를 순서대로 확인합니다.',
   '과정 목표와 아이디어 찾기': '교육이 끝났을 때 만들 결과와 해결하고 싶은 생활 속 불편을 연결해 후보 아이디어를 정합니다.',
   '사용자와 문제 정의': '누가 언제 어떤 어려움을 겪는지 관찰 사실로 적고 해결책을 섞지 않은 문제 문장을 만듭니다.',
   '인터뷰 질문 설계': '답을 유도하지 않는 열린 질문으로 사용자의 실제 행동·불편·대처 방법을 확인합니다.',
@@ -1078,9 +1089,42 @@ const reactStatePilot = Object.fromEntries([
   ['30','검색부터 저장·모바일·빌드·배포 URL까지 최종 점검표로 확인합니다.',['필수 검사 7개가 표시됩니다.','완료 개수를 즉시 확인합니다.']],
 ].map(([number,guide,expected])=>[`react-state-api-${number}`,{instructorGuide:`${guide} 상태로 저장할 값과 기존 값에서 계산할 값을 먼저 구분하게 합니다.`,practice:[`${Number(number)}회차 시작 JSX를 내려받습니다.`,guide,'주석 위치를 직접 완성합니다.','정상·빈 값·경계 상태를 실행합니다.','완성 JSX와 비교해 상태 흐름을 설명합니다.'],expectedResult:expected,errors:['콘솔 첫 오류와 import를 확인합니다.','상태가 바뀌지 않으면 value·onChange·setter를 확인합니다.','목록 오류는 key와 원본 배열 변경 여부를 확인합니다.'],rubric:['3점: 핵심 상태 기능이 동작합니다.','2점: 상태와 파생값을 구분합니다.','2점: 빈 값과 경계를 확인합니다.','2점: 접근 가능한 이름이 있습니다.','1점: 실행 결과를 기록합니다.'],downloads:[{label:`${Number(number)}회차 시작 JSX`,path:`practice/react-state-api/lesson-${number}-start.jsx`},{label:`${Number(number)}회차 완성 JSX`,path:`practice/react-state-api/lesson-${number}-complete.jsx`}]}]))
 
+const javascriptPracticalPilot = Object.fromEntries([
+  ['01','const와 let의 용도를 구분하고 변경되지 않는 과정명을 const로 선언합니다.',"const courseName = '실무 JavaScript'\nlet completed = 0\ncompleted += 1\nconsole.log(courseName, completed)",['과정명과 완료 수가 출력됩니다.','재할당이 필요한 값에만 let을 사용합니다.']],
+  ['02','typeof로 문자열·숫자·불리언·undefined를 확인하고 예상 형식과 비교합니다.',"const values = ['교육', 30, true, undefined]\nconsole.table(values.map(value => ({ value, type: typeof value })))",['네 값의 자료형 표가 출력됩니다.','null과 undefined를 같은 값으로 단정하지 않습니다.']],
+  ['03','템플릿 문자열로 과정명과 회차를 읽기 좋은 한 문장으로 조합합니다.',"const title = 'JavaScript'\nconst session = 3\nconsole.log(`${title} ${session}회차를 시작합니다.`)",['변수 값이 포함된 문장이 출력됩니다.','문자열 연결 기호를 반복하지 않습니다.']],
+  ['04','Number와 Number.isFinite로 입력 문자열을 안전한 숫자로 변환합니다.',"const raw = '45'\nconst minutes = Number(raw)\nconsole.log(Number.isFinite(minutes) ? minutes + 15 : '숫자를 확인하세요.')",['결과 60이 출력됩니다.','숫자가 아니면 안내 문구가 출력됩니다.']],
+  ['05','엄격한 비교와 논리 연산자로 수강 가능 조건을 판단합니다.',"const age = 52\nconst hasLaptop = true\nconst canJoin = age >= 18 && hasLaptop === true\nconsole.log(canJoin)",['조건을 모두 만족하면 true입니다.','문자와 숫자를 느슨하게 비교하지 않습니다.']],
+  ['06','if·else if·else로 점수에 맞는 학습 안내를 선택합니다.',"const score = 78\nlet message\nif (score >= 90) message = '심화 도전'\nelse if (score >= 70) message = '다음 회차'\nelse message = '복습 권장'\nconsole.log(message)",['78점에서 다음 회차가 출력됩니다.','모든 점수 범위에 결과가 있습니다.']],
+  ['07','switch로 선택한 교육 분야에 맞는 준비물을 표시합니다.',"const category = 'frontend'\nswitch (category) {\n  case 'frontend': console.log('Node.js 준비'); break\n  case 'design': console.log('Figma 준비'); break\n  default: console.log('노트북 준비')\n}",['frontend에서 Node.js 준비가 출력됩니다.','default가 알 수 없는 값을 처리합니다.']],
+  ['08','for...of로 회차 목록을 순서대로 읽고 번호를 표시합니다.',"const lessons = ['변수', '조건', '함수']\nfor (const [index, title] of lessons.entries()) console.log(index + 1, title)",['세 항목이 1부터 순서대로 출력됩니다.','배열 길이를 코드에 고정하지 않습니다.']],
+  ['09','while 반복에 종료 조건을 두고 재시도 횟수를 제한합니다.',"let attempt = 1\nwhile (attempt <= 3) {\n  console.log(`${attempt}번째 확인`)\n  attempt += 1\n}",['정확히 세 번 출력됩니다.','반복 값이 증가해 무한 반복하지 않습니다.']],
+  ['10','함수 선언으로 할인 계산을 묶고 서로 다른 입력에 재사용합니다.',"function discounted(price, rate) { return price * (1 - rate) }\nconsole.log(discounted(10000, 0.1))\nconsole.log(discounted(20000, 0.2))",['9000과 16000이 출력됩니다.','같은 계산을 복사하지 않고 함수를 재사용합니다.']],
+  ['11','기본 매개변수로 이름이 없을 때도 안전한 환영 문장을 만듭니다.',"function welcome(name = '학습자') { return `${name}님, 환영합니다.` }\nconsole.log(welcome())\nconsole.log(welcome('민수'))",['기본 이름과 전달한 이름이 각각 표시됩니다.','인수가 없어도 undefined 문구가 나오지 않습니다.']],
+  ['12','화살표 함수와 return으로 배열 가공에 쓸 작은 계산 함수를 만듭니다.',"const addTax = price => Math.round(price * 1.1)\nconsole.log(addTax(12000))",['13200이 출력됩니다.','함수는 입력값을 직접 변경하지 않습니다.']],
+  ['13','블록 범위와 함수 범위를 비교해 변수가 사용 가능한 위치를 확인합니다.',"const outside = '전체'\nif (true) { const inside = '블록'; console.log(outside, inside) }\nconsole.log(outside)",['블록 안에서는 두 값을 사용할 수 있습니다.','블록 밖에서 inside를 사용하지 않습니다.']],
+  ['14','배열에 자료를 추가·제거하고 원본 변화와 반환값을 구분합니다.',"const queue = ['HTML', 'CSS']\nqueue.push('JavaScript')\nconst first = queue.shift()\nconsole.log(first, queue)",['첫 항목 HTML과 남은 배열이 출력됩니다.','push와 shift가 원본을 바꾼다는 점을 설명합니다.']],
+  ['15','map으로 교육자료 객체를 화면용 제목 문자열로 변환합니다.',"const lessons = [{ id: 1, title: '변수' }, { id: 2, title: '조건' }]\nconst labels = lessons.map(item => `${item.id}. ${item.title}`)\nconsole.log(labels)",['원본과 길이가 같은 새 배열이 생깁니다.','원본 객체를 수정하지 않습니다.']],
+  ['16','filter로 완료되지 않은 자료만 골라 새 배열을 만듭니다.',"const lessons = [{ id: 1, done: true }, { id: 2, done: false }]\nconst pending = lessons.filter(item => !item.done)\nconsole.log(pending)",['id 2 자료만 남습니다.','원본 배열의 두 항목은 유지됩니다.']],
+  ['17','find와 some으로 특정 자료와 완료 여부를 각각 확인합니다.',"const lessons = [{ id: 'a', done: false }, { id: 'b', done: true }]\nconsole.log(lessons.find(item => item.id === 'b'))\nconsole.log(lessons.some(item => item.done))",['id b 객체와 true가 출력됩니다.','찾지 못한 find 결과가 undefined임을 확인합니다.']],
+  ['18','reduce로 여러 학습 시간의 합계를 하나의 숫자로 계산합니다.',"const minutes = [20, 30, 25]\nconst total = minutes.reduce((sum, value) => sum + value, 0)\nconsole.log(total)",['합계 75가 출력됩니다.','초기값 0을 명시합니다.']],
+  ['19','객체 구조 분해로 필요한 속성을 꺼내고 기본값을 적용합니다.',"const lesson = { title: '배열', minutes: 30 }\nconst { title, level = '기초' } = lesson\nconsole.log(title, level)",['배열과 기초가 출력됩니다.','원본에 level이 새로 생기지는 않습니다.']],
+  ['20','전개 문법으로 원본 객체를 바꾸지 않고 완료 상태를 갱신합니다.',"const lesson = { id: 1, title: '객체', done: false }\nconst updated = { ...lesson, done: true }\nconsole.log(lesson.done, updated.done)",['false와 true가 출력됩니다.','원본과 새 객체가 서로 다릅니다.']],
+  ['21','querySelector로 상태 영역을 찾고 textContent로 안전하게 문구를 바꿉니다.',"const status = document.querySelector('#status')\nif (status) status.textContent = '학습을 시작했습니다.'",['상태 문구가 변경됩니다.','요소가 없어도 오류가 나지 않습니다.']],
+  ['22','addEventListener로 버튼 클릭을 연결하고 클릭 횟수를 표시합니다.',"let count = 0\nconst button = document.querySelector('#count-button')\nbutton?.addEventListener('click', () => { count += 1; button.textContent = `${count}회 클릭` })",['클릭마다 숫자가 증가합니다.','HTML onclick 속성을 사용하지 않습니다.']],
+  ['23','폼 제출을 막고 trim·길이 검사 후 오류 문구를 표시합니다.',"const form = document.querySelector('#apply-form')\nform?.addEventListener('submit', event => {\n  event.preventDefault()\n  const name = new FormData(form).get('name')?.trim()\n  console.log(name ? '입력 완료' : '이름은 필수입니다.')\n})",['빈 이름은 오류 안내가 나옵니다.','정상 이름은 입력 완료가 나옵니다.']],
+  ['24','이벤트 위임으로 동적으로 추가된 목록의 삭제 버튼도 처리합니다.',"const list = document.querySelector('#lesson-list')\nlist?.addEventListener('click', event => {\n  const button = event.target.closest('[data-remove]')\n  if (button) button.closest('li')?.remove()\n})",['삭제 버튼의 li만 제거됩니다.','목록에 리스너 하나만 연결합니다.']],
+  ['25','JSON.stringify와 JSON.parse로 객체와 저장 문자열을 왕복 변환합니다.',"const lesson = { id: 1, title: 'JSON' }\nconst text = JSON.stringify(lesson)\nconst restored = JSON.parse(text)\nconsole.log(text, restored.title)",['JSON 문자열과 JSON 제목이 출력됩니다.','복원 객체의 값이 원본과 같습니다.']],
+  ['26','localStorage에 찜 ID를 저장하고 손상된 값에 대비해 안전하게 읽습니다.',"function readIds() {\n  try { return JSON.parse(localStorage.getItem('favoriteIds') ?? '[]') }\n  catch { return [] }\n}\nlocalStorage.setItem('favoriteIds', JSON.stringify(['js-01']))\nconsole.log(readIds())",['새로고침 후에도 ID를 읽습니다.','잘못된 JSON이면 빈 배열을 반환합니다.']],
+  ['27','Promise의 성공과 실패를 then·catch·finally로 처리합니다.',"Promise.resolve('자료 준비')\n  .then(message => console.log(message))\n  .catch(error => console.error(error))\n  .finally(() => console.log('요청 종료'))",['성공 문구와 종료 문구가 순서대로 나옵니다.','실패도 catch에서 처리할 수 있습니다.']],
+  ['28','async·await로 API를 요청하고 HTTP 오류와 네트워크 오류를 처리합니다.',"async function load(url) {\n  const response = await fetch(url)\n  if (!response.ok) throw new Error(`요청 실패: ${response.status}`)\n  return response.json()\n}\nload('/api/lessons').then(console.log).catch(console.error)",['성공 시 JSON 결과를 받습니다.','실패 시 상태 코드가 포함된 오류가 나옵니다.']],
+  ['29','AbortController로 화면에서 필요 없어진 요청을 취소합니다.',"const controller = new AbortController()\nfetch('/api/lessons', { signal: controller.signal }).catch(error => {\n  if (error.name !== 'AbortError') console.error(error)\n})\ncontroller.abort()",['요청 취소를 일반 오류와 구분합니다.','취소 후 불필요한 결과를 처리하지 않습니다.']],
+  ['30','검색·필터·저장 함수를 조합하고 정상·빈 값·손상 저장값을 점검합니다.',"const normalize = value => value.trim().toLowerCase()\nconst search = (items, query) => items.filter(item => normalize(item.title).includes(normalize(query)))\nconsole.log(search([{ id: 1, title: 'JavaScript 실무' }], 'script'))",['검색 결과 한 개가 출력됩니다.','빈 검색어와 결과 없음도 검사합니다.']],
+].map(([number,guide,code,expected])=>[`javascript-practical-${number}`,{code,instructorGuide:`${guide} 먼저 강사가 예상 결과를 말하지 않고 수강생이 실행 전 결과를 예측하게 합니다.`,practice:[`${Number(number)}회차 시작 JavaScript 파일을 내려받습니다.`,guide,'TODO 위치를 직접 완성하고 콘솔에서 실행합니다.','정상값과 경계값을 각각 한 번씩 확인합니다.','완성 파일과 비교하고 입력·처리·결과를 설명합니다.'],expectedResult:expected,errors:['콘솔의 첫 번째 오류 문장과 줄 번호를 확인합니다.','변수명·괄호·따옴표의 짝을 위에서부터 확인합니다.','입력값의 자료형과 예상값을 console.log로 비교합니다.'],rubric:['3점: 회차 기능이 오류 없이 실행됩니다.','2점: 입력·처리·결과를 구분합니다.','2점: 정상값과 경계값을 검사합니다.','2점: 원본 값을 예상치 않게 변경하지 않습니다.','1점: 실행 결과와 수정 내용을 기록합니다.'],downloads:[{label:`${Number(number)}회차 시작 JS`,path:`practice/javascript-practical/lesson-${number}-start.js`},{label:`${Number(number)}회차 완성 JS`,path:`practice/javascript-practical/lesson-${number}-complete.js`}]}]))
+
 export const representativeCourses = representativeCourseSpecs.map((spec) => {
   const course = makeRepresentativeCourse(spec)
-  return { ...course, sessions: course.sessions.map((item) => ({ ...item, ...(webFoundationPilot[item.id] || {}), ...(nodePilot[item.id] || {}), ...(supabasePilot[item.id] || {}), ...(githubVercelPilot[item.id] || {}), ...(servicePlanningPilot[item.id] || {}), ...(figmaPilot[item.id] || {}), ...(codexPilot[item.id] || {}), ...(securityPilot[item.id] || {}), ...(contentAnalyticsPilot[item.id] || {}), ...(reactStatePilot[item.id] || {}) })) }
+  return { ...course, sessions: course.sessions.map((item) => ({ ...item, ...(webFoundationPilot[item.id] || {}), ...(nodePilot[item.id] || {}), ...(supabasePilot[item.id] || {}), ...(githubVercelPilot[item.id] || {}), ...(servicePlanningPilot[item.id] || {}), ...(figmaPilot[item.id] || {}), ...(codexPilot[item.id] || {}), ...(securityPilot[item.id] || {}), ...(contentAnalyticsPilot[item.id] || {}), ...(reactStatePilot[item.id] || {}), ...(javascriptPracticalPilot[item.id] || {}) })) }
 })
 const validatedReactCourse = { ...reactWebsiteCourse, sessions: reactWebsiteCourse.sessions.map((item) => ({ ...item, ...(reactPilot[item.id] || {}) })) }
 export const detailedCourses = [validatedReactCourse, ...representativeCourses]

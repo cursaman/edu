@@ -157,10 +157,10 @@ with category_expansions(category_order, category_id, category, color, image_url
    array['입문','입문','기초','기초','중급','실전','프로젝트'],
    array['읽기 좋은 색상·글자·간격 구성','핵심 화면의 정보 구조와 배치 설계','터치 중심 모바일 화면과 이동 설계','클릭 가능한 화면 흐름과 전환 구현','대비·초점·대체 설명 디자인 점검','상품 탐색부터 주문까지 화면 설계','디자인 과정과 결과를 사례로 정리']),
   (3,'foundation','웹 기초','mint','/edu/images/program-foundation.webp','javascript-basics',
-   array['foundation-html','foundation-css','foundation-js','foundation-form','foundation-dom','foundation-storage','foundation-portfolio'],
-   array['HTML 문서 구조 집중 과정','CSS 레이아웃 집중 과정','JavaScript 문법 첫걸음','웹 입력 폼과 유효성 검사','DOM과 이벤트 실습','localStorage 생활 웹앱 만들기','개인 소개 웹사이트 완성'],
-   array['입문','입문','입문','기초','기초','실전','프로젝트'],
-   array['의미 있는 태그와 웹 문서 구조 작성','박스·Flex·Grid를 이용한 화면 배치','변수·조건·반복·함수의 쉬운 활용','안전하고 이해하기 쉬운 입력 화면 구현','클릭·입력에 반응하는 화면 구현','새로고침 후에도 유지되는 브라우저 저장','반응형 개인 홈페이지 제작과 공개']),
+   array['foundation-html','foundation-css','javascript-practical','foundation-form','foundation-dom','foundation-storage','foundation-portfolio'],
+   array['HTML 문서 구조 집중 과정','CSS 레이아웃 집중 과정','실무 JavaScript 완성 과정','웹 입력 폼과 유효성 검사','DOM과 이벤트 실습','localStorage 생활 웹앱 만들기','개인 소개 웹사이트 완성'],
+   array['입문','입문','기초','기초','기초','실전','프로젝트'],
+   array['의미 있는 태그와 웹 문서 구조 작성','박스·Flex·Grid를 이용한 화면 배치','문법부터 DOM·저장·비동기까지 실무 기능 완성','안전하고 이해하기 쉬운 입력 화면 구현','클릭·입력에 반응하는 화면 구현','새로고침 후에도 유지되는 브라우저 저장','반응형 개인 홈페이지 제작과 공개']),
   (4,'frontend','프런트엔드','violet','/edu/images/program-react.webp','react-components',
    array['frontend-router','frontend-form','frontend-query','frontend-performance','frontend-test','frontend-shop','frontend-portfolio'],
    array['React 라우팅과 다중 페이지 구성','React 폼과 입력 상태 관리','React 서버 데이터 관리','React 성능과 코드 분할','React 컴포넌트 테스트','React 쇼핑몰 프런트엔드','프런트엔드 포트폴리오 완성'],
@@ -432,6 +432,9 @@ on conflict (id) do update set
 
 -- 별도 프로그램으로 추가했던 이전 12주 과정이 남아 있다면 제거합니다.
 delete from public.edu_programs where id = 'vibe-coding-fullstack';
+
+-- 실무 JavaScript 과정으로 교체한 이전 프로그램 ID를 제거합니다.
+delete from public.edu_programs where id = 'foundation-js';
 
 -- 실행 결과 확인: 프로그램 100개, 교육자료 100개, 공지사항 3개가 정상입니다.
 select '교육 프로그램' as item, count(*) as saved_count from public.edu_programs

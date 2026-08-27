@@ -97,7 +97,7 @@ const expansionProgramSpecs = [
   ['design-portfolio', 'uiux-design', '웹디자이너 포트폴리오 완성', '프로젝트', '디자인 과정과 결과를 사례로 정리'],
   ['foundation-html', 'foundation', 'HTML 문서 구조 집중 과정', '입문', '의미 있는 태그와 웹 문서 구조 작성'],
   ['foundation-css', 'foundation', 'CSS 레이아웃 집중 과정', '입문', '박스·Flex·Grid를 이용한 화면 배치'],
-  ['foundation-js', 'foundation', 'JavaScript 문법 첫걸음', '입문', '변수·조건·반복·함수의 쉬운 활용'],
+  ['javascript-practical', 'foundation', '실무 JavaScript 완성 과정', '기초', '문법부터 DOM·저장·비동기까지 실무 기능 완성'],
   ['foundation-form', 'foundation', '웹 입력 폼과 유효성 검사', '기초', '안전하고 이해하기 쉬운 입력 화면 구현'],
   ['foundation-dom', 'foundation', 'DOM과 이벤트 실습', '기초', '클릭·입력에 반응하는 화면 구현'],
   ['foundation-storage', 'foundation', 'localStorage 생활 웹앱 만들기', '실전', '새로고침 후에도 유지되는 브라우저 저장'],
@@ -328,7 +328,7 @@ const programCatalog = [
 
 export const programs = programCatalog.map((program) => ({
   ...program,
-  image: `${import.meta.env.BASE_URL}images/programs/${program.id}.webp`,
+  image: `${import.meta.env.BASE_URL}images/programs/${program.id === 'javascript-practical' ? 'foundation-js' : program.id}.webp`,
   imageAlt: `${program.title} 교육의 핵심 실습 장면을 표현한 일러스트`,
 }))
 
