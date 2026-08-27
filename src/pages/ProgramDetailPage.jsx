@@ -84,8 +84,10 @@ export default function ProgramDetailPage({ programId }) {
           <span className="section-eyebrow">BEFORE YOU START</span>
           <h2>수업 전 준비물</h2>
           <ul>{program.preparations.map((item) => <li key={item}>{item}</li>)}</ul>
-          <a className="button button-primary" href="#/application">수강 신청 안내 보기</a>
-          <p className="preparation-note">실제 신청 접수는 다음 개발 단계에서 연결됩니다.</p>
+          {program.id === 'react-website'
+            ? <a className="button button-primary" href="#/classroom/react-website/react-01">8회차 강의 시작하기</a>
+            : <a className="button button-primary" href="#/application">수강 신청 안내 보기</a>}
+          <p className="preparation-note">React 과정은 상세 강의실을 체험할 수 있으며 진도는 현재 브라우저에 저장됩니다.</p>
         </aside>
       </div>
 

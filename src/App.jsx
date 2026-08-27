@@ -6,9 +6,11 @@ import AdminLoginPage from './pages/AdminLoginPage.jsx'
 import AdminPage from './pages/AdminPage.jsx'
 import ApplicationPage from './pages/ApplicationPage.jsx'
 import CategoriesPage from './pages/CategoriesPage.jsx'
+import CourseClassroomPage from './pages/CourseClassroomPage.jsx'
 import HomePage from './pages/HomePage.jsx'
 import LessonDetailPage from './pages/LessonDetailPage.jsx'
 import LessonsPage from './pages/LessonsPage.jsx'
+import MyClassroomPage from './pages/MyClassroomPage.jsx'
 import NoticeDetailPage from './pages/NoticeDetailPage.jsx'
 import NoticesPage from './pages/NoticesPage.jsx'
 import NotFoundPage from './pages/NotFoundPage.jsx'
@@ -118,6 +120,11 @@ export default function App() {
     />
   } else if (route.pathname.startsWith('/lessons/')) {
     page = <LessonDetailPage key={route.pathname} lessonId={route.pathname.split('/')[2]} />
+  } else if (route.pathname === '/classroom') {
+    page = <MyClassroomPage />
+  } else if (route.pathname.startsWith('/classroom/')) {
+    const [, , programId, sessionId] = route.pathname.split('/')
+    page = <CourseClassroomPage key={route.pathname} programId={programId} sessionId={sessionId} />
   } else if (route.pathname === '/notice') {
     page = <NoticesPage />
   } else if (route.pathname.startsWith('/notice/')) {

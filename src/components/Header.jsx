@@ -1,8 +1,11 @@
+import { useState } from 'react'
+
 const navigationItems = [
   { label: '홈', href: '#/', path: '/' },
   { label: '교육 분야', href: '#/categories', path: '/categories' },
   { label: '교육 프로그램', href: '#/programs', path: '/programs' },
   { label: '교육자료', href: '#/lessons', path: '/lessons' },
+  { label: '내 강의실', href: '#/classroom', path: '/classroom' },
   { label: '공지사항', href: '#/notice', path: '/notice' },
   { label: '수강 신청', href: '#/application', path: '/application' },
 ]
@@ -48,4 +51,3 @@ export default function Header({ currentPath }) {
     </header>
   )
 }
-import { useState } from 'react'
