@@ -10,7 +10,7 @@ const navigationItems = [
   { label: '수강 신청', href: '#/application', path: '/application' },
 ]
 
-export default function Header({ currentPath }) {
+export default function Header({ currentPath, onLogout, session, supabaseConfigured }) {
   const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
@@ -63,6 +63,9 @@ export default function Header({ currentPath }) {
               {item.label}
             </a>
           ))}
+          {supabaseConfigured && (session?.user
+            ? <button className="nav-account-button" onClick={() => { setMenuOpen(false); onLogout?.() }} type="button">로그아웃</button>
+            : <a aria-current={currentPath === '/login' || currentPath === '/signup' ? 'page' : undefined} className="nav-account-link" href="#/login" onClick={() => setMenuOpen(false)}>로그인</a>)}
         </nav>
       </div>
       </header>

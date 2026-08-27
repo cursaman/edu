@@ -21,6 +21,7 @@ const NoticesPage = lazy(() => import('./pages/NoticesPage.jsx'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage.jsx'))
 const ProgramDetailPage = lazy(() => import('./pages/ProgramDetailPage.jsx'))
 const ProgramsPage = lazy(() => import('./pages/ProgramsPage.jsx'))
+const UserAuthPage = lazy(() => import('./pages/UserAuthPage.jsx'))
 
 function readCurrentRoute() {
   const legacyRoutes = {
@@ -56,6 +57,15 @@ export default function App() {
     window.addEventListener('hashchange', handleHashChange)
     return () => window.removeEventListener('hashchange', handleHashChange)
   }, [])
+
+  useEffect(() => {
+    if (!session?.user?.id || !isSupabaseConfigured) return
+    void import('./data/userProgress.js').then(({ migrateLocalProgress }) => migrateLocalProgress(session.user.id))
+      .then((result) => {
+        if (result.migrated) window.dispatchEvent(new CustomEvent('edu-user-progress-updated'))
+      })
+      .catch((error) => console.error('기존 브라우저 진도를 계정으로 옮기지 못했습니다.', error))
+  }, [session?.user?.id])
 
   useEffect(() => {
     function refreshPages() {
@@ -143,10 +153,17 @@ export default function App() {
   } else if (route.pathname === '/recommend') {
     page = <LearningRecommendationPage />
   } else if (route.pathname === '/classroom') {
-    page = <MyClassroomPage />
+    page = isSupabaseConfigured && checkingAccess
+      ? <section className="content-page page-shell"><p role="status">로그인 상태와 학습 기록을 확인하고 있습니다...</p></section>
+      : <MyClassroomPage session={session} supabaseConfigured={isSupabaseConfigured} />
   } else if (route.pathname.startsWith('/classroom/')) {
     const [, , programId, sessionId] = route.pathname.split('/')
-    page = <CourseClassroomPage key={route.pathname} programId={programId} sessionId={sessionId} />
+    page = isSupabaseConfigured && checkingAccess
+      ? <section className="content-page page-shell"><p role="status">로그인 상태와 학습 기록을 확인하고 있습니다...</p></section>
+      : <CourseClassroomPage key={route.pathname} programId={programId} session={session} sessionId={sessionId} />
+  } else if (route.pathname === '/login' || route.pathname === '/signup') {
+    const nextPath = route.searchParams.get('next')?.startsWith('/') ? route.searchParams.get('next') : '/classroom'
+    page = <UserAuthPage mode={route.pathname === '/signup' ? 'signup' : 'login'} nextPath={nextPath} session={session} />
   } else if (route.pathname === '/notice') {
     page = <NoticesPage />
   } else if (route.pathname.startsWith('/notice/')) {
@@ -171,7 +188,7 @@ export default function App() {
 
   return (
     <>
-      <Header currentPath={route.pathname} />
+      <Header currentPath={route.pathname} onLogout={() => supabaseClient?.auth.signOut()} session={session} supabaseConfigured={isSupabaseConfigured} />
       <main id="main-content" tabIndex="-1">
         <Suspense fallback={<section className="content-page page-shell"><p role="status">화면을 불러오고 있습니다...</p></section>}>
           {page}

@@ -2891,6 +2891,58 @@ button:focus-visible {
   outline: none;
 }
 
+/* 8일차: 일반 회원 인증과 사용자별 학습 진도 */
+.nav-account-link, .nav-account-button { padding: 9px 12px; border: 1px solid #dfe2ec; border-radius: 11px; background: #fff; color: #39445a; font: inherit; font-size: 12px; font-weight: 750; cursor: pointer; }
+.nav-account-link[aria-current='page'] { border-color: var(--violet); background: #f0f1ff; color: var(--violet); }
+.auth-page { display: grid; grid-template-columns: minmax(0, 1fr) minmax(340px, 470px); align-items: center; gap: 70px; min-height: 720px; }
+.auth-introduction h1 { margin: 12px 0 20px; font-size: clamp(40px, 5vw, 62px); letter-spacing: -.065em; line-height: 1.05; }
+.auth-introduction > p { max-width: 600px; color: var(--muted); line-height: 1.8; }
+.auth-introduction ul { display: grid; gap: 11px; margin-top: 28px; padding: 0; list-style: none; }
+.auth-introduction li::before { margin-right: 9px; color: #2ca27e; content: '✓'; font-weight: 900; }
+.auth-card { padding: 34px; border: 1px solid #dfe3ef; border-radius: 24px; background: #fff; box-shadow: 0 22px 55px rgba(43, 52, 87, .1); }
+.auth-tabs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; margin-bottom: 28px; padding: 5px; border-radius: 13px; background: #f2f3f8; }
+.auth-tabs button { padding: 11px; border: 0; border-radius: 9px; background: transparent; color: var(--muted); font: inherit; font-weight: 750; cursor: pointer; }
+.auth-tabs .auth-tab-active { background: #fff; color: var(--violet); box-shadow: 0 3px 10px rgba(40,48,80,.08); }
+.auth-card form { display: grid; gap: 17px; }
+.auth-card form label { display: grid; gap: 8px; color: #384359; font-size: 13px; font-weight: 750; }
+.auth-card form input { width: 100%; padding: 13px 14px; border: 1px solid #d8dce8; border-radius: 11px; font: inherit; }
+.auth-card form input:focus { border-color: var(--violet); outline: 3px solid rgba(91, 103, 246, .14); }
+.auth-card form .button { width: 100%; margin-top: 5px; }
+.auth-message { margin: 0; padding: 12px 14px; border-radius: 10px; font-size: 12px; line-height: 1.6; }
+.auth-error { background: #fff0f0; color: #a13838; }
+.auth-success { background: #eaf8f2; color: #246e58; }
+.auth-security-note { margin: 18px 0 0; color: var(--muted); font-size: 11px; line-height: 1.6; }
+.auth-signed-in { grid-column: 1 / -1; width: min(100%, 620px); justify-self: center; text-align: center; }
+.auth-signed-in h1 { margin: 9px 0; }
+.classroom-account-heading .button { margin-top: 17px; }
+.classroom-status { padding: 18px; border-radius: 13px; background: #f4f6ff; color: #4d5872; }
+.classroom-status-error { background: #fff0f0; color: #963d3d; }
+.classroom-empty-account { padding: 55px 30px; border: 1px dashed #cfd5e6; border-radius: 20px; text-align: center; }
+.classroom-empty-account > span { display: grid; width: 54px; height: 54px; margin: 0 auto 16px; place-items: center; border-radius: 17px; background: #eeefff; color: var(--violet); font-size: 23px; }
+.classroom-empty-account h2 { margin: 0 0 8px; }
+.classroom-empty-account p { color: var(--muted); }
+.last-study-date { color: #65718a; }
+.classroom-login-gate { min-height: 430px; padding: 55px; text-align: center; }
+.classroom-login-gate > span { display: grid; width: 62px; height: 62px; margin: 0 auto 18px; place-items: center; border-radius: 19px; background: #f0f1ff; font-size: 27px; }
+.classroom-login-gate h2 { margin: 8px auto 12px; max-width: 560px; font-size: clamp(26px, 4vw, 38px); }
+.classroom-login-gate > p:not(.section-eyebrow) { max-width: 580px; margin: 0 auto 24px; }
+.classroom-login-gate > div { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.classroom-actions > div:first-child { display: flex; align-items: center; gap: 12px; }
+.classroom-sync-message { max-width: 260px; color: var(--muted); line-height: 1.5; }
+
+@media (max-width: 980px) {
+  .auth-page { grid-template-columns: 1fr; gap: 35px; padding-block: 70px; }
+  .auth-introduction { max-width: 720px; }
+}
+
+@media (max-width: 680px) {
+  .auth-page { min-height: auto; padding-block: 45px; }
+  .auth-card { padding: 25px 21px; }
+  .classroom-login-gate { min-height: auto; padding: 35px 23px; }
+  .classroom-login-gate .button { width: 100%; }
+  .classroom-actions > div:first-child { align-items: stretch; flex-direction: column; }
+}
+
 /* 대표 과정 무료 체험과 개인 추천 */
 .featured-learning-section { padding-block: 84px; }
 .featured-learning-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }

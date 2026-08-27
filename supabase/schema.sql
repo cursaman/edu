@@ -8,6 +8,37 @@ create table if not exists public.admin_profiles (
   created_at timestamptz not null default now()
 );
 
+-- 일반 학습자는 이메일 인증 정보 외에 불필요한 개인정보를 저장하지 않습니다.
+create table if not exists public.user_profiles (
+  user_id uuid primary key references auth.users (id) on delete cascade,
+  display_name text not null default '',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.course_enrollments (
+  user_id uuid not null references auth.users (id) on delete cascade,
+  program_id text not null,
+  last_session_id text,
+  enrolled_at timestamptz not null default now(),
+  last_studied_at timestamptz not null default now(),
+  completed_at timestamptz,
+  primary key (user_id, program_id)
+);
+
+create table if not exists public.course_progress (
+  user_id uuid not null references auth.users (id) on delete cascade,
+  program_id text not null,
+  session_id text not null,
+  completed boolean not null default false,
+  completed_at timestamptz,
+  updated_at timestamptz not null default now(),
+  primary key (user_id, program_id, session_id)
+);
+
+create index if not exists course_enrollments_user_recent_idx on public.course_enrollments (user_id, last_studied_at desc);
+create index if not exists course_progress_user_program_idx on public.course_progress (user_id, program_id);
+
 create table if not exists public.edu_programs (
   id text primary key,
   title text not null,
@@ -115,6 +146,40 @@ create trigger set_edu_notices_updated_at
 before update on public.edu_notices
 for each row execute function public.set_edu_updated_at();
 
+drop trigger if exists set_user_profiles_updated_at on public.user_profiles;
+create trigger set_user_profiles_updated_at
+before update on public.user_profiles
+for each row execute function public.set_edu_updated_at();
+
+drop trigger if exists set_course_progress_updated_at on public.course_progress;
+create trigger set_course_progress_updated_at
+before update on public.course_progress
+for each row execute function public.set_edu_updated_at();
+
+-- 새 Auth 사용자의 최소 프로필 행을 자동 생성합니다.
+create or replace function public.handle_new_edu_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = pg_catalog, public
+as $$
+begin
+  insert into public.user_profiles (user_id) values (new.id)
+  on conflict (user_id) do nothing;
+  return new;
+end;
+$$;
+
+drop trigger if exists on_auth_user_created_edu_profile on auth.users;
+create trigger on_auth_user_created_edu_profile
+after insert on auth.users
+for each row execute function public.handle_new_edu_user();
+
+-- 스키마 적용 전에 이미 존재하던 관리자·테스트 사용자도 최소 프로필을 만듭니다.
+insert into public.user_profiles (user_id)
+select id from auth.users
+on conflict (user_id) do nothing;
+
 -- security definer 함수는 관리자 여부만 확인하며 검색 경로를 고정합니다.
 create or replace function public.is_edu_admin()
 returns boolean
@@ -132,6 +197,9 @@ revoke all on function public.is_edu_admin() from public;
 grant execute on function public.is_edu_admin() to authenticated;
 
 alter table public.admin_profiles enable row level security;
+alter table public.user_profiles enable row level security;
+alter table public.course_enrollments enable row level security;
+alter table public.course_progress enable row level security;
 alter table public.edu_programs enable row level security;
 alter table public.edu_lessons enable row level security;
 alter table public.edu_notices enable row level security;
@@ -140,6 +208,45 @@ drop policy if exists "edu_admin_read_own_profile" on public.admin_profiles;
 create policy "edu_admin_read_own_profile"
 on public.admin_profiles for select to authenticated
 using (auth.uid() = user_id);
+
+drop policy if exists "user_profiles_read_own" on public.user_profiles;
+create policy "user_profiles_read_own" on public.user_profiles
+for select to authenticated using (auth.uid() = user_id);
+drop policy if exists "user_profiles_insert_own" on public.user_profiles;
+create policy "user_profiles_insert_own" on public.user_profiles
+for insert to authenticated with check (auth.uid() = user_id);
+drop policy if exists "user_profiles_update_own" on public.user_profiles;
+create policy "user_profiles_update_own" on public.user_profiles
+for update to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
+drop policy if exists "user_profiles_delete_own" on public.user_profiles;
+create policy "user_profiles_delete_own" on public.user_profiles
+for delete to authenticated using (auth.uid() = user_id);
+
+drop policy if exists "course_enrollments_read_own" on public.course_enrollments;
+create policy "course_enrollments_read_own" on public.course_enrollments
+for select to authenticated using (auth.uid() = user_id);
+drop policy if exists "course_enrollments_insert_own" on public.course_enrollments;
+create policy "course_enrollments_insert_own" on public.course_enrollments
+for insert to authenticated with check (auth.uid() = user_id);
+drop policy if exists "course_enrollments_update_own" on public.course_enrollments;
+create policy "course_enrollments_update_own" on public.course_enrollments
+for update to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
+drop policy if exists "course_enrollments_delete_own" on public.course_enrollments;
+create policy "course_enrollments_delete_own" on public.course_enrollments
+for delete to authenticated using (auth.uid() = user_id);
+
+drop policy if exists "course_progress_read_own" on public.course_progress;
+create policy "course_progress_read_own" on public.course_progress
+for select to authenticated using (auth.uid() = user_id);
+drop policy if exists "course_progress_insert_own" on public.course_progress;
+create policy "course_progress_insert_own" on public.course_progress
+for insert to authenticated with check (auth.uid() = user_id);
+drop policy if exists "course_progress_update_own" on public.course_progress;
+create policy "course_progress_update_own" on public.course_progress
+for update to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
+drop policy if exists "course_progress_delete_own" on public.course_progress;
+create policy "course_progress_delete_own" on public.course_progress
+for delete to authenticated using (auth.uid() = user_id);
 
 -- 관리자 권한 테이블에는 INSERT·UPDATE·DELETE 정책을 만들지 않습니다.
 -- 따라서 브라우저 사용자는 자신에게 관리자 권한을 추가하거나 변경할 수 없습니다.
