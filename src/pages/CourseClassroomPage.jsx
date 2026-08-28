@@ -5,6 +5,7 @@ import { findFeaturedLearning } from '../data/featuredLearning.js'
 import { isSupabaseConfigured } from '../lib/supabase.js'
 import { loadUserLearning, recordLastSession, saveUserSessionProgress } from '../data/userProgress.js'
 import { allowedCourseStatuses, enrollmentStatuses, getEnrollment } from '../data/enrollmentStorage.js'
+import FreeTrialWebsiteBuilder from '../components/FreeTrialWebsiteBuilder.jsx'
 
 export default function CourseClassroomPage({ programId, session, sessionId }) {
   const course = findDetailedCourse(programId)
@@ -20,6 +21,8 @@ export default function CourseClassroomPage({ programId, session, sessionId }) {
   const progress = course ? Math.round((completed.length / course.sessions.length) * 100) : 0
   const hasCourseAccess = Boolean(enrollment && allowedCourseStatuses.includes(enrollment.status))
   const freeSessionLimit = programId.startsWith('senior-') ? 1 : 3
+  const isWebFoundationTrial = programId === 'web-foundation' && active?.order <= 3
+  const trialCompletedCount = course ? course.sessions.slice(0, 3).filter((item) => completed.includes(item.id)).length : 0
   const courseLocked = Boolean(active && isSupabaseConfigured && active.order > freeSessionLimit && (!session?.user || !hasCourseAccess))
   useEffect(() => {
     if (!session?.user?.id || !active) return undefined
@@ -59,6 +62,7 @@ export default function CourseClassroomPage({ programId, session, sessionId }) {
     <div className="classroom-layout">
       <aside className="classroom-sidebar"><h2>전체 회차</h2>{course.sessions.map((item) => <a aria-current={item.id === active.id ? 'page' : undefined} className={item.id === active.id ? 'classroom-session-active' : ''} href={`#/classroom/${programId}/${item.id}`} key={item.id}><span>{completed.includes(item.id) ? '✓' : item.order}</span><div><small>{item.week}주차 · {item.duration}</small><strong>{item.title}</strong></div></a>)}</aside>
       {checkingEnrollment && active.order > freeSessionLimit ? <article className="classroom-content classroom-login-gate"><p role="status">수강권을 확인하고 있습니다...</p></article> : courseLocked ? <article className="classroom-content classroom-login-gate"><span aria-hidden="true">🔒</span><p className="section-eyebrow">FREE EXPERIENCE COMPLETE</p><h2>{freeSessionLimit + 1}회차부터는 승인된 수강권이 필요합니다</h2><p>{session?.user ? enrollment ? `현재 신청 상태는 '${enrollmentStatuses[enrollment.status] || enrollment.status}'입니다. 관리자 승인 후 전체 회차를 이용할 수 있습니다.` : '과정 상세 화면에서 수강 신청을 먼저 접수해 주세요.' : '회원가입 후 수강 신청하면 관리자 승인 뒤 전체 회차를 학습할 수 있습니다.'}</p><div>{session?.user ? <a className="button button-primary" href={`#/programs/${programId}`}>수강 신청 상태 확인하기 →</a> : <><a className="button button-primary" href={`#/signup?next=/programs/${programId}`}>회원가입하기 →</a><a className="button button-secondary" href={`#/login?next=/programs/${programId}`}>이미 계정이 있어요</a></>}</div></article> : <article className="classroom-content">
+        {isWebFoundationTrial && <aside className="free-trial-status"><div><strong>회원가입 없는 무료 체험</strong><span>1~3회차 완료 {trialCompletedCount}/3</span></div><div aria-label={`무료 체험 ${trialCompletedCount}/3 완료`}><i style={{ width: `${trialCompletedCount / 3 * 100}%` }} /></div><p>설명을 읽고 시작 파일을 실습한 뒤 ‘학습 완료’를 눌러 주세요. 3회차에서는 내 홈페이지 결과물을 만들고 내려받을 수 있습니다.</p></aside>}
         <div className="classroom-lesson-heading"><span>{active.week}주차 · {active.order}회차 · {active.duration}{featured && active.order <= featured.freeSessions ? ' · 무료 체험' : ''}</span><h2>{active.title}</h2><p>{active.goal}</p></div>
         {course.resources?.length > 0 && <section className="classroom-teaching-kit"><div><h3>과정 전체 수업자료</h3><p>강사용 지도서에는 대본·예상 결과·오류 사례·정답이, 수강생 활동지에는 실습과 기록란이 들어 있습니다.</p></div><div className="classroom-downloads">{course.resources.map((resource) => <a className="button button-secondary" download href={`${import.meta.env.BASE_URL}${resource.path}`} key={resource.path}>{resource.audience} · {resource.label} ↓</a>)}</div></section>}
         <section className="classroom-teaching-kit"><div><h3>수업 준비물</h3><ul>{active.materials.map((item) => <li key={item}>{item}</li>)}</ul></div><button className="button button-secondary classroom-print" onClick={printLesson} type="button">이 회차 교안 인쇄·PDF 저장</button></section>
@@ -67,6 +71,7 @@ export default function CourseClassroomPage({ programId, session, sessionId }) {
         <section><h3>쉽게 이해하기</h3><p>{active.concept}</p></section>
         <section><h3>직접 따라 하기</h3><ol>{active.practice.map((step) => <li key={step}>{step}</li>)}</ol></section>
         {active.downloads?.length > 0 && <section><h3>실습 파일</h3><p>시작 파일을 내려받아 직접 작업한 다음 완성 파일과 비교하세요.</p><div className="classroom-downloads">{active.downloads.map((file) => <a className="button button-secondary" download href={`${import.meta.env.BASE_URL}${file.path}`} key={file.path}>{file.label} ↓</a>)}</div></section>}
+        {programId === 'web-foundation' && active.order === 3 && <FreeTrialWebsiteBuilder onDownloaded={() => setSyncMessage('내 홈페이지 파일을 다운로드했습니다. 파일을 열어 결과를 확인한 뒤 학습 완료를 눌러 주세요.')} />}
         <section><h3>예제 코드</h3><pre><code>{active.code}</code></pre></section>
         {active.decision && <section className="senior-review-section"><h3>설계 판단과 이유</h3><p>{active.decision}</p></section>}
         {active.expectedResult?.length > 0 && <section className="senior-review-section"><h3>실행 후 예상 결과</h3><ul>{active.expectedResult.map((item) => <li key={item}>{item}</li>)}</ul></section>}
@@ -79,7 +84,7 @@ export default function CourseClassroomPage({ programId, session, sessionId }) {
         {active.rubric?.length > 0 && <section><h3>과제 평가 기준 · 10점</h3><ul>{active.rubric.map((item) => <li key={item}>{item}</li>)}</ul></section>}
         <section><h3>과제</h3><p>{active.assignment}</p><h3>학습 완료 기준</h3><ul>{active.completionCriteria.map((item) => <li key={item}>{item}</li>)}</ul></section>
         <div className="classroom-actions"><div><button className={`button ${isCompleted ? 'button-secondary' : 'button-primary'}`} disabled={saving} onClick={toggle} type="button">{saving ? '저장 중...' : isCompleted ? '완료 취소' : '이 회차 학습 완료'}</button>{syncMessage && <small className="classroom-sync-message" role="status">{syncMessage}</small>}</div><div>{activeIndex > 0 && <a href={`#/classroom/${programId}/${course.sessions[activeIndex - 1].id}`}>← 이전 회차</a>}{activeIndex < course.sessions.length - 1 ? <a href={`#/classroom/${programId}/${course.sessions[activeIndex + 1].id}`}>다음 회차 →</a> : <a href="#/classroom">내 강의실로 →</a>}</div></div>
-        {featured && active.order === featured.freeSessions && <section className="free-trial-complete"><span aria-hidden="true">✓</span><div><h3>무료 체험 3회차를 모두 살펴봤습니다</h3><p>완성 목표와 학습 방식이 나에게 맞는지 확인한 뒤 전체 과정 또는 다른 추천 과정을 살펴보세요.</p></div><a className="button button-secondary" href="#/recommend">다른 과정 추천받기</a></section>}
+        {featured && active.order === featured.freeSessions && trialCompletedCount === featured.freeSessions && <section className="free-trial-complete"><span aria-hidden="true">✓</span><div><h3>무료 체험 3회차를 모두 완료했습니다</h3><p>다운로드한 홈페이지를 직접 열어 확인했습니다. 전체 과정을 이어가거나 다른 추천 과정을 살펴보세요.</p></div><a className="button button-secondary" href="#/recommend">다른 과정 추천받기</a></section>}
       </article>}
     </div>
   </section>
