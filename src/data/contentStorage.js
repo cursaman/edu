@@ -12,6 +12,7 @@ function fromDatabase(type, row) {
     return {
       id: row.id, title: row.title, categoryId: row.category_id, category: row.category,
       level: row.level, duration: row.duration, description: row.description,
+      learningTrack: row.learning_track || '입문',
       introduction: row.introduction, audience: row.audience || [], goals: row.goals || [],
       curriculum: row.curriculum || [], preparations: row.preparations || [],
       relatedLessonIds: row.related_lesson_ids || [], status: row.status,
@@ -44,6 +45,7 @@ function toDatabase(type, item) {
     return {
       id: item.id, title: item.title, category_id: item.categoryId, category: item.category,
       level: item.level, duration: item.duration, description: item.description,
+      learning_track: item.learningTrack || '입문',
       introduction: item.introduction, audience: item.audience || [], goals: item.goals || [],
       curriculum: item.curriculum || [], preparations: item.preparations || [],
       related_lesson_ids: item.relatedLessonIds || [], status: item.status || '모집 예정',
@@ -78,6 +80,11 @@ export function readManagedContent(type) {
     if (!saved) return defaults[type]
     const parsed = JSON.parse(saved)
     if (!Array.isArray(parsed)) return defaults[type]
+    if (type === 'programs') {
+      const normalized = parsed.map((item) => ({ ...item, learningTrack: item.learningTrack || (['중급', '실전', '프로젝트', '고급'].includes(item.level) ? '실무' : '입문') }))
+      const missingDefaults = defaultPrograms.filter((item) => !normalized.some((saved) => saved.id === item.id))
+      return [...normalized, ...missingDefaults]
+    }
     if (type !== 'lessons') return parsed
 
     return parsed.map((item) => {
@@ -125,7 +132,8 @@ export async function loadSharedContent(type) {
   const { data, error } = await supabase.from(tableNames[type]).select('*').order('created_at')
   if (error) return { items: readManagedContent(type), error }
 
-  const items = data.map((row) => fromDatabase(type, row))
+  let items = data.map((row) => fromDatabase(type, row))
+  if (type === 'programs') items = [...items, ...defaultPrograms.filter((item) => !items.some((saved) => saved.id === item.id))]
   saveManagedContent(type, items)
   window.dispatchEvent(new CustomEvent('edu-content-updated', { detail: { type } }))
   return { items, error: null }

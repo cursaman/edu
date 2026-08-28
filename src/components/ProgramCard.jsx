@@ -20,6 +20,8 @@ export default function ProgramCard({ program }) {
         <span className="program-status">{program.status}</span>
       </div>
 
+      <span className={`learning-track-badge learning-track-${program.learningTrack || '입문'}`}>{program.learningTrack || '입문'} 트랙</span>
+
       <p className="program-category">{program.category}</p>
       <h3 className="program-title">{program.title}</h3>
       <p className="program-description">{program.description}</p>

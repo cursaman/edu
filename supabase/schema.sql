@@ -68,6 +68,7 @@ create table if not exists public.edu_programs (
   category_id text not null,
   category text not null,
   level text not null,
+  learning_track text not null default '입문' check (learning_track in ('입문', '실무', '시니어')),
   duration text not null,
   description text not null,
   introduction text not null,
@@ -95,6 +96,9 @@ alter table public.edu_programs add column if not exists regular_price integer n
 alter table public.edu_programs add column if not exists sale_price integer not null default 0;
 alter table public.edu_programs add column if not exists is_free boolean not null default true;
 alter table public.edu_programs add column if not exists sale_status text not null default 'draft';
+alter table public.edu_programs add column if not exists learning_track text not null default '입문';
+alter table public.edu_programs drop constraint if exists edu_programs_learning_track_check;
+alter table public.edu_programs add constraint edu_programs_learning_track_check check (learning_track in ('입문', '실무', '시니어'));
 
 -- 결제 금액은 주문 생성 시 서버가 edu_programs에서 다시 읽어 orders에 고정합니다.
 create table if not exists public.orders (

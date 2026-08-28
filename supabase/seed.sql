@@ -444,7 +444,18 @@ where id = 'react-website';
 update public.edu_programs set regular_price = 420000, sale_price = 320000, is_free = false, sale_status = 'on_sale'
 where id = 'node-backend';
 
--- 실행 결과 확인: 프로그램 100개, 교육자료 100개, 공지사항 3개가 정상입니다.
+-- 기존 프로그램의 학습 단계 기본값을 채우고 시니어 대표 과정 3개를 추가합니다.
+update public.edu_programs set learning_track = case when level in ('중급', '실전', '프로젝트', '고급') then '실무' else '입문' end where learning_track is null or learning_track <> '시니어';
+
+insert into public.edu_programs (
+  id,title,category_id,category,level,learning_track,duration,description,introduction,audience,goals,curriculum,preparations,related_lesson_ids,status,color,display_number,image_url,image_alt
+) values
+('senior-react-refactoring','React 리팩터링 실무','frontend','프런트엔드','고급','시니어','6주 · 주 1회','복잡해진 React 화면을 측정하고 안전하게 분리·최적화·검증합니다.','운영 중인 React 코드를 단계적으로 개선하고 테스트 가능한 구조로 만듭니다.','["React 운영 개발자","코드 리뷰 역량을 강화하려는 개발자"]','["문제를 측정합니다.","상태 경계를 설계합니다.","회귀 테스트로 동작을 보존합니다."]','["거대 컴포넌트 분리","파생 상태 제거","요청 경쟁 조건","성능 측정","오류 복구","PR 회귀 검증"]','["React 프로젝트","Node.js 22 LTS","Chrome 개발자 도구"]','[]','모집 예정','violet','101','/edu/images/program-react.webp','React 운영 코드를 검토하고 개선하는 개발자'),
+('senior-supabase-rls','Supabase 인증·RLS 보안','database','데이터베이스','고급','시니어','6주 · 주 1회','인증과 데이터 권한을 공격자 관점에서 설계하고 검증합니다.','PostgreSQL RLS로 사용자·관리자·서버 권한을 분리하고 우회 접근을 시험합니다.','["Supabase 운영 개발자","RLS 정책을 검증하려는 개발자"]','["위협 모델을 작성합니다.","최소 권한 RLS를 설계합니다.","권한 우회를 검증합니다."]','["UI 권한 우회","사용자 행 격리","관리자 상승 차단","Definer 함수","서비스 키 대응","RLS 회귀 테스트"]','["Supabase 테스트 프로젝트","역할별 계정","SQL Editor"]','[]','모집 예정','mint','102','/edu/images/program-database.webp','사용자별 RLS 데이터 접근을 검증하는 개발자'),
+('senior-payment-reliability','결제 시스템 안정화','backend','백엔드','고급','시니어','6주 · 주 1회','주문·승인·웹훅을 중복과 부분 실패에 견디도록 설계합니다.','서버 가격 검증, 멱등성, 상태 전이, 웹훅과 장애 복구를 실습합니다.','["결제 연동 개발자","분산 실패와 복구를 설계하려는 개발자"]','["서버 가격을 검증합니다.","중복 승인을 방지합니다.","복구 절차를 만듭니다."]','["금액 변조 차단","중복 주문 제어","승인 멱등성","부분 실패","웹훅 검증","대사와 복구"]','["Vercel 테스트 환경","토스 테스트 키","Supabase 프로젝트"]','[]','모집 예정','coral','103','/edu/images/program-backend.webp','주문과 결제 승인 상태를 검증하는 개발자')
+on conflict (id) do update set title=excluded.title,category_id=excluded.category_id,category=excluded.category,level=excluded.level,learning_track=excluded.learning_track,duration=excluded.duration,description=excluded.description,introduction=excluded.introduction,audience=excluded.audience,goals=excluded.goals,curriculum=excluded.curriculum,preparations=excluded.preparations,status=excluded.status,color=excluded.color,display_number=excluded.display_number,image_url=excluded.image_url,image_alt=excluded.image_alt;
+
+-- 실행 결과 확인: 교육 프로그램 103개, 교육자료 100개, 공지사항 3개가 정상입니다.
 select '교육 프로그램' as item, count(*) as saved_count from public.edu_programs
 union all
 select '교육자료', count(*) from public.edu_lessons

@@ -6,11 +6,12 @@ import { readManagedContent } from '../data/contentStorage.js'
 const PROGRAMS_PER_PAGE = 9
 const levelOrder = ['입문', '기초', '중급', '실전', '프로젝트']
 
-function programsHref({ category = 'all', page = 1, search = '', level = 'all', duration = 'all', sort = 'recommended' }) {
+function programsHref({ category = 'all', page = 1, search = '', level = 'all', track = 'all', duration = 'all', sort = 'recommended' }) {
   const params = new URLSearchParams()
   if (category !== 'all') params.set('category', category)
   if (search.trim()) params.set('search', search.trim())
   if (level !== 'all') params.set('level', level)
+  if (track !== 'all') params.set('track', track)
   if (duration !== 'all') params.set('duration', duration)
   if (sort !== 'recommended') params.set('sort', sort)
   if (page > 1) params.set('page', String(page))
@@ -30,7 +31,7 @@ function paginationItems(totalPages, currentPage) {
   return items
 }
 
-export default function ProgramsPage({ selectedCategory, selectedPage, selectedSearch, selectedLevel, selectedDuration, selectedSort }) {
+export default function ProgramsPage({ selectedCategory, selectedPage, selectedSearch, selectedLevel, selectedTrack, selectedDuration, selectedSort }) {
   const programs = readManagedContent('programs')
   const [searchInput, setSearchInput] = useState(selectedSearch)
   const activeCategory = categories.some((category) => category.id === selectedCategory) ? selectedCategory : 'all'
@@ -39,16 +40,18 @@ export default function ProgramsPage({ selectedCategory, selectedPage, selectedS
   const availableDurations = [...new Set(programs.map((program) => program.duration.match(/\d+주/)?.[0]).filter(Boolean))]
     .sort((a, b) => Number.parseInt(a, 10) - Number.parseInt(b, 10))
   const activeLevel = availableLevels.includes(selectedLevel) ? selectedLevel : 'all'
+  const activeTrack = ['입문', '실무', '시니어'].includes(selectedTrack) ? selectedTrack : 'all'
   const activeDuration = availableDurations.includes(selectedDuration) ? selectedDuration : 'all'
   const activeSort = ['recommended', 'title', 'level', 'latest'].includes(selectedSort) ? selectedSort : 'recommended'
   const normalizedSearch = selectedSearch.trim().toLocaleLowerCase('ko-KR')
-  const filters = { category: activeCategory, search: selectedSearch, level: activeLevel, duration: activeDuration, sort: activeSort }
+  const filters = { category: activeCategory, search: selectedSearch, level: activeLevel, track: activeTrack, duration: activeDuration, sort: activeSort }
 
   useEffect(() => setSearchInput(selectedSearch), [selectedSearch])
 
   const visiblePrograms = programs
     .filter((program) => activeCategory === 'all' || program.categoryId === activeCategory)
     .filter((program) => activeLevel === 'all' || program.level === activeLevel)
+    .filter((program) => activeTrack === 'all' || program.learningTrack === activeTrack)
     .filter((program) => activeDuration === 'all' || program.duration.includes(activeDuration))
     .filter((program) => !normalizedSearch || [program.title, program.description, program.introduction, program.category]
       .filter(Boolean).join(' ').toLocaleLowerCase('ko-KR').includes(normalizedSearch))
@@ -64,7 +67,7 @@ export default function ProgramsPage({ selectedCategory, selectedPage, selectedS
   const currentPage = Number.isFinite(requestedPage) && requestedPage > 0 ? Math.min(requestedPage, totalPages) : 1
   const startIndex = (currentPage - 1) * PROGRAMS_PER_PAGE
   const pagedPrograms = visiblePrograms.slice(startIndex, startIndex + PROGRAMS_PER_PAGE)
-  const hasActiveFilters = activeCategory !== 'all' || normalizedSearch || activeLevel !== 'all' || activeDuration !== 'all' || activeSort !== 'recommended'
+  const hasActiveFilters = activeCategory !== 'all' || normalizedSearch || activeLevel !== 'all' || activeTrack !== 'all' || activeDuration !== 'all' || activeSort !== 'recommended'
 
   function navigate(nextFilters) {
     window.location.hash = programsHref(nextFilters).slice(1)
@@ -101,6 +104,7 @@ export default function ProgramsPage({ selectedCategory, selectedPage, selectedS
       </nav>
 
       <div className="program-filter-toolbar" aria-label="교육 프로그램 상세 필터">
+        <label>학습 단계<select onChange={(event) => navigate({ ...filters, track: event.target.value, page: 1 })} value={activeTrack}><option value="all">전체 단계</option><option>입문</option><option>실무</option><option>시니어</option></select></label>
         <label>난이도<select onChange={(event) => navigate({ ...filters, level: event.target.value, page: 1 })} value={activeLevel}><option value="all">전체 난이도</option>{availableLevels.map((level) => <option key={level} value={level}>{level}</option>)}</select></label>
         <label>교육 기간<select onChange={(event) => navigate({ ...filters, duration: event.target.value, page: 1 })} value={activeDuration}><option value="all">전체 기간</option>{availableDurations.map((duration) => <option key={duration} value={duration}>{duration}</option>)}</select></label>
         <label>정렬<select onChange={(event) => navigate({ ...filters, sort: event.target.value, page: 1 })} value={activeSort}><option value="recommended">추천 순</option><option value="latest">새 프로그램 순</option><option value="title">이름 순</option><option value="level">난이도 순</option></select></label>

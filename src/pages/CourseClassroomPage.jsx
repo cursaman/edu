@@ -19,7 +19,8 @@ export default function CourseClassroomPage({ programId, session, sessionId }) {
   const isCompleted = Boolean(active && completed.includes(active.id))
   const progress = course ? Math.round((completed.length / course.sessions.length) * 100) : 0
   const hasCourseAccess = Boolean(enrollment && allowedCourseStatuses.includes(enrollment.status))
-  const courseLocked = Boolean(active && isSupabaseConfigured && active.order > 3 && (!session?.user || !hasCourseAccess))
+  const freeSessionLimit = programId.startsWith('senior-') ? 1 : 3
+  const courseLocked = Boolean(active && isSupabaseConfigured && active.order > freeSessionLimit && (!session?.user || !hasCourseAccess))
   useEffect(() => {
     if (!session?.user?.id || !active) return undefined
     let activeRequest = true
@@ -29,7 +30,7 @@ export default function CourseClassroomPage({ programId, session, sessionId }) {
         if (!activeRequest) return
         setCompleted(learning.completedByProgram[programId] || [])
         setEnrollment(nextEnrollment)
-        if (active.order <= 3 || allowedCourseStatuses.includes(nextEnrollment?.status)) await recordLastSession(session.user.id, programId, active.id)
+        if (active.order <= freeSessionLimit || allowedCourseStatuses.includes(nextEnrollment?.status)) await recordLastSession(session.user.id, programId, active.id)
       })
       .catch(() => { if (activeRequest) setSyncMessage('공동 진도를 불러오지 못했습니다. 인터넷 연결을 확인해 주세요.') })
       .finally(() => { if (activeRequest) setCheckingEnrollment(false) })
@@ -57,7 +58,7 @@ export default function CourseClassroomPage({ programId, session, sessionId }) {
     <header className="classroom-header"><div><span className="section-eyebrow">MY CLASSROOM</span><h1>{course.title}</h1><p>{course.totalWeeks}주 · {course.sessions.length}회차 · 최종 결과물: {course.outcome}</p></div><div className="classroom-progress"><strong>{progress}%</strong><span>{completed.length} / {course.sessions.length}회 완료</span><div><i style={{ width: `${progress}%` }} /></div></div></header>
     <div className="classroom-layout">
       <aside className="classroom-sidebar"><h2>전체 회차</h2>{course.sessions.map((item) => <a aria-current={item.id === active.id ? 'page' : undefined} className={item.id === active.id ? 'classroom-session-active' : ''} href={`#/classroom/${programId}/${item.id}`} key={item.id}><span>{completed.includes(item.id) ? '✓' : item.order}</span><div><small>{item.week}주차 · {item.duration}</small><strong>{item.title}</strong></div></a>)}</aside>
-      {checkingEnrollment && active.order > 3 ? <article className="classroom-content classroom-login-gate"><p role="status">수강권을 확인하고 있습니다...</p></article> : courseLocked ? <article className="classroom-content classroom-login-gate"><span aria-hidden="true">🔒</span><p className="section-eyebrow">FREE EXPERIENCE COMPLETE</p><h2>4회차부터는 승인된 수강권이 필요합니다</h2><p>{session?.user ? enrollment ? `현재 신청 상태는 '${enrollmentStatuses[enrollment.status] || enrollment.status}'입니다. 관리자 승인 후 전체 회차를 이용할 수 있습니다.` : '과정 상세 화면에서 수강 신청을 먼저 접수해 주세요.' : '회원가입 후 수강 신청하면 관리자 승인 뒤 전체 회차를 학습할 수 있습니다.'}</p><div>{session?.user ? <a className="button button-primary" href={`#/programs/${programId}`}>수강 신청 상태 확인하기 →</a> : <><a className="button button-primary" href={`#/signup?next=/programs/${programId}`}>회원가입하기 →</a><a className="button button-secondary" href={`#/login?next=/programs/${programId}`}>이미 계정이 있어요</a></>}</div></article> : <article className="classroom-content">
+      {checkingEnrollment && active.order > freeSessionLimit ? <article className="classroom-content classroom-login-gate"><p role="status">수강권을 확인하고 있습니다...</p></article> : courseLocked ? <article className="classroom-content classroom-login-gate"><span aria-hidden="true">🔒</span><p className="section-eyebrow">FREE EXPERIENCE COMPLETE</p><h2>{freeSessionLimit + 1}회차부터는 승인된 수강권이 필요합니다</h2><p>{session?.user ? enrollment ? `현재 신청 상태는 '${enrollmentStatuses[enrollment.status] || enrollment.status}'입니다. 관리자 승인 후 전체 회차를 이용할 수 있습니다.` : '과정 상세 화면에서 수강 신청을 먼저 접수해 주세요.' : '회원가입 후 수강 신청하면 관리자 승인 뒤 전체 회차를 학습할 수 있습니다.'}</p><div>{session?.user ? <a className="button button-primary" href={`#/programs/${programId}`}>수강 신청 상태 확인하기 →</a> : <><a className="button button-primary" href={`#/signup?next=/programs/${programId}`}>회원가입하기 →</a><a className="button button-secondary" href={`#/login?next=/programs/${programId}`}>이미 계정이 있어요</a></>}</div></article> : <article className="classroom-content">
         <div className="classroom-lesson-heading"><span>{active.week}주차 · {active.order}회차 · {active.duration}{featured && active.order <= featured.freeSessions ? ' · 무료 체험' : ''}</span><h2>{active.title}</h2><p>{active.goal}</p></div>
         {course.resources?.length > 0 && <section className="classroom-teaching-kit"><div><h3>과정 전체 수업자료</h3><p>강사용 지도서에는 대본·예상 결과·오류 사례·정답이, 수강생 활동지에는 실습과 기록란이 들어 있습니다.</p></div><div className="classroom-downloads">{course.resources.map((resource) => <a className="button button-secondary" download href={`${import.meta.env.BASE_URL}${resource.path}`} key={resource.path}>{resource.audience} · {resource.label} ↓</a>)}</div></section>}
         <section className="classroom-teaching-kit"><div><h3>수업 준비물</h3><ul>{active.materials.map((item) => <li key={item}>{item}</li>)}</ul></div><button className="button button-secondary classroom-print" onClick={printLesson} type="button">이 회차 교안 인쇄·PDF 저장</button></section>
@@ -67,11 +68,14 @@ export default function CourseClassroomPage({ programId, session, sessionId }) {
         <section><h3>직접 따라 하기</h3><ol>{active.practice.map((step) => <li key={step}>{step}</li>)}</ol></section>
         {active.downloads?.length > 0 && <section><h3>실습 파일</h3><p>시작 파일을 내려받아 직접 작업한 다음 완성 파일과 비교하세요.</p><div className="classroom-downloads">{active.downloads.map((file) => <a className="button button-secondary" download href={`${import.meta.env.BASE_URL}${file.path}`} key={file.path}>{file.label} ↓</a>)}</div></section>}
         <section><h3>예제 코드</h3><pre><code>{active.code}</code></pre></section>
+        {active.decision && <section className="senior-review-section"><h3>설계 판단과 이유</h3><p>{active.decision}</p></section>}
+        {active.expectedResult?.length > 0 && <section className="senior-review-section"><h3>실행 후 예상 결과</h3><ul>{active.expectedResult.map((item) => <li key={item}>{item}</li>)}</ul></section>}
+        {active.tests?.length > 0 && <section className="senior-review-section"><h3>검증할 테스트</h3><ul>{active.tests.map((item) => <li key={item}>{item}</li>)}</ul></section>}
+        {active.reviewQuestions?.length > 0 && <section className="senior-review-section"><h3>코드 리뷰 질문</h3><ol>{active.reviewQuestions.map((item) => <li key={item}>{item}</li>)}</ol></section>}
         <section><h3>Codex 요청문</h3><blockquote>{active.prompt}</blockquote></section>
         <section><h3>자주 발생하는 오류</h3><ul>{active.errors.map((error) => <li key={error}>{error}</li>)}</ul></section>
         <section><h3>확인 문제</h3><div className="classroom-quiz-list">{active.quiz.map((item, index) => <details key={item}><summary>{index + 1}. {item}</summary><p>{active.quizAnswers[index]}</p></details>)}</div><p className="classroom-result"><strong>이번 회차 결과물</strong>{active.result}</p></section>
         <section><h3>오류가 생기면</h3><ol>{active.errors.map((item) => <li key={item}>{item}</li>)}</ol></section>
-        {active.expectedResult?.length > 0 && <section><h3>예상 결과</h3><ul>{active.expectedResult.map((item) => <li key={item}>{item}</li>)}</ul></section>}
         {active.rubric?.length > 0 && <section><h3>과제 평가 기준 · 10점</h3><ul>{active.rubric.map((item) => <li key={item}>{item}</li>)}</ul></section>}
         <section><h3>과제</h3><p>{active.assignment}</p><h3>학습 완료 기준</h3><ul>{active.completionCriteria.map((item) => <li key={item}>{item}</li>)}</ul></section>
         <div className="classroom-actions"><div><button className={`button ${isCompleted ? 'button-secondary' : 'button-primary'}`} disabled={saving} onClick={toggle} type="button">{saving ? '저장 중...' : isCompleted ? '완료 취소' : '이 회차 학습 완료'}</button>{syncMessage && <small className="classroom-sync-message" role="status">{syncMessage}</small>}</div><div>{activeIndex > 0 && <a href={`#/classroom/${programId}/${course.sessions[activeIndex - 1].id}`}>← 이전 회차</a>}{activeIndex < course.sessions.length - 1 ? <a href={`#/classroom/${programId}/${course.sessions[activeIndex + 1].id}`}>다음 회차 →</a> : <a href="#/classroom">내 강의실로 →</a>}</div></div>

@@ -1,3 +1,5 @@
+import { seniorDetailedCourses } from './seniorCourses.js'
+
 const session = (id, week, order, title, goal, concept, practice, code, prompt, quiz, result) => ({
   id, week, order, title, duration: '50분', goal, concept, practice, code, prompt, quiz, result,
   materials: ['Node.js와 npm이 설치된 노트북', '현재 EDU 프로젝트', '실습 결과를 기록할 메모장'],
@@ -1152,5 +1154,5 @@ const courseResourceMap = Object.fromEntries(['web-foundation', 'javascript-prac
   { label: '강사용 30회차 수업 지도서', path: `materials/course-guides/${programId}-instructor.md`, audience: '강사용' },
   { label: '수강생 30회차 활동지', path: `materials/course-guides/${programId}-workbook.md`, audience: '수강생용' },
 ]]))
-export const detailedCourses = [validatedReactCourse, ...representativeCourses].map((course) => ({ ...course, resources: courseResourceMap[course.programId] || [] }))
+export const detailedCourses = [validatedReactCourse, ...representativeCourses, ...seniorDetailedCourses].map((course) => ({ ...course, resources: courseResourceMap[course.programId] || [] }))
 export const findDetailedCourse = (programId) => detailedCourses.find((course) => course.programId === programId)

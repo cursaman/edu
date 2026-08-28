@@ -88,6 +88,15 @@ export default function HomePage() {
         </aside>
       </section>
 
+      <section className="learning-paths page-shell" aria-labelledby="learning-paths-title">
+        <div className="section-heading"><span className="section-eyebrow">LEARNING PATH</span><h2 id="learning-paths-title">경험에 맞는 단계에서 시작하세요</h2><p>처음 만드는 분부터 운영 코드를 검토하는 개발자까지 학습 목적을 분리했습니다.</p></div>
+        <div className="learning-path-grid">
+          <a href="#/programs?track=입문"><span>01</span><h3>입문</h3><p>개념을 쉬운 말로 익히고 작은 결과물을 직접 만듭니다.</p><strong>입문 과정 보기 →</strong></a>
+          <a href="#/programs?track=실무"><span>02</span><h3>실무</h3><p>인증·API·배포를 연결해 실제 서비스 기능을 완성합니다.</p><strong>실무 과정 보기 →</strong></a>
+          <a href="#/programs?track=시니어"><span>03</span><h3>시니어</h3><p>설계 판단, 코드 리뷰, 보안과 장애 복구를 근거로 검증합니다.</p><strong>시니어 과정 보기 →</strong></a>
+        </div>
+      </section>
+
       <section className="home-overview page-shell" aria-label="교육 플랫폼 이용 현황">
         <article><span>교육 프로그램(과정)</span><strong>{programs.length}개</strong></article>
         <article><span>별도 학습자료(콘텐츠)</span><strong>{lessons.length}개</strong></article>

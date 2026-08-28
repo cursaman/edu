@@ -138,6 +138,7 @@ export default function App() {
       selectedCategory={route.searchParams.get('category') || 'all'}
       selectedDuration={route.searchParams.get('duration') || 'all'}
       selectedLevel={route.searchParams.get('level') || 'all'}
+      selectedTrack={route.searchParams.get('track') || 'all'}
       selectedPage={route.searchParams.get('page') || '1'}
       selectedSearch={route.searchParams.get('search') || ''}
       selectedSort={route.searchParams.get('sort') || 'recommended'}

@@ -1,3 +1,5 @@
+import { seniorPrograms } from './seniorCourses.js'
+
 export const categories = [
   { id: 'service-planning', eyebrow: '01 · SERVICE PLANNING', title: '서비스 기획', description: '사용자의 문제를 찾고 꼭 필요한 기능과 화면 흐름을 정리해요.', audience: '아이디어를 실제 서비스 계획으로 만들고 싶은 분', accent: '#d46f55', mark: '01' },
   { id: 'uiux-design', eyebrow: '02 · UI UX DESIGN', title: 'UI·UX 웹디자인', description: 'Figma로 읽기 쉽고 사용하기 편한 웹서비스 화면을 설계해요.', audience: '웹디자인과 화면 설계를 배우고 싶은 분', accent: '#9a5bc2', mark: '02' },
@@ -326,9 +328,12 @@ const programCatalog = [
   ...expansionPrograms,
 ]
 
-export const programs = programCatalog.map((program) => ({
+export const programs = [...programCatalog, ...seniorPrograms].map((program) => ({
   ...program,
-  image: `${import.meta.env.BASE_URL}images/programs/${program.id === 'javascript-practical' ? 'foundation-js' : program.id}.webp`,
+  learningTrack: program.learningTrack || (['중급', '실전', '프로젝트'].includes(program.level) ? '실무' : '입문'),
+  image: program.imageFile
+    ? `${import.meta.env.BASE_URL}images/${program.imageFile}`
+    : `${import.meta.env.BASE_URL}images/programs/${program.id === 'javascript-practical' ? 'foundation-js' : program.id}.webp`,
   imageAlt: `${program.title} 교육의 핵심 실습 장면을 표현한 일러스트`,
 }))
 

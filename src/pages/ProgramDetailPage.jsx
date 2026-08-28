@@ -57,13 +57,14 @@ export default function ProgramDetailPage({ programId, session }) {
           }}
           src={program.image || fallbackImage}
         />
-        <span className="section-eyebrow">{program.category} · {program.level}</span>
+        <span className="section-eyebrow">{program.learningTrack || '입문'} 트랙 · {program.category} · {program.level}</span>
         <h1 id="program-detail-title">{program.title}</h1>
         <p>{program.description}</p>
 
         <div className="detail-summary" aria-label="교육 기본 정보">
           <span>교육 분야 <strong>{program.category}</strong></span>
           <span>난이도 <strong>{program.level}</strong></span>
+          <span>학습 단계 <strong>{program.learningTrack || '입문'}</strong></span>
           <span>교육 기간 <strong>{displayedDuration}</strong></span>
           <span>진행 상태 <strong>{program.status}</strong></span>
           <span>수강료 <strong>{formatPrice(effectivePrice(program))}</strong></span>
@@ -72,6 +73,7 @@ export default function ProgramDetailPage({ programId, session }) {
       </header>
 
       {featured && detailedCourse && <section className="program-experience-panel" aria-labelledby="program-experience-title"><div><span className="section-eyebrow">VERIFIED FREE EXPERIENCE</span><h2 id="program-experience-title">첫 3회차를 무료로 확인하고 결정하세요</h2><p>{featured.promise}</p><ul>{featured.quality.checked.map((item) => <li key={item}>✓ {item}</li>)}</ul><small>{featured.quality.next}</small></div><aside><img alt={featured.imageAlt} src={`${import.meta.env.BASE_URL}${featured.image}`} /><strong>{featured.resultTitle}</strong><span>{featured.resultDescription}</span><a className="button button-primary" href={`#/classroom/${program.id}/${detailedCourse.sessions[0].id}`}>무료 체험 시작하기 →</a></aside></section>}
+      {program.learningTrack === '시니어' && detailedCourse && <section className="senior-trial-panel"><div><span className="section-eyebrow">SENIOR TRACK · FIRST SESSION FREE</span><h2>첫 회차에서 실제 코드 리뷰 방식을 확인하세요</h2><p>문제 재현, 개선 전후 코드, 설계 판단, 테스트와 리뷰 질문까지 공개합니다.</p></div><a className="button button-primary" href={`#/classroom/${program.id}/${detailedCourse.sessions[0].id}`}>시니어 1회차 무료 보기 →</a></section>}
 
       <div className="detail-layout">
         <div className="detail-main">
