@@ -15,6 +15,7 @@ const CourseClassroomPage = lazy(() => import('./pages/CourseClassroomPage.jsx')
 const HomePage = lazy(() => import('./pages/HomePage.jsx'))
 const LessonDetailPage = lazy(() => import('./pages/LessonDetailPage.jsx'))
 const LearningRecommendationPage = lazy(() => import('./pages/LearningRecommendationPage.jsx'))
+const LegalPage = lazy(() => import('./pages/LegalPage.jsx'))
 const LessonsPage = lazy(() => import('./pages/LessonsPage.jsx'))
 const MyClassroomPage = lazy(() => import('./pages/MyClassroomPage.jsx'))
 const NoticeDetailPage = lazy(() => import('./pages/NoticeDetailPage.jsx'))
@@ -183,6 +184,8 @@ export default function App() {
     page = <NoticeDetailPage noticeId={route.pathname.split('/')[2]} />
   } else if (route.pathname === '/application') {
     page = <ApplicationPage />
+  } else if (['/terms', '/privacy', '/refund'].includes(route.pathname)) {
+    page = <LegalPage type={route.pathname.slice(1)} />
   } else if (route.pathname === '/admin') {
     if (!isSupabaseConfigured) {
       page = <AdminPage />
@@ -214,7 +217,7 @@ export default function App() {
             <img className="footer-brand-logo" src={`${import.meta.env.BASE_URL}images/cursamanworks-logo.png`} alt="cursamanworks" />
             <span>AI와 함께 배우는 실전 웹개발 교육</span>
           </div>
-          <div className="footer-links"><span>한 번에 한 단계씩, 직접 만들고 확인합니다.</span><a href="#/admin">{isSupabaseConfigured ? '관리자 로그인' : '관리자 체험'}</a></div>
+          <div className="footer-links"><span>한 번에 한 단계씩, 직접 만들고 확인합니다.</span><nav aria-label="법적 안내"><a href="#/terms">이용약관</a><a href="#/privacy">개인정보처리방침</a><a href="#/refund">취소·환불</a><a href="#/admin">{isSupabaseConfigured ? '관리자 로그인' : '관리자 체험'}</a></nav></div>
         </div>
       </footer>
     </>

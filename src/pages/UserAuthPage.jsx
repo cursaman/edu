@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { isSupabaseConfigured, supabase } from '../lib/supabase.js'
+import { legalVersion } from '../data/legalDocuments.js'
 
 function readableAuthError(error) {
   const message = String(error?.message || '')
@@ -17,7 +18,7 @@ function readableAuthError(error) {
 
 export default function UserAuthPage({ mode = 'login', nextPath = '/classroom', session }) {
   const [activeMode, setActiveMode] = useState(mode)
-  const [form, setForm] = useState({ email: '', password: '', passwordConfirm: '' })
+  const [form, setForm] = useState({ email: '', password: '', passwordConfirm: '', termsAgreed: false, privacyAgreed: false, ageConfirmed: false })
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -31,10 +32,12 @@ export default function UserAuthPage({ mode = 'login', nextPath = '/classroom', 
     if (!form.email.trim() || !form.password) return setError('이메일과 비밀번호를 모두 입력해 주세요.')
     if (form.password.length < 8) return setError('비밀번호는 8자 이상으로 입력해 주세요.')
     if (activeMode === 'signup' && form.password !== form.passwordConfirm) return setError('두 비밀번호가 서로 다릅니다.')
+    if (activeMode === 'signup' && (!form.termsAgreed || !form.privacyAgreed)) return setError('이용약관과 개인정보 처리 안내에 모두 동의해 주세요.')
+    if (activeMode === 'signup' && !form.ageConfirmed) return setError('만 14세 이상임을 확인해 주세요.')
     setSubmitting(true)
     try {
       if (activeMode === 'signup') {
-        const { data, error: authError } = await supabase.auth.signUp({ email: form.email.trim(), password: form.password })
+        const { data, error: authError } = await supabase.auth.signUp({ email: form.email.trim(), password: form.password, options: { data: { edu_terms_agreed: true, edu_terms_version: legalVersion, edu_privacy_agreed: true, edu_privacy_version: legalVersion, edu_age_confirmed: true } } })
         if (authError) throw authError
         if (data.session) window.location.hash = nextPath
         else setMessage('가입 확인 이메일을 보냈습니다. 이메일의 인증 링크를 누른 뒤 로그인해 주세요.')
@@ -51,5 +54,5 @@ export default function UserAuthPage({ mode = 'login', nextPath = '/classroom', 
     }
   }
 
-  return <section className="content-page page-shell auth-page"><div className="auth-introduction"><span className="section-eyebrow">LEARNING ACCOUNT</span><h1>다른 기기에서도<br />학습을 이어가세요</h1><p>이메일 계정으로 완료 회차와 마지막 학습 위치만 저장합니다. 이름·전화번호·주소는 수집하지 않습니다.</p><ul><li>첫 3회차는 로그인 없이 무료 체험</li><li>로그인하면 기존 브라우저 진도를 자동 이전</li><li>사용자 본인만 자신의 진도를 조회·수정</li></ul></div><div className="auth-card"><div className="auth-tabs" role="tablist"><button aria-selected={activeMode === 'login'} className={activeMode === 'login' ? 'auth-tab-active' : ''} onClick={() => { setActiveMode('login'); setError(''); setMessage('') }} role="tab" type="button">로그인</button><button aria-selected={activeMode === 'signup'} className={activeMode === 'signup' ? 'auth-tab-active' : ''} onClick={() => { setActiveMode('signup'); setError(''); setMessage('') }} role="tab" type="button">회원가입</button></div><form onSubmit={submit}><label>이메일<input autoComplete="email" onChange={(event) => setForm({ ...form, email: event.target.value })} placeholder="example@email.com" type="email" value={form.email} /></label><label>비밀번호<input autoComplete={activeMode === 'signup' ? 'new-password' : 'current-password'} minLength="8" onChange={(event) => setForm({ ...form, password: event.target.value })} placeholder="8자 이상" type="password" value={form.password} /></label>{activeMode === 'signup' && <label>비밀번호 확인<input autoComplete="new-password" minLength="8" onChange={(event) => setForm({ ...form, passwordConfirm: event.target.value })} type="password" value={form.passwordConfirm} /></label>}{error && <p className="auth-message auth-error" role="alert">{error}</p>}{message && <p className="auth-message auth-success" role="status">{message}</p>}<button className="button button-primary" disabled={submitting} type="submit">{submitting ? '처리 중...' : activeMode === 'signup' ? '안전하게 회원가입하기' : '로그인하고 이어서 학습하기'}</button></form><p className="auth-security-note">비밀번호는 Supabase Auth가 처리하며 EDU 소스코드나 localStorage에 저장하지 않습니다.</p></div></section>
+  return <section className="content-page page-shell auth-page"><div className="auth-introduction"><span className="section-eyebrow">LEARNING ACCOUNT</span><h1>다른 기기에서도<br />학습을 이어가세요</h1><p>이메일 계정으로 완료 회차와 마지막 학습 위치만 저장합니다. 이름·전화번호·주소는 수집하지 않습니다.</p><ul><li>첫 3회차는 로그인 없이 무료 체험</li><li>로그인하면 기존 브라우저 진도를 자동 이전</li><li>사용자 본인만 자신의 진도를 조회·수정</li></ul></div><div className="auth-card"><div className="auth-tabs" role="tablist"><button aria-selected={activeMode === 'login'} className={activeMode === 'login' ? 'auth-tab-active' : ''} onClick={() => { setActiveMode('login'); setError(''); setMessage('') }} role="tab" type="button">로그인</button><button aria-selected={activeMode === 'signup'} className={activeMode === 'signup' ? 'auth-tab-active' : ''} onClick={() => { setActiveMode('signup'); setError(''); setMessage('') }} role="tab" type="button">회원가입</button></div><form onSubmit={submit}><label>이메일<input autoComplete="email" onChange={(event) => setForm({ ...form, email: event.target.value })} placeholder="example@email.com" type="email" value={form.email} /></label><label>비밀번호<input autoComplete={activeMode === 'signup' ? 'new-password' : 'current-password'} minLength="8" onChange={(event) => setForm({ ...form, password: event.target.value })} placeholder="8자 이상" type="password" value={form.password} /></label>{activeMode === 'signup' && <><label>비밀번호 확인<input autoComplete="new-password" minLength="8" onChange={(event) => setForm({ ...form, passwordConfirm: event.target.value })} type="password" value={form.passwordConfirm} /></label><fieldset className="auth-consents"><legend>필수 동의</legend><label><input checked={form.termsAgreed} onChange={(event) => setForm({ ...form, termsAgreed: event.target.checked })} type="checkbox" /><span><a href="#/terms" target="_blank">이용약관</a>에 동의합니다. (필수)</span></label><label><input checked={form.privacyAgreed} onChange={(event) => setForm({ ...form, privacyAgreed: event.target.checked })} type="checkbox" /><span><a href="#/privacy" target="_blank">개인정보 처리 안내</a>를 확인하고 동의합니다. (필수)</span></label><label><input checked={form.ageConfirmed} onChange={(event) => setForm({ ...form, ageConfirmed: event.target.checked })} type="checkbox" /><span>만 14세 이상입니다. (필수)</span></label><small>약관 버전 {legalVersion}에 대한 동의 시각과 사용자 ID가 가입 시 기록됩니다.</small></fieldset></>}{error && <p className="auth-message auth-error" role="alert">{error}</p>}{message && <p className="auth-message auth-success" role="status">{message}</p>}<button className="button button-primary" disabled={submitting} type="submit">{submitting ? '처리 중...' : activeMode === 'signup' ? '동의하고 회원가입하기' : '로그인하고 이어서 학습하기'}</button></form><p className="auth-security-note">비밀번호는 Supabase Auth가 처리하며 EDU 소스코드나 localStorage에 저장하지 않습니다.</p></div></section>
 }
