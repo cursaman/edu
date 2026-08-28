@@ -6,6 +6,8 @@ import { isSupabaseConfigured } from '../lib/supabase.js'
 import { loadUserLearning, recordLastSession, saveUserSessionProgress } from '../data/userProgress.js'
 import { allowedCourseStatuses, enrollmentStatuses, getEnrollment } from '../data/enrollmentStorage.js'
 import FreeTrialWebsiteBuilder from '../components/FreeTrialWebsiteBuilder.jsx'
+import TrialStepChecklist from '../components/TrialStepChecklist.jsx'
+import { readTrialChecks, trialChecklists } from '../data/freeTrialProgress.js'
 
 export default function CourseClassroomPage({ programId, session, sessionId }) {
   const course = findDetailedCourse(programId)
@@ -14,6 +16,7 @@ export default function CourseClassroomPage({ programId, session, sessionId }) {
   const [syncMessage, setSyncMessage] = useState('')
   const [enrollment, setEnrollment] = useState(null)
   const [checkingEnrollment, setCheckingEnrollment] = useState(Boolean(session?.user))
+  const [trialStepsReady, setTrialStepsReady] = useState(true)
   const featured = findFeaturedLearning(programId)
   const activeIndex = course ? Math.max(0, course.sessions.findIndex((item) => item.id === sessionId)) : 0
   const active = course?.sessions[activeIndex]
@@ -24,6 +27,10 @@ export default function CourseClassroomPage({ programId, session, sessionId }) {
   const isWebFoundationTrial = programId === 'web-foundation' && active?.order <= 3
   const trialCompletedCount = course ? course.sessions.slice(0, 3).filter((item) => completed.includes(item.id)).length : 0
   const courseLocked = Boolean(active && isSupabaseConfigured && active.order > freeSessionLimit && (!session?.user || !hasCourseAccess))
+  useEffect(() => {
+    if (!isWebFoundationTrial || !active) return setTrialStepsReady(true)
+    setTrialStepsReady(readTrialChecks(active.id).length === (trialChecklists[active.id]?.length || 0))
+  }, [active?.id, isWebFoundationTrial])
   useEffect(() => {
     if (!session?.user?.id || !active) return undefined
     let activeRequest = true
@@ -42,6 +49,7 @@ export default function CourseClassroomPage({ programId, session, sessionId }) {
   if (!course || !active) return <section className="content-page page-shell empty-state"><strong>상세 강의가 아직 준비되지 않았습니다.</strong><a className="button button-primary" href={`#/programs/${programId}`}>프로그램으로 돌아가기</a></section>
   const toggle = async () => {
     const nextCompleted = !isCompleted
+    if (nextCompleted && isWebFoundationTrial && !trialStepsReady) return setSyncMessage('직접 확인한 단계 네 가지를 모두 체크한 뒤 학습 완료를 눌러 주세요.')
     if (!session?.user?.id) return setCompleted(setCourseSessionCompleted(programId, active.id, nextCompleted))
     const previous = completed
     setCompleted((current) => nextCompleted ? [...new Set([...current, active.id])] : current.filter((id) => id !== active.id))
@@ -72,6 +80,7 @@ export default function CourseClassroomPage({ programId, session, sessionId }) {
         <section><h3>직접 따라 하기</h3><ol>{active.practice.map((step) => <li key={step}>{step}</li>)}</ol></section>
         {active.downloads?.length > 0 && <section><h3>실습 파일</h3><p>시작 파일을 내려받아 직접 작업한 다음 완성 파일과 비교하세요.</p><div className="classroom-downloads">{active.downloads.map((file) => <a className="button button-secondary" download href={`${import.meta.env.BASE_URL}${file.path}`} key={file.path}>{file.label} ↓</a>)}</div></section>}
         {programId === 'web-foundation' && active.order === 3 && <FreeTrialWebsiteBuilder onDownloaded={() => setSyncMessage('내 홈페이지 파일을 다운로드했습니다. 파일을 열어 결과를 확인한 뒤 학습 완료를 눌러 주세요.')} />}
+        {isWebFoundationTrial && <TrialStepChecklist onReadyChange={setTrialStepsReady} sessionId={active.id} />}
         <section><h3>예제 코드</h3><pre><code>{active.code}</code></pre></section>
         {active.decision && <section className="senior-review-section"><h3>설계 판단과 이유</h3><p>{active.decision}</p></section>}
         {active.expectedResult?.length > 0 && <section className="senior-review-section"><h3>실행 후 예상 결과</h3><ul>{active.expectedResult.map((item) => <li key={item}>{item}</li>)}</ul></section>}
@@ -84,7 +93,7 @@ export default function CourseClassroomPage({ programId, session, sessionId }) {
         {active.rubric?.length > 0 && <section><h3>과제 평가 기준 · 10점</h3><ul>{active.rubric.map((item) => <li key={item}>{item}</li>)}</ul></section>}
         <section><h3>과제</h3><p>{active.assignment}</p><h3>학습 완료 기준</h3><ul>{active.completionCriteria.map((item) => <li key={item}>{item}</li>)}</ul></section>
         <div className="classroom-actions"><div><button className={`button ${isCompleted ? 'button-secondary' : 'button-primary'}`} disabled={saving} onClick={toggle} type="button">{saving ? '저장 중...' : isCompleted ? '완료 취소' : '이 회차 학습 완료'}</button>{syncMessage && <small className="classroom-sync-message" role="status">{syncMessage}</small>}</div><div>{activeIndex > 0 && <a href={`#/classroom/${programId}/${course.sessions[activeIndex - 1].id}`}>← 이전 회차</a>}{activeIndex < course.sessions.length - 1 ? <a href={`#/classroom/${programId}/${course.sessions[activeIndex + 1].id}`}>다음 회차 →</a> : <a href="#/classroom">내 강의실로 →</a>}</div></div>
-        {featured && active.order === featured.freeSessions && trialCompletedCount === featured.freeSessions && <section className="free-trial-complete"><span aria-hidden="true">✓</span><div><h3>무료 체험 3회차를 모두 완료했습니다</h3><p>다운로드한 홈페이지를 직접 열어 확인했습니다. 전체 과정을 이어가거나 다른 추천 과정을 살펴보세요.</p></div><a className="button button-secondary" href="#/recommend">다른 과정 추천받기</a></section>}
+        {featured && active.order === featured.freeSessions && trialCompletedCount === featured.freeSessions && <section className="free-trial-complete"><span aria-hidden="true">✓</span><div><h3>무료 체험 3회차를 모두 완료했습니다</h3><p>다운로드한 홈페이지를 직접 열어 확인했습니다. 이제 완료증을 만들 수 있습니다.</p></div><a className="button button-primary" href="#/trial-certificate">무료 완료증 만들기 →</a></section>}
       </article>}
     </div>
   </section>

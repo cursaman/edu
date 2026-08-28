@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import CategoryCard from '../components/CategoryCard.jsx'
 import LessonCard from '../components/LessonCard.jsx'
 import ProgramCard from '../components/ProgramCard.jsx'
@@ -8,6 +8,8 @@ import { readManagedContent } from '../data/contentStorage.js'
 import { readFavoriteLessons, toggleFavoriteLesson } from '../data/lessonActivity.js'
 import { featuredLearningPrograms } from '../data/featuredLearning.js'
 import { findDetailedCourse } from '../data/courseLessons.js'
+import { completedCourseSessions } from '../data/courseProgress.js'
+import { getTrialResume } from '../data/freeTrialProgress.js'
 
 const beginnerPath = [
   { number: '01', icon: '✦', title: '기획과 웹 기초', description: '아이디어를 정리하고 HTML·CSS로 첫 화면을 만듭니다.', accent: 'violet' },
@@ -37,11 +39,18 @@ export default function HomePage() {
   const lessons = readManagedContent('lessons')
   const completedCount = readCompletedLessons().length
   const [favoriteLessons, setFavoriteLessons] = useState(readFavoriteLessons)
+  const [trialState, setTrialState] = useState(() => getTrialResume(completedCourseSessions('web-foundation')))
   const todayLesson = lessons.find((lesson) => lesson.featured) || lessons[0]
   const popularLessons = lessons.filter((lesson) => lesson.popular).slice(0, 3)
   const newLessons = [...lessons].sort((a, b) => String(b.publishedAt || '').localeCompare(String(a.publishedAt || ''))).slice(0, 3)
   const categoryRecommendations = categories.map((category) => lessons.find((lesson) => lesson.categoryId === category.id && lesson.featured) || lessons.find((lesson) => lesson.categoryId === category.id)).filter(Boolean)
   const lessonCard = (lesson) => <LessonCard favorite={favoriteLessons.includes(lesson.id)} key={lesson.id} lesson={lesson} onToggleFavorite={(id) => setFavoriteLessons(toggleFavoriteLesson(id))} />
+  useEffect(() => {
+    const refresh = () => setTrialState(getTrialResume(completedCourseSessions('web-foundation')))
+    window.addEventListener('edu-course-progress-updated', refresh)
+    return () => window.removeEventListener('edu-course-progress-updated', refresh)
+  }, [])
+  const trialHref = trialState.complete ? '#/trial-certificate' : `#/classroom/web-foundation/${trialState.nextSessionId}`
 
   return (
     <>
@@ -64,11 +73,11 @@ export default function HomePage() {
           </p>
 
           <div className="hero-actions">
-            <a className="button button-primary" href="#/programs">
-              교육 프로그램 보기 <span aria-hidden="true">→</span>
+            <a className="button button-primary" href={trialHref}>
+              {trialState.complete ? '무료 체험 완료증 보기' : trialState.count ? `${trialState.count}/3회 완료 · 이어서 체험` : '회원가입 없이 무료 체험'} <span aria-hidden="true">→</span>
             </a>
-            <a className="button button-secondary" href="#/lessons">
-              교육자료 바로가기
+            <a className="button button-secondary" href="#/programs">
+              교육 프로그램 보기
             </a>
           </div>
 
@@ -127,7 +136,10 @@ export default function HomePage() {
             const course = findDetailedCourse(featured.programId)
             const program = programs.find((item) => item.id === featured.programId)
             if (!course || !program) return null
-            return <article className="featured-learning-card" key={featured.programId}><div className="featured-learning-image"><img alt={featured.imageAlt} src={`${import.meta.env.BASE_URL}${featured.image}`} /><span>1~3회차 무료</span></div><div className="featured-learning-copy"><p className="section-eyebrow">{program.category} · {program.level}</p><h3>{featured.shortTitle}</h3><p>{featured.promise}</p><div className="featured-quality-line"><span aria-hidden="true">✓</span><strong>{featured.quality.status}</strong></div><dl><div><dt>완성 결과</dt><dd>{featured.resultTitle}</dd></div><div><dt>전체 구성</dt><dd>{course.sessions.length}회차</dd></div></dl><div className="featured-learning-actions"><a className="button button-primary" href={`#/classroom/${featured.programId}/${course.sessions[0].id}`}>무료 체험 →</a><a href={`#/programs/${featured.programId}`}>상세 보기</a></div></div></article>
+            const webTrial = featured.programId === 'web-foundation'
+            const startHref = webTrial ? trialHref : `#/classroom/${featured.programId}/${course.sessions[0].id}`
+            const startLabel = webTrial && trialState.complete ? '완료증 보기 →' : webTrial && trialState.count ? `${trialState.count}/3회에서 이어서 →` : '무료 체험 →'
+            return <article className="featured-learning-card" key={featured.programId}><div className="featured-learning-image"><img alt={featured.imageAlt} src={`${import.meta.env.BASE_URL}${featured.image}`} /><span>1~3회차 무료</span></div><div className="featured-learning-copy"><p className="section-eyebrow">{program.category} · {program.level}</p><h3>{featured.shortTitle}</h3><p>{featured.promise}</p><div className="featured-quality-line"><span aria-hidden="true">✓</span><strong>{featured.quality.status}</strong></div><dl><div><dt>완성 결과</dt><dd>{featured.resultTitle}</dd></div><div><dt>전체 구성</dt><dd>{course.sessions.length}회차</dd></div></dl><div className="featured-learning-actions"><a className="button button-primary" href={startHref}>{startLabel}</a><a href={`#/programs/${featured.programId}`}>상세 보기</a></div></div></article>
           })}
         </div>
       </section>

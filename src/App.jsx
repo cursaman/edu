@@ -28,6 +28,7 @@ const UserAuthPage = lazy(() => import('./pages/UserAuthPage.jsx'))
 const PaymentSuccessPage = lazy(() => import('./pages/PaymentSuccessPage.jsx'))
 const PaymentFailPage = lazy(() => import('./pages/PaymentFailPage.jsx'))
 const AccountPage = lazy(() => import('./pages/AccountPage.jsx'))
+const TrialCertificatePage = lazy(() => import('./pages/TrialCertificatePage.jsx'))
 
 function readCurrentRoute() {
   const browserSearch = new URLSearchParams(window.location.search)
@@ -190,6 +191,8 @@ export default function App() {
     page = <UserAuthPage mode={route.pathname === '/signup' ? 'signup' : 'login'} nextPath={nextPath} session={session} />
   } else if (route.pathname === '/account') {
     page = <AccountPage session={session} onConsentUpdated={setLegalConsentCurrent} />
+  } else if (route.pathname === '/trial-certificate') {
+    page = <TrialCertificatePage />
   } else if (route.pathname === '/notice') {
     page = <NoticesPage />
   } else if (route.pathname.startsWith('/notice/')) {

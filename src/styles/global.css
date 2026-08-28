@@ -2987,6 +2987,9 @@ button:focus-visible {
   .classroom-content { border: 0; }
   .classroom-content > section, .classroom-lesson-heading { padding: 16px 0; break-inside: avoid; }
   .classroom-content pre { white-space: pre-wrap; }
+  .certificate-controls { display: none !important; }
+  .certificate-page { display: block; padding: 0; }
+  .certificate-card { box-shadow: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -3143,6 +3146,24 @@ button:focus-visible {
 .free-color-field input { width: 52px; height: 38px; padding: 2px; border: 1px solid var(--line); border-radius: 8px; background: white; }
 .free-result-preview { display: grid; gap: 10px; }
 .free-result-preview iframe { width: 100%; min-height: 430px; border: 1px solid #d9dcff; border-radius: 15px; background: white; }
+.trial-step-checklist { background: #f8fbff; }
+.trial-check-items { display: grid; gap: 10px; margin: 18px 0; }
+.trial-check-items label { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border: 1px solid #dfe5ef; border-radius: 11px; background: #fff; cursor: pointer; }
+.trial-check-items input { width: 19px; height: 19px; margin-top: 1px; accent-color: var(--violet); }
+.trial-step-checklist > strong { color: var(--muted); }
+.trial-step-checklist > .trial-check-ready { color: #19735b; }
+.certificate-page { display: grid; grid-template-columns: minmax(250px, .55fr) minmax(480px, 1fr); align-items: center; gap: 36px; }
+.certificate-controls { display: grid; gap: 15px; }
+.certificate-controls h1, .certificate-controls p { margin: 0; }
+.certificate-controls label { display: grid; gap: 7px; font-weight: 750; }
+.certificate-controls input { min-height: 48px; padding: 0 13px; border: 1px solid var(--line); border-radius: 10px; font: inherit; }
+.certificate-controls > div { display: flex; flex-wrap: wrap; gap: 10px; }
+.certificate-card { padding: clamp(38px, 7vw, 72px) 40px; border: 8px double #5b61f6; background: #fff; box-shadow: 0 25px 70px rgba(43,51,100,.13); text-align: center; }
+.certificate-card > span { color: var(--violet); font-size: 11px; font-weight: 900; letter-spacing: .18em; }
+.certificate-card h2 { margin: 15px 0 25px; font-size: clamp(30px, 5vw, 48px); }
+.certificate-card strong { display: block; margin: 25px 0; color: var(--violet); font-size: 34px; }
+.certificate-card p { line-height: 1.8; }
+.certificate-card time, .certificate-card small { display: block; margin-top: 22px; }
 
 @media (max-width: 900px) {
   .featured-learning-grid { grid-template-columns: 1fr; }
@@ -3160,6 +3181,7 @@ button:focus-visible {
   .free-result-layout { grid-template-columns: 1fr; }
   .free-result-preview iframe { min-height: 360px; }
   .free-trial-status { margin: 18px 20px 0; }
+  .certificate-page { grid-template-columns: 1fr; }
   .home-recommendation .button, .free-trial-complete .button { width: 100%; margin-left: 0; }
   .program-experience-panel, .recommendation-result { padding: 24px; }
   .recommendation-form fieldset > div { display: grid; }
