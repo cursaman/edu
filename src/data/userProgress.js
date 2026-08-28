@@ -11,7 +11,7 @@ export async function loadUserLearning(userId) {
   requireUser(userId)
   const [{ data: progress, error: progressError }, { data: enrollments, error: enrollmentError }] = await Promise.all([
     supabase.from('course_progress').select('program_id, session_id, completed, completed_at, updated_at').eq('user_id', userId),
-    supabase.from('course_enrollments').select('program_id, last_session_id, last_studied_at, enrolled_at, completed_at').eq('user_id', userId).order('last_studied_at', { ascending: false }),
+    supabase.from('course_enrollments').select('program_id, status, requested_at, approved_at, approved_by, last_session_id, last_studied_at, enrolled_at, completed_at').eq('user_id', userId).order('requested_at', { ascending: false }),
   ])
   if (progressError) throw progressError
   if (enrollmentError) throw enrollmentError
@@ -27,12 +27,7 @@ export async function loadUserLearning(userId) {
 
 export async function recordLastSession(userId, programId, sessionId) {
   requireUser(userId)
-  const { error } = await supabase.from('course_enrollments').upsert({
-    user_id: userId,
-    program_id: programId,
-    last_session_id: sessionId,
-    last_studied_at: new Date().toISOString(),
-  }, { onConflict: 'user_id,program_id' })
+  const { error } = await supabase.rpc('record_edu_course_session', { p_program_id: programId, p_session_id: sessionId })
   if (error) throw error
 }
 
@@ -66,22 +61,10 @@ export async function migrateLocalProgress(userId) {
       updated_at: new Date().toISOString(),
     }))
   ))
-  const enrollments = Object.entries(localProgress).filter(([, sessionIds]) => sessionIds.length > 0).map(([programId, sessionIds]) => ({
-    user_id: userId,
-    program_id: programId,
-    last_session_id: sessionIds.at(-1),
-    last_studied_at: new Date().toISOString(),
-  }))
-
   if (rows.length > 0) {
     const { error } = await supabase.from('course_progress').upsert(rows, { onConflict: 'user_id,program_id,session_id' })
     if (error) throw error
   }
-  if (enrollments.length > 0) {
-    const { error } = await supabase.from('course_enrollments').upsert(enrollments, { onConflict: 'user_id,program_id' })
-    if (error) throw error
-  }
-
   window.localStorage.setItem(migrationKey(userId), new Date().toISOString())
   return { migrated: rows.length > 0, count: rows.length }
 }

@@ -137,7 +137,7 @@ export default function App() {
       selectedSort={route.searchParams.get('sort') || 'recommended'}
     />
   } else if (route.pathname.startsWith('/programs/')) {
-    page = <ProgramDetailPage programId={route.pathname.split('/')[2]} />
+      page = <ProgramDetailPage programId={route.pathname.split('/')[2]} session={session} />
   } else if (route.pathname === '/lessons') {
     page = <LessonsPage
       selectedCategory={route.searchParams.get('category') || 'all'}

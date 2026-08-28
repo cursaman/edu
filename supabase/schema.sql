@@ -19,12 +19,35 @@ create table if not exists public.user_profiles (
 create table if not exists public.course_enrollments (
   user_id uuid not null references auth.users (id) on delete cascade,
   program_id text not null,
+  status text not null default 'pending' check (status in ('pending', 'approved', 'rejected', 'active', 'completed', 'cancelled')),
+  requested_at timestamptz not null default now(),
+  approved_at timestamptz,
+  approved_by uuid references auth.users (id) on delete set null,
+  expires_at timestamptz,
+  admin_note text not null default '',
   last_session_id text,
   enrolled_at timestamptz not null default now(),
   last_studied_at timestamptz not null default now(),
   completed_at timestamptz,
   primary key (user_id, program_id)
 );
+
+-- 8일차 스키마가 이미 적용된 프로젝트도 데이터를 지우지 않고 확장합니다.
+alter table public.course_enrollments add column if not exists status text;
+alter table public.course_enrollments add column if not exists requested_at timestamptz not null default now();
+alter table public.course_enrollments add column if not exists approved_at timestamptz;
+alter table public.course_enrollments add column if not exists approved_by uuid references auth.users (id) on delete set null;
+alter table public.course_enrollments add column if not exists expires_at timestamptz;
+alter table public.course_enrollments add column if not exists admin_note text not null default '';
+-- 이전 버전에서 학습 시작과 동시에 만들어진 행은 기존 이용권을 보존합니다.
+update public.course_enrollments set status = 'active' where status is null;
+alter table public.course_enrollments alter column status set default 'pending';
+alter table public.course_enrollments alter column status set not null;
+do $$ begin
+  alter table public.course_enrollments add constraint course_enrollments_status_check
+    check (status in ('pending', 'approved', 'rejected', 'active', 'completed', 'cancelled'));
+exception when duplicate_object then null;
+end $$;
 
 create table if not exists public.course_progress (
   user_id uuid not null references auth.users (id) on delete cascade,
@@ -196,6 +219,35 @@ $$;
 revoke all on function public.is_edu_admin() from public;
 grant execute on function public.is_edu_admin() to authenticated;
 
+-- 학습자는 상태를 바꾸지 않고 자신의 마지막 학습 위치만 기록합니다.
+create or replace function public.record_edu_course_session(p_program_id text, p_session_id text)
+returns void language plpgsql security definer set search_path = pg_catalog, public as $$
+begin
+  update public.course_enrollments
+  set last_session_id = p_session_id, last_studied_at = now(),
+      status = case when status = 'approved' then 'active' else status end
+  where user_id = auth.uid() and program_id = p_program_id
+    and status in ('approved', 'active', 'completed');
+end;
+$$;
+revoke all on function public.record_edu_course_session(text, text) from public;
+grant execute on function public.record_edu_course_session(text, text) to authenticated;
+
+-- 관리자 화면에 필요한 이메일만 반환합니다. 일반 사용자는 실행할 수 없습니다.
+create or replace function public.get_edu_enrollment_applications()
+returns table (user_id uuid, user_email text, program_id text, status text, requested_at timestamptz, enrolled_at timestamptz, approved_at timestamptz, approved_by uuid, last_studied_at timestamptz, completed_at timestamptz)
+language plpgsql security definer set search_path = pg_catalog, public, auth as $$
+begin
+  if not public.is_edu_admin() then raise exception '관리자 권한이 필요합니다.'; end if;
+  return query select e.user_id, u.email::text, e.program_id, e.status, e.requested_at,
+    e.enrolled_at, e.approved_at, e.approved_by, e.last_studied_at, e.completed_at
+  from public.course_enrollments e join auth.users u on u.id = e.user_id
+  order by e.requested_at desc;
+end;
+$$;
+revoke all on function public.get_edu_enrollment_applications() from public;
+grant execute on function public.get_edu_enrollment_applications() to authenticated;
+
 alter table public.admin_profiles enable row level security;
 alter table public.user_profiles enable row level security;
 alter table public.course_enrollments enable row level security;
@@ -227,13 +279,20 @@ create policy "course_enrollments_read_own" on public.course_enrollments
 for select to authenticated using (auth.uid() = user_id);
 drop policy if exists "course_enrollments_insert_own" on public.course_enrollments;
 create policy "course_enrollments_insert_own" on public.course_enrollments
-for insert to authenticated with check (auth.uid() = user_id);
+for insert to authenticated with check (
+  auth.uid() = user_id and status = 'pending'
+  and approved_at is null and approved_by is null and completed_at is null
+);
 drop policy if exists "course_enrollments_update_own" on public.course_enrollments;
-create policy "course_enrollments_update_own" on public.course_enrollments
-for update to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
 drop policy if exists "course_enrollments_delete_own" on public.course_enrollments;
 create policy "course_enrollments_delete_own" on public.course_enrollments
-for delete to authenticated using (auth.uid() = user_id);
+for delete to authenticated using (auth.uid() = user_id and status = 'pending');
+drop policy if exists "course_enrollments_admin_read_all" on public.course_enrollments;
+create policy "course_enrollments_admin_read_all" on public.course_enrollments
+for select to authenticated using (public.is_edu_admin());
+drop policy if exists "course_enrollments_admin_update_all" on public.course_enrollments;
+create policy "course_enrollments_admin_update_all" on public.course_enrollments
+for update to authenticated using (public.is_edu_admin()) with check (public.is_edu_admin());
 
 drop policy if exists "course_progress_read_own" on public.course_progress;
 create policy "course_progress_read_own" on public.course_progress

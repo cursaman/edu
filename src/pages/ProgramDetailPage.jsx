@@ -2,8 +2,9 @@ import { findManagedProgram, readManagedContent } from '../data/contentStorage.j
 import { getProgramWeeks } from '../data/programWeeks.js'
 import { findDetailedCourse } from '../data/courseLessons.js'
 import { findFeaturedLearning } from '../data/featuredLearning.js'
+import EnrollmentAction from '../components/EnrollmentAction.jsx'
 
-export default function ProgramDetailPage({ programId }) {
+export default function ProgramDetailPage({ programId, session }) {
   const program = findManagedProgram(programId)
   const detailedCourse = findDetailedCourse(programId)
   const featured = findFeaturedLearning(programId)
@@ -108,6 +109,7 @@ export default function ProgramDetailPage({ programId }) {
             ? <a className="button button-primary" href={`#/classroom/${program.id}/${detailedCourse.sessions[0].id}`}>{detailedCourse.sessions.length}회차 강의 시작하기</a>
             : <a className="button button-primary" href="#/application">수강 신청 안내 보기</a>}
           <p className="preparation-note">대표 과정은 상세 강의실을 체험할 수 있으며 진도는 현재 브라우저에 저장됩니다.</p>
+          <EnrollmentAction course={detailedCourse} programId={program.id} session={session} />
         </aside>
       </div>
 

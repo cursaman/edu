@@ -2502,6 +2502,23 @@ button:focus-visible {
   }
 }
 
+/* 9일차: 실제 수강 신청과 수강권 상태 */
+.enrollment-action { display: grid; gap: 10px; margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--line); }
+.enrollment-action p, .enrollment-action small { margin: 0; color: var(--muted); line-height: 1.6; }
+.enrollment-action .button { width: 100%; }
+.enrollment-status { display: inline-flex; width: fit-content; padding: 6px 10px; border-radius: 999px; background: #eef0f6; color: #4d586b; font-size: 12px; font-weight: 800; }
+.enrollment-status-pending { background: #fff4d7; color: #875f00; }
+.enrollment-status-approved, .enrollment-status-active { background: #e6fbf4; color: #087a59; }
+.enrollment-status-rejected, .enrollment-status-cancelled { background: #fff0f0; color: #a13b3b; }
+.enrollment-status-completed { background: #eeeeff; color: var(--violet); }
+.enrollment-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 0 0 24px; }
+.enrollment-summary span { padding: 18px; border: 1px solid var(--line); border-radius: 15px; background: #fff; color: var(--muted); }
+.enrollment-summary strong { display: block; margin-top: 5px; color: var(--ink); font-size: 24px; }
+.my-course-card-labels { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.enrollment-admin-item label { display: flex; align-items: center; gap: 8px; font-weight: 750; }
+.enrollment-admin-item select { min-width: 120px; padding: 10px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+@media (max-width: 680px) { .enrollment-summary { grid-template-columns: 1fr; } .enrollment-admin-item label { width: 100%; justify-content: space-between; } }
+
 .lesson-material-card {
   background: linear-gradient(135deg, #f1eeff, #e8f8f3);
   border: 1px solid #d9d2ff;
