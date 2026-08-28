@@ -3,6 +3,7 @@ import { getProgramWeeks } from '../data/programWeeks.js'
 import { findDetailedCourse } from '../data/courseLessons.js'
 import { findFeaturedLearning } from '../data/featuredLearning.js'
 import EnrollmentAction from '../components/EnrollmentAction.jsx'
+import { formatPrice, effectivePrice, saleStatuses } from '../data/pricing.js'
 
 export default function ProgramDetailPage({ programId, session }) {
   const program = findManagedProgram(programId)
@@ -65,6 +66,8 @@ export default function ProgramDetailPage({ programId, session }) {
           <span>난이도 <strong>{program.level}</strong></span>
           <span>교육 기간 <strong>{displayedDuration}</strong></span>
           <span>진행 상태 <strong>{program.status}</strong></span>
+          <span>수강료 <strong>{formatPrice(effectivePrice(program))}</strong></span>
+          <span>판매 상태 <strong>{saleStatuses[program.saleStatus] || '판매 준비'}</strong></span>
         </div>
       </header>
 
@@ -109,7 +112,7 @@ export default function ProgramDetailPage({ programId, session }) {
             ? <a className="button button-primary" href={`#/classroom/${program.id}/${detailedCourse.sessions[0].id}`}>{detailedCourse.sessions.length}회차 강의 시작하기</a>
             : <a className="button button-primary" href="#/application">수강 신청 안내 보기</a>}
           <p className="preparation-note">대표 과정은 상세 강의실을 체험할 수 있으며 진도는 현재 브라우저에 저장됩니다.</p>
-          <EnrollmentAction course={detailedCourse} programId={program.id} session={session} />
+          <EnrollmentAction course={detailedCourse} priceProgram={program} programId={program.id} session={session} />
         </aside>
       </div>
 

@@ -10,6 +10,7 @@ const AdminLoginPage = lazy(() => import('./pages/AdminLoginPage.jsx'))
 const AdminPage = lazy(() => import('./pages/AdminPage.jsx'))
 const ApplicationPage = lazy(() => import('./pages/ApplicationPage.jsx'))
 const CategoriesPage = lazy(() => import('./pages/CategoriesPage.jsx'))
+const CheckoutPage = lazy(() => import('./pages/CheckoutPage.jsx'))
 const CourseClassroomPage = lazy(() => import('./pages/CourseClassroomPage.jsx'))
 const HomePage = lazy(() => import('./pages/HomePage.jsx'))
 const LessonDetailPage = lazy(() => import('./pages/LessonDetailPage.jsx'))
@@ -138,6 +139,8 @@ export default function App() {
     />
   } else if (route.pathname.startsWith('/programs/')) {
       page = <ProgramDetailPage programId={route.pathname.split('/')[2]} session={session} />
+  } else if (route.pathname.startsWith('/checkout/')) {
+    page = <CheckoutPage programId={route.pathname.split('/')[2]} session={session} />
   } else if (route.pathname === '/lessons') {
     page = <LessonsPage
       selectedCategory={route.searchParams.get('category') || 'all'}

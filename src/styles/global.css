@@ -2519,6 +2519,22 @@ button:focus-visible {
 .enrollment-admin-item select { min-width: 120px; padding: 10px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
 @media (max-width: 680px) { .enrollment-summary { grid-template-columns: 1fr; } .enrollment-admin-item label { width: 100%; justify-content: space-between; } }
 
+/* 10일차: 가격과 테스트 주문 확인 */
+.checkout-layout { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(280px, .8fr); gap: 24px; align-items: start; }
+.checkout-order-card, .checkout-safety { padding: 30px; border: 1px solid var(--line); border-radius: 22px; background: #fff; box-shadow: 0 14px 35px rgba(28, 37, 66, .07); }
+.checkout-order-card h2 { margin: 0 0 20px; font-size: clamp(24px, 4vw, 34px); }
+.checkout-order-card dl { display: grid; gap: 0; margin: 0 0 24px; }
+.checkout-order-card dl div { display: flex; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.checkout-order-card dt { color: var(--muted); }
+.checkout-order-card dd { margin: 0; text-align: right; }
+.checkout-order-card dd strong { color: var(--violet); font-size: 22px; }
+.checkout-agreement { display: flex; gap: 10px; margin: 20px 0; padding: 16px; border-radius: 13px; background: #f7f8fc; line-height: 1.6; }
+.checkout-agreement input { flex: 0 0 auto; margin-top: 5px; }
+.checkout-message { padding: 14px; border-radius: 12px; background: #eef0ff; color: #3741b5; line-height: 1.6; }
+.checkout-safety { background: #171d32; color: #fff; }
+.checkout-safety ul { padding-left: 20px; color: #dce1ef; line-height: 1.8; }
+@media (max-width: 760px) { .checkout-layout { grid-template-columns: 1fr; } .checkout-order-card, .checkout-safety { padding: 22px; } .checkout-order-card dl div { align-items: flex-start; flex-direction: column; } .checkout-order-card dd { text-align: left; } }
+
 .lesson-material-card {
   background: linear-gradient(135deg, #f1eeff, #e8f8f3);
   border: 1px solid #d9d2ff;

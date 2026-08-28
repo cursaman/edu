@@ -16,6 +16,8 @@ function fromDatabase(type, row) {
       curriculum: row.curriculum || [], preparations: row.preparations || [],
       relatedLessonIds: row.related_lesson_ids || [], status: row.status,
       color: row.color, number: row.display_number, image: row.image_url, imageAlt: row.image_alt,
+      regularPrice: Number(row.regular_price) || 0, salePrice: Number(row.sale_price) || 0,
+      isFree: Boolean(row.is_free), saleStatus: row.sale_status || 'draft',
     }
   }
 
@@ -47,6 +49,9 @@ function toDatabase(type, item) {
       related_lesson_ids: item.relatedLessonIds || [], status: item.status || '모집 예정',
       color: item.color || 'violet', display_number: item.number || '01',
       image_url: item.image || '', image_alt: item.imageAlt || '',
+      regular_price: Math.max(0, Number(item.regularPrice) || 0),
+      sale_price: Math.max(0, Number(item.salePrice) || 0),
+      is_free: Boolean(item.isFree), sale_status: item.saleStatus || 'draft',
     }
   }
 

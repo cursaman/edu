@@ -436,6 +436,14 @@ delete from public.edu_programs where id = 'vibe-coding-fullstack';
 -- 실무 JavaScript 과정으로 교체한 이전 프로그램 ID를 제거합니다.
 delete from public.edu_programs where id = 'foundation-js';
 
+-- 10일차 가격 표시 확인용 기본값입니다. 실제 판매 전 운영자가 가격을 다시 검토하세요.
+update public.edu_programs set regular_price = 0, sale_price = 0, is_free = true, sale_status = 'on_sale'
+where id = 'web-foundation';
+update public.edu_programs set regular_price = 390000, sale_price = 290000, is_free = false, sale_status = 'on_sale'
+where id = 'react-website';
+update public.edu_programs set regular_price = 420000, sale_price = 320000, is_free = false, sale_status = 'on_sale'
+where id = 'node-backend';
+
 -- 실행 결과 확인: 프로그램 100개, 교육자료 100개, 공지사항 3개가 정상입니다.
 select '교육 프로그램' as item, count(*) as saved_count from public.edu_programs
 union all

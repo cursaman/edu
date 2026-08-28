@@ -5,10 +5,11 @@ import { deleteSharedItem, loadSharedContent, readManagedContent, restoreManaged
 import { readCompletedLessons } from '../data/learningProgress.js'
 import QualityValidationPanel from '../components/QualityValidationPanel.jsx'
 import EnrollmentManagementPanel from '../components/EnrollmentManagementPanel.jsx'
+import PaymentOverviewPanel from '../components/PaymentOverviewPanel.jsx'
 
 const emptyLesson = { title: '', categoryId: '', level: '입문', duration: '20분', description: '', explanation: '', goals: '', steps: '', codeLanguage: 'JavaScript', code: '', prompt: '', checklist: '', relatedProgramId: '', featured: false, popular: false, publishedAt: new Date().toISOString().slice(0, 10), slideUrl: '', pdfUrl: '', materialVersion: '1.0', slidePages: 8 }
 const emptyNotice = { title: '', date: new Date().toLocaleDateString('ko-KR').replace(/\s/g, '').replace(/\.$/, ''), summary: '', content: '' }
-const emptyProgram = { title: '', categoryId: '', level: '입문', duration: '4주 · 토요일', status: '모집 예정', description: '', introduction: '', audience: '', goals: '', curriculum: '', preparations: '', relatedLessonIds: [], image: '', imageAlt: '' }
+const emptyProgram = { title: '', categoryId: '', level: '입문', duration: '4주 · 토요일', status: '모집 예정', description: '', introduction: '', audience: '', goals: '', curriculum: '', preparations: '', relatedLessonIds: [], image: '', imageAlt: '', regularPrice: 0, salePrice: 0, isFree: true, saleStatus: 'draft' }
 
 function linesToList(value) {
   return value.split('\n').map((line) => line.trim()).filter(Boolean)
@@ -47,6 +48,14 @@ function ProgramForm({ editing, lessons, onCancel, onSave }) {
       setError('프로그램명, 교육 분야, 기간, 소개, 대상, 목표, 교육 과정과 준비물을 모두 입력해 주세요.')
       return
     }
+    if (!form.isFree && Number(form.regularPrice) <= 0) {
+      setError('유료 과정은 정상 가격을 1원 이상 입력해 주세요.')
+      return
+    }
+    if (Number(form.salePrice) > Number(form.regularPrice)) {
+      setError('할인 가격은 정상 가격보다 높을 수 없습니다.')
+      return
+    }
 
     const category = categories.find((item) => item.id === form.categoryId)
     const categoryColors = { foundation: 'violet', frontend: 'violet', backend: 'mint', database: 'mint', 'ai-development': 'coral', deployment: 'mint' }
@@ -62,6 +71,8 @@ function ProgramForm({ editing, lessons, onCancel, onSave }) {
       preparations: linesToList(form.preparations),
       color: editing?.color || categoryColors[category.id] || 'violet',
       number: editing?.number || String(readManagedContent('programs').length + 1).padStart(2, '0'),
+      regularPrice: Math.max(0, Number(form.regularPrice) || 0),
+      salePrice: Math.max(0, Number(form.salePrice) || 0),
     })
   }
 
@@ -73,6 +84,10 @@ function ProgramForm({ editing, lessons, onCancel, onSave }) {
       <label>난이도 <select onChange={(event) => updateField('level', event.target.value)} value={form.level}><option>입문</option><option>기초</option><option>중급</option></select></label>
       <label>교육 기간 <input onChange={(event) => updateField('duration', event.target.value)} placeholder="예: 4주 · 토요일" required value={form.duration} /></label>
       <label>모집 상태 <select onChange={(event) => updateField('status', event.target.value)} value={form.status}><option>모집 예정</option><option>모집 중</option><option>모집 마감</option><option>운영 중</option></select></label>
+      <label>정상 가격(원) <input min="0" onChange={(event) => updateField('regularPrice', event.target.value)} type="number" value={form.regularPrice} /></label>
+      <label>할인 가격(원) <input min="0" onChange={(event) => updateField('salePrice', event.target.value)} type="number" value={form.salePrice} /></label>
+      <label><input checked={Boolean(form.isFree)} onChange={(event) => updateField('isFree', event.target.checked)} type="checkbox" /> 무료 과정</label>
+      <label>판매 상태 <select onChange={(event) => updateField('saleStatus', event.target.value)} value={form.saleStatus}><option value="draft">판매 준비</option><option value="on_sale">판매 중</option><option value="paused">판매 중지</option><option value="closed">판매 종료</option></select></label>
       <label>카드에 표시할 짧은 소개 <textarea onChange={(event) => updateField('description', event.target.value)} required value={form.description} /></label>
       <label>프로그램 상세 소개 <textarea onChange={(event) => updateField('introduction', event.target.value)} required value={form.introduction} /></label>
       <label>이미지 주소 <input onChange={(event) => updateField('image', event.target.value)} placeholder="예: /edu/images/program-react.webp 또는 https://..." value={form.image} /></label>
@@ -215,10 +230,11 @@ export default function AdminPage({ session = null, onLogout }) {
       <div className="page-introduction"><span className="section-eyebrow">{connected ? 'ADMIN DASHBOARD' : 'ADMIN EXPERIENCE'}</span><h1 id="admin-title">{connected ? '교육 플랫폼 관리자' : '관리자 기능 체험'}</h1><p>{connected ? '인증된 관리자만 교육 프로그램, 교육자료와 공지사항을 공동 저장소에서 관리합니다.' : '운영 화면의 흐름을 살펴보는 교육용 체험입니다.'}</p>{connected && <button className="button button-secondary" onClick={onLogout} type="button">로그아웃</button>}</div>
       <div className="privacy-warning"><strong>{connected ? '관리자 권한이 확인되었습니다.' : '관리자 기능 체험 화면입니다.'}</strong><p>{connected ? '교육 프로그램, 교육자료와 공지사항은 공동 저장되지만 수강 신청 체험과 수업 품질 검증 기록은 현재 브라우저에만 저장됩니다. 실제 개인정보를 입력하지 마세요.' : 'Supabase 연결 정보가 없어 기존 체험 화면을 표시합니다. 실제 접근 제한 기능은 없으며 변경 내용은 현재 브라우저에만 저장됩니다. 실제 개인정보나 비밀번호를 입력하지 마세요.'}</p></div>
       {message && <p className="form-message" role="status">{message}</p>}
-      <nav className="admin-navigation" aria-label="관리자 메뉴">{[['overview','운영 현황'],['enrollments','수강 신청 관리'],['quality','수업 품질 검증'],['programs','교육 프로그램 관리'],['lessons','교육자료 관리'],['notices','공지사항 관리'],['applications','체험 신청 확인']].map(([key,label]) => <button key={key} className={`filter-chip${section === key ? ' filter-chip-active' : ''}`} onClick={() => changeSection(key)} type="button">{label}</button>)}</nav>
+      <nav className="admin-navigation" aria-label="관리자 메뉴">{[['overview','운영 현황'],['enrollments','수강 신청 관리'],['payments','주문·결제 현황'],['quality','수업 품질 검증'],['programs','교육 프로그램 관리'],['lessons','교육자료 관리'],['notices','공지사항 관리'],['applications','체험 신청 확인']].map(([key,label]) => <button key={key} className={`filter-chip${section === key ? ' filter-chip-active' : ''}`} onClick={() => changeSection(key)} type="button">{label}</button>)}</nav>
       {section === 'overview' && <div className="admin-stats">{[['교육 분야', categories.length + '개'],['교육 프로그램', managedPrograms.length + '개'],['교육자료', managedLessons.length + '개'],['공지사항', managedNotices.length + '개'],['완료한 학습', readCompletedLessons().length + '개'],['체험 신청', application ? '저장됨' : '없음']].map(([title,value]) => <article key={title}><span>{title}</span><strong>{value}</strong></article>)}</div>}
       {section === 'quality' && <QualityValidationPanel />}
       {section === 'enrollments' && <EnrollmentManagementPanel programs={managedPrograms} session={session} />}
+      {section === 'payments' && <PaymentOverviewPanel />}
       {['programs', 'lessons', 'notices'].includes(section) && <div className="admin-content"><div className="admin-toolbar"><h2>{section === 'programs' ? '교육 프로그램 관리' : section === 'lessons' ? '교육자료 관리' : '공지사항 관리'} <span>{items.length}개</span></h2><div className="admin-actions"><button className="button button-primary" onClick={() => { setEditing(null); setShowForm(true) }} type="button">새로 등록</button><button className="button button-secondary" onClick={() => restore(section)} type="button">기본 자료로 복원</button></div></div>{showForm && (section === 'programs' ? <ProgramForm key={`${section}-${editing?.id || 'new'}`} editing={editing} lessons={managedLessons} onCancel={() => { setEditing(null); setShowForm(false) }} onSave={saveItem} /> : <ContentForm key={`${section}-${editing?.id || 'new'}`} type={section} editing={editing} programs={managedPrograms} onCancel={() => { setEditing(null); setShowForm(false) }} onSave={saveItem} />)}<div className="admin-item-list">{items.map((item) => <article className="admin-item" key={item.id}><div><strong>{item.title}</strong><span>{section === 'notices' ? `${item.date} · ${item.summary}` : `${item.category} · ${item.level} · ${item.duration}`}</span></div><div className="admin-actions"><a className="button button-secondary" href={`#/${section === 'programs' ? 'programs' : section === 'lessons' ? 'lessons' : 'notice'}/${item.id}`}>보기</a><button className="button button-secondary" onClick={() => { setEditing(item); setShowForm(true) }} type="button">수정</button><button className="button button-danger" onClick={() => deleteItem(item)} type="button">삭제</button></div></article>)}</div></div>}
       {section === 'applications' && <div className="admin-application"><h2>브라우저에 저장된 체험 신청</h2>{application ? <><dl><div><dt>연습용 이름</dt><dd>{application.name}</dd></div><div><dt>연습용 연락처</dt><dd>{application.contact}</dd></div><div><dt>선택 프로그램</dt><dd>{managedPrograms.find((program) => program.id === application.programId)?.title || '선택한 프로그램'}</dd></div></dl><button className="button button-danger" onClick={() => { if(window.confirm('저장된 체험 신청을 삭제할까요?') && removeTrialApplication()) setApplication(null) }} type="button">체험 신청 삭제하기</button></> : <p>현재 브라우저에 저장된 체험 신청이 없습니다.</p>}</div>}
     </section>

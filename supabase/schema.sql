@@ -81,12 +81,61 @@ create table if not exists public.edu_programs (
   display_number text not null default '01',
   image_url text not null default '',
   image_alt text not null default '',
+  regular_price integer not null default 0 check (regular_price >= 0),
+  sale_price integer not null default 0 check (sale_price >= 0),
+  is_free boolean not null default true,
+  sale_status text not null default 'draft' check (sale_status in ('draft', 'on_sale', 'paused', 'closed')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
 alter table public.edu_programs add column if not exists image_url text not null default '';
 alter table public.edu_programs add column if not exists image_alt text not null default '';
+alter table public.edu_programs add column if not exists regular_price integer not null default 0;
+alter table public.edu_programs add column if not exists sale_price integer not null default 0;
+alter table public.edu_programs add column if not exists is_free boolean not null default true;
+alter table public.edu_programs add column if not exists sale_status text not null default 'draft';
+
+-- 결제 금액은 주문 생성 시 서버가 edu_programs에서 다시 읽어 orders에 고정합니다.
+create table if not exists public.orders (
+  id uuid primary key default gen_random_uuid(),
+  order_code text not null unique,
+  user_id uuid not null references auth.users (id) on delete restrict,
+  program_id text not null references public.edu_programs (id) on delete restrict,
+  order_name text not null,
+  amount integer not null check (amount >= 0),
+  status text not null default 'pending' check (status in ('pending', 'ready', 'paid', 'failed', 'cancelled', 'refunded')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.payments (
+  id uuid primary key default gen_random_uuid(),
+  order_id uuid not null unique references public.orders (id) on delete restrict,
+  payment_key text unique,
+  method text,
+  amount integer not null check (amount >= 0),
+  status text not null default 'ready' check (status in ('ready', 'in_progress', 'done', 'failed', 'cancelled', 'partial_cancelled')),
+  approved_at timestamptz,
+  cancelled_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.payment_events (
+  id bigint generated always as identity primary key,
+  payment_id uuid references public.payments (id) on delete cascade,
+  order_id uuid not null references public.orders (id) on delete cascade,
+  event_type text not null,
+  payment_status text,
+  provider_event_id text unique,
+  payload jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists orders_user_id_idx on public.orders (user_id, created_at desc);
+create index if not exists payments_order_id_idx on public.payments (order_id);
+create index if not exists payment_events_order_id_idx on public.payment_events (order_id, created_at desc);
 
 create table if not exists public.edu_lessons (
   id text primary key,
@@ -157,6 +206,13 @@ $$;
 drop trigger if exists set_edu_programs_updated_at on public.edu_programs;
 create trigger set_edu_programs_updated_at
 before update on public.edu_programs
+for each row execute function public.set_edu_updated_at();
+
+drop trigger if exists set_orders_updated_at on public.orders;
+create trigger set_orders_updated_at before update on public.orders
+for each row execute function public.set_edu_updated_at();
+drop trigger if exists set_payments_updated_at on public.payments;
+create trigger set_payments_updated_at before update on public.payments
 for each row execute function public.set_edu_updated_at();
 
 drop trigger if exists set_edu_lessons_updated_at on public.edu_lessons;
@@ -255,6 +311,31 @@ alter table public.course_progress enable row level security;
 alter table public.edu_programs enable row level security;
 alter table public.edu_lessons enable row level security;
 alter table public.edu_notices enable row level security;
+alter table public.orders enable row level security;
+alter table public.payments enable row level security;
+alter table public.payment_events enable row level security;
+
+-- 결제 테이블에는 브라우저용 INSERT·UPDATE·DELETE 정책을 만들지 않습니다.
+-- service_role을 사용하는 Vercel Functions만 주문 생성·승인·취소를 처리합니다.
+drop policy if exists "orders_read_own" on public.orders;
+create policy "orders_read_own" on public.orders for select to authenticated
+using (auth.uid() = user_id);
+drop policy if exists "orders_admin_read_all" on public.orders;
+create policy "orders_admin_read_all" on public.orders for select to authenticated
+using (public.is_edu_admin());
+
+drop policy if exists "payments_read_own" on public.payments;
+create policy "payments_read_own" on public.payments for select to authenticated
+using (exists (select 1 from public.orders o where o.id = order_id and o.user_id = auth.uid()));
+drop policy if exists "payments_admin_read_all" on public.payments;
+create policy "payments_admin_read_all" on public.payments for select to authenticated
+using (public.is_edu_admin());
+
+drop policy if exists "payment_events_read_own" on public.payment_events;
+-- 원본 웹훅 payload에는 제공사 정보가 포함될 수 있으므로 일반 사용자에게 공개하지 않습니다.
+drop policy if exists "payment_events_admin_read_all" on public.payment_events;
+create policy "payment_events_admin_read_all" on public.payment_events for select to authenticated
+using (public.is_edu_admin());
 
 drop policy if exists "edu_admin_read_own_profile" on public.admin_profiles;
 create policy "edu_admin_read_own_profile"
