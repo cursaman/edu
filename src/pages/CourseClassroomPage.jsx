@@ -5,7 +5,7 @@ import { findFeaturedLearning } from '../data/featuredLearning.js'
 import { isSupabaseConfigured } from '../lib/supabase.js'
 import { loadUserLearning, recordLastSession, saveUserSessionProgress } from '../data/userProgress.js'
 
-export default function CourseClassroomPage({ programId, sessionId }) {
+export default function CourseClassroomPage({ programId, session, sessionId }) {
   const course = findDetailedCourse(programId)
   const [completed, setCompleted] = useState(() => completedCourseSessions(programId))
   const [saving, setSaving] = useState(false)
