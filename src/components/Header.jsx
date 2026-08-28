@@ -7,7 +7,7 @@ const navigationItems = [
   { label: '교육자료', href: '#/lessons', path: '/lessons' },
   { label: '내 강의실', href: '#/classroom', path: '/classroom' },
   { label: '공지사항', href: '#/notice', path: '/notice' },
-  { label: '수강 신청', href: '#/application', path: '/application' },
+  { label: '수강 안내', href: '#/application', path: '/application' },
 ]
 
 export default function Header({ currentPath, onLogout, session, supabaseConfigured }) {
@@ -55,7 +55,7 @@ export default function Header({ currentPath, onLogout, session, supabaseConfigu
           {navigationItems.map((item) => (
             <a
               aria-current={currentPath === item.path || (item.path !== '/' && currentPath.startsWith(`${item.path}/`)) ? 'page' : undefined}
-              className={item.label === '수강 신청' ? 'nav-link nav-link-accent' : 'nav-link'}
+              className={item.label === '수강 안내' ? 'nav-link nav-link-accent' : 'nav-link'}
               href={item.href}
               key={item.label}
               onClick={() => setMenuOpen(false)}

@@ -235,8 +235,8 @@ export default function HomePage() {
         <article className="application-card">
           <span className="section-eyebrow">START WITH EDU</span>
           <h2>처음이라서 더 잘 배울 수 있어요.</h2>
-          <p>실제 개인정보 없이 현재 브라우저에서만 수강 신청 과정을 체험해 보세요.</p>
-          <a className="information-link" href="#/application">수강 신청 체험하기 →</a>
+          <p>무료 체험부터 회원가입, 수강권 이용까지 전체 학습 순서를 먼저 확인하세요.</p>
+          <a className="information-link" href="#/application">수강 방법 알아보기 →</a>
         </article>
       </section>
 

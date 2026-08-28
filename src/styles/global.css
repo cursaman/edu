@@ -1708,6 +1708,33 @@ button:focus-visible {
   background: white;
 }
 
+.enrollment-guide-hero { padding: clamp(30px, 5vw, 62px); border: 1px solid #dfe3ff; border-radius: 28px; background: linear-gradient(135deg, #f5f3ff 0%, #f3fbf9 65%, #fff7f3 100%); }
+.enrollment-guide-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+.enrollment-guide-notice { display: grid; grid-template-columns: minmax(180px, .45fr) 1fr; gap: 22px; margin: 30px 0 54px; padding: 22px 26px; border-radius: 16px; background: #172238; color: white; }
+.enrollment-guide-notice p { margin: 0; color: #dce4f3; line-height: 1.7; }
+.enrollment-guide .section-heading { margin-bottom: 22px; }
+.enrollment-guide .section-heading h2 { margin: 7px 0 0; font-size: clamp(25px, 3vw, 36px); }
+.enrollment-guide-steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
+.enrollment-guide-steps li { min-height: 220px; padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: white; }
+.enrollment-guide-steps li > span { color: var(--primary); font-size: 13px; font-weight: 800; letter-spacing: .08em; }
+.enrollment-guide-steps h3 { margin: 28px 0 10px; font-size: 18px; line-height: 1.45; }
+.enrollment-guide-steps p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.75; }
+.enrollment-guide-faq { margin-top: 72px; }
+.enrollment-guide-faq-list { border-top: 1px solid var(--line); }
+.enrollment-guide-faq-list details { border-bottom: 1px solid var(--line); }
+.enrollment-guide-faq-list summary { padding: 21px 4px; cursor: pointer; font-size: 17px; font-weight: 700; }
+.enrollment-guide-faq-list p { margin: -5px 0 22px; padding-right: 30px; color: var(--muted); line-height: 1.8; }
+.enrollment-guide-final { display: flex; align-items: center; justify-content: space-between; gap: 28px; margin-top: 72px; padding: 34px; border-radius: 22px; background: #f4f6ff; }
+.enrollment-guide-final h2 { margin: 8px 0; }
+.enrollment-guide-final p { margin: 0; color: var(--muted); line-height: 1.7; }
+
+@media (max-width: 640px) {
+  .enrollment-guide-notice { grid-template-columns: 1fr; gap: 8px; }
+  .enrollment-guide-steps { grid-template-columns: 1fr; }
+  .enrollment-guide-steps li { min-height: auto; }
+  .enrollment-guide-final { align-items: flex-start; flex-direction: column; }
+}
+
 .not-found {
   display: grid;
   align-content: center;
@@ -2173,6 +2200,8 @@ button:focus-visible {
   .application-layout {
     grid-template-columns: 1fr;
   }
+
+  .enrollment-guide-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
   .saved-application {
     max-width: 560px;
