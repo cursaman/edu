@@ -1,6 +1,7 @@
 const commonMaterials = ['실행 가능한 EDU React 프로젝트', 'Node.js 22 LTS와 npm', 'Chrome 개발자 도구', '검토 결과를 기록할 문서']
 
-function seniorSession(courseKey, order, title, problem, badCode, improvedCode, decision, expectedResult, tests, reviewQuestions) {
+function seniorSession(courseKey, order, title, badCode, improvedCode, decision, expectedResult, tests, reviewQuestions) {
+  const problem = title
   return {
     id: `${courseKey}-${String(order).padStart(2, '0')}`, week: order, order, title, duration: '90분',
     goal: `${problem} 문제를 재현하고 근거가 있는 개선안을 적용합니다.`, concept: decision,
