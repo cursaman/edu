@@ -1,11 +1,14 @@
 import crypto from 'node:crypto'
-import { allowRequest } from '../_lib/rateLimit.js'
+import { allowDistributedRequest } from '../_lib/rateLimit.js'
 import { getServerClient, requirePost, requireUser, safeApiError, sendError, serverPrice, validProgramId } from '../_lib/paymentServer.js'
 export default async function handler(request, response) {
   if (!requirePost(request, response)) return
-  if (!allowRequest(request, 10)) return sendError(response, 429, 'RATE_LIMITED', '요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.')
   try {
     const client = getServerClient(); const user = await requireUser(request, client); const programId = request.body?.programId
+    if (!await allowDistributedRequest(client, request, { scope: 'order-create', identity: user.id, limit: 10, windowMs: 60_000 })) {
+      response.setHeader('Retry-After', '60')
+      return sendError(response, 429, 'RATE_LIMITED', '요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.')
+    }
     if (!validProgramId(programId)) return sendError(response, 400, 'INVALID_PROGRAM', '교육 프로그램 정보가 올바르지 않습니다.')
     const { data: program, error: programError } = await client.from('edu_programs').select('id,title,regular_price,sale_price,is_free,sale_status').eq('id', programId).single()
     if (programError || !program) return sendError(response, 404, 'PROGRAM_NOT_FOUND', '교육 프로그램을 찾지 못했습니다.')

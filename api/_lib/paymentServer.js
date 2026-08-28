@@ -34,6 +34,7 @@ export async function tossRequest(path, options = {}) {
 export function safeApiError(error, response) {
   if (error.message === 'UNAUTHORIZED') return sendError(response, 401, 'UNAUTHORIZED', '로그인 정보를 확인해 주세요.')
   if (error.message === 'SERVER_NOT_CONFIGURED') return sendError(response, 503, 'SERVER_NOT_CONFIGURED', '결제 서버 설정이 준비되지 않았습니다.')
+  if (error.message === 'RATE_LIMIT_NOT_CONFIGURED' || error.message === 'RATE_LIMIT_UNAVAILABLE') return sendError(response, 503, 'RATE_LIMIT_UNAVAILABLE', '요청 보호 기능을 확인할 수 없어 안전을 위해 처리를 중단했습니다.')
   if (error.message === 'TOSS_REQUEST_FAILED') return sendError(response, error.status >= 500 ? 502 : 400, error.providerCode || 'PAYMENT_FAILED', '토스페이먼츠가 결제를 승인하지 않았습니다.')
   return sendError(response, 500, 'PAYMENT_SERVER_ERROR', '결제 처리 중 문제가 발생했습니다.')
 }

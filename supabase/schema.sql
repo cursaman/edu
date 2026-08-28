@@ -2,6 +2,22 @@
 -- Supabase 대시보드 → SQL Editor에서 이 파일 전체를 먼저 실행합니다.
 -- 로그인 계정 생성과 최초 관리자 등록은 대시보드 운영자가 직접 진행합니다.
 
+-- API 요청 제한 원장은 Data API에 노출되지 않는 private 스키마에 둡니다.
+create schema if not exists private;
+revoke all on schema private from public, anon, authenticated;
+
+create table if not exists private.api_rate_limits (
+  scope text not null check (char_length(scope) between 2 and 60),
+  key_hash text not null check (key_hash ~ '^[0-9a-f]{64}$'),
+  window_started_at timestamptz not null,
+  request_count integer not null check (request_count > 0),
+  expires_at timestamptz not null,
+  primary key (scope, key_hash)
+);
+
+alter table private.api_rate_limits enable row level security;
+create index if not exists api_rate_limits_expires_at_idx on private.api_rate_limits (expires_at);
+
 create table if not exists public.admin_profiles (
   user_id uuid primary key references auth.users (id) on delete cascade,
   is_admin boolean not null default false,
@@ -310,6 +326,61 @@ $$;
 
 revoke all on function public.is_edu_admin() from public;
 grant execute on function public.is_edu_admin() to authenticated;
+
+-- 모든 Vercel Functions 인스턴스가 같은 PostgreSQL 행을 원자적으로 증가시킵니다.
+create or replace function public.consume_edu_rate_limit(
+  p_scope text,
+  p_key_hash text,
+  p_limit integer,
+  p_window_seconds integer
+)
+returns boolean
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_now timestamptz := pg_catalog.clock_timestamp();
+  v_count integer;
+begin
+  if p_scope !~ '^[a-z0-9-]{2,60}$'
+    or p_key_hash !~ '^[0-9a-f]{64}$'
+    or p_limit < 1 or p_limit > 10000
+    or p_window_seconds < 1 or p_window_seconds > 86400 then
+    raise exception 'INVALID_RATE_LIMIT_INPUT';
+  end if;
+
+  insert into private.api_rate_limits as bucket
+    (scope, key_hash, window_started_at, request_count, expires_at)
+  values
+    (p_scope, p_key_hash, v_now, 1, v_now + pg_catalog.make_interval(secs => p_window_seconds))
+  on conflict (scope, key_hash) do update set
+    request_count = case
+      when bucket.window_started_at + pg_catalog.make_interval(secs => p_window_seconds) <= v_now then 1
+      else bucket.request_count + 1
+    end,
+    window_started_at = case
+      when bucket.window_started_at + pg_catalog.make_interval(secs => p_window_seconds) <= v_now then v_now
+      else bucket.window_started_at
+    end,
+    expires_at = case
+      when bucket.window_started_at + pg_catalog.make_interval(secs => p_window_seconds) <= v_now
+        then v_now + pg_catalog.make_interval(secs => p_window_seconds)
+      else bucket.expires_at
+    end
+  returning request_count into v_count;
+
+  -- 약 1%의 요청에서 만료된 오래된 버킷을 정리해 테이블 증가를 제한합니다.
+  if pg_catalog.random() < 0.01 then
+    delete from private.api_rate_limits where expires_at < v_now - interval '1 day';
+  end if;
+
+  return v_count <= p_limit;
+end;
+$$;
+
+revoke all on function public.consume_edu_rate_limit(text, text, integer, integer) from public, anon, authenticated;
+grant execute on function public.consume_edu_rate_limit(text, text, integer, integer) to service_role;
 
 -- 화면 입력이 아닌 로그인 사용자와 서버 시각을 기준으로 최신 동의를 기록합니다.
 create or replace function public.record_current_edu_consents(p_document_version text)

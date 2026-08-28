@@ -350,6 +350,7 @@ Vercel 프로젝트의 `Settings` → `Environment Variables`에서 환경별로
 
 - 브라우저 공개 가능: `VITE_TOSS_CLIENT_KEY`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`
 - 서버 전용 비밀정보: `TOSS_SECRET_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`
+- 분산 요청 제한 비밀값: `RATE_LIMIT_SECRET` — 32자 이상의 무작위 값이며 Vercel 서버 환경변수에만 저장합니다.
 
 서버 전용 변수에는 절대 `VITE_` 접두사를 붙이지 않습니다. 실제 시크릿 키와 service role 키는 `.env.local`, React 파일, README, GitHub Actions 변수 또는 Git 커밋에 저장하지 않습니다. 로컬 서버 함수 테스트가 꼭 필요하면 별도 비밀 저장 방법을 정한 뒤 사용하고, 화면 개발만 할 때는 값을 비워 둡니다.
 
@@ -387,6 +388,14 @@ Vercel 프로젝트의 `Settings` → `Environment Variables`에서 환경별로
 결제 승인은 토스 API의 멱등키와 Supabase의 `finalize_edu_payment` 트랜잭션 함수를 사용합니다. 동일 승인 요청이 반복돼도 결제·이벤트·수강권이 중복 생성되지 않으며, 중간 DB 저장이 실패하면 수강권만 따로 발급되지 않습니다.
 
 실제 결제로 전환하기 전에는 사업자·카드사 심사, 라이브 키 별도 등록, 환불 정책 법률 검토, 소액 실결제와 전액 취소, 장애 대응, 결제 대사, 관리자 취소 권한과 감사 기록을 추가로 검증해야 합니다.
+
+### 분산형 요청 제한 설정
+
+1. 최신 `supabase/schema.sql`을 실행해 `private.api_rate_limits`와 `consume_edu_rate_limit` 함수를 만듭니다.
+2. Vercel → Project → Settings → Environment Variables에 `RATE_LIMIT_SECRET`을 추가합니다. 32자 이상의 예측하기 어려운 새 값을 사용하고 GitHub나 `VITE_` 변수에 넣지 않습니다.
+3. Vercel을 재배포합니다. SQL 또는 비밀값이 없으면 주문·승인·웹훅·탈퇴 API는 메모리 방식으로 우회하지 않고 `503 RATE_LIMIT_UNAVAILABLE`을 반환합니다.
+4. 주문 생성은 사용자·IP 조합당 분당 10회, 결제 승인은 사용자·주문·IP 조합당 분당 8회, 웹훅은 주문·IP 조합당 분당 30회, 탈퇴는 사용자·IP 조합당 시간당 3회로 제한됩니다.
+5. 제한을 넘으면 `429`와 `Retry-After`를 반환하는지 확인합니다. 원문 IP·사용자 ID·토큰은 저장하지 않고 HMAC-SHA256 해시만 저장합니다.
 
 ## 구현하지 않은 기능
 

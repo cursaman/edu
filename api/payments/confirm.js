@@ -1,11 +1,14 @@
-import { allowRequest } from '../_lib/rateLimit.js'
+import { allowDistributedRequest } from '../_lib/rateLimit.js'
 import { getServerClient, requirePost, requireUser, safeApiError, sendError, tossRequest, validOrderCode, validPaymentKey } from '../_lib/paymentServer.js'
 export default async function handler(request, response) {
   if (!requirePost(request, response)) return
-  if (!allowRequest(request, 8)) return sendError(response, 429, 'RATE_LIMITED', '승인 요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.')
   try {
     const client = getServerClient(); const user = await requireUser(request, client)
     const { paymentKey, orderId } = request.body || {}; const amount = Number(request.body?.amount)
+    if (!await allowDistributedRequest(client, request, { scope: 'payment-confirm', identity: `${user.id}:${String(orderId || '').slice(0, 64)}`, limit: 8, windowMs: 60_000 })) {
+      response.setHeader('Retry-After', '60')
+      return sendError(response, 429, 'RATE_LIMITED', '승인 요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.')
+    }
     if (!validPaymentKey(paymentKey) || !validOrderCode(orderId) || !Number.isSafeInteger(amount) || amount <= 0) return sendError(response, 400, 'INVALID_PAYMENT_INPUT', '결제 승인 정보가 올바르지 않습니다.')
     const { data: order, error } = await client.from('orders').select('*').eq('order_code', orderId).eq('user_id', user.id).single()
     if (error || !order) return sendError(response, 404, 'ORDER_NOT_FOUND', '본인의 주문을 찾지 못했습니다.')

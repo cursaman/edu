@@ -1,12 +1,15 @@
 import { getServerClient, requirePost, requireUser, safeApiError, sendError } from '../_lib/paymentServer.js'
-import { allowRequest } from '../_lib/rateLimit.js'
+import { allowDistributedRequest } from '../_lib/rateLimit.js'
 
 export default async function handler(request, response) {
   if (!requirePost(request, response)) return
-  if (!allowRequest(request, 3, 60 * 60 * 1000)) return sendError(response, 429, 'RATE_LIMITED', '탈퇴 요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.')
   try {
     const client = getServerClient()
     const user = await requireUser(request, client)
+    if (!await allowDistributedRequest(client, request, { scope: 'account-delete', identity: user.id, limit: 3, windowMs: 60 * 60 * 1000 })) {
+      response.setHeader('Retry-After', '3600')
+      return sendError(response, 429, 'RATE_LIMITED', '탈퇴 요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.')
+    }
     const { error } = await client.auth.admin.deleteUser(user.id)
     if (error) throw new Error('ACCOUNT_DELETE_FAILED')
     return response.status(200).json({ ok: true })
