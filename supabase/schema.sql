@@ -134,6 +134,7 @@ create table if not exists public.payment_events (
 );
 
 create index if not exists orders_user_id_idx on public.orders (user_id, created_at desc);
+create unique index if not exists orders_one_open_per_course_idx on public.orders (user_id, program_id) where status in ('pending','ready','paid');
 create index if not exists payments_order_id_idx on public.payments (order_id);
 create index if not exists payment_events_order_id_idx on public.payment_events (order_id, created_at desc);
 
@@ -274,6 +275,64 @@ $$;
 
 revoke all on function public.is_edu_admin() from public;
 grant execute on function public.is_edu_admin() to authenticated;
+
+create or replace function public.finalize_edu_payment(p_order_code text, p_payment_key text, p_method text, p_amount integer, p_approved_at timestamptz, p_event_id text)
+returns void language plpgsql security definer set search_path = pg_catalog, public as $$
+declare v_order public.orders%rowtype;
+begin
+  select * into v_order from public.orders where order_code = p_order_code for update;
+  if not found then raise exception 'ORDER_NOT_FOUND'; end if;
+  if v_order.amount <> p_amount then raise exception 'AMOUNT_MISMATCH'; end if;
+  if v_order.status = 'paid' then return; end if;
+  if v_order.status not in ('pending','ready') then raise exception 'INVALID_ORDER_STATUS'; end if;
+  insert into public.payments (order_id, payment_key, method, amount, status, approved_at)
+  values (v_order.id, p_payment_key, p_method, p_amount, 'done', p_approved_at)
+  on conflict (order_id) do update set payment_key=excluded.payment_key, method=excluded.method, amount=excluded.amount, status='done', approved_at=excluded.approved_at;
+  update public.orders set status='paid' where id=v_order.id;
+  insert into public.course_enrollments (user_id, program_id, status, approved_at, last_studied_at)
+  values (v_order.user_id, v_order.program_id, 'active', p_approved_at, now())
+  on conflict (user_id, program_id) do update set status='active', approved_at=excluded.approved_at;
+  insert into public.payment_events (payment_id, order_id, event_type, payment_status, provider_event_id)
+  select id, v_order.id, 'PAYMENT_CONFIRMED', 'done', p_event_id from public.payments where order_id=v_order.id
+  on conflict (provider_event_id) do nothing;
+end; $$;
+revoke all on function public.finalize_edu_payment(text,text,text,integer,timestamptz,text) from public, anon, authenticated;
+grant execute on function public.finalize_edu_payment(text,text,text,integer,timestamptz,text) to service_role;
+
+create or replace function public.sync_edu_payment_webhook(p_order_code text, p_payment_key text, p_method text, p_amount integer, p_status text, p_approved_at timestamptz, p_event_id text)
+returns void language plpgsql security definer set search_path = pg_catalog, public as $$
+declare v_order public.orders%rowtype; v_payment_status text; v_order_status text;
+begin
+  select * into v_order from public.orders where order_code=p_order_code for update;
+  if not found or v_order.amount <> p_amount then raise exception 'ORDER_MISMATCH'; end if;
+  v_payment_status := case when p_status='DONE' then 'done' when p_status='CANCELED' then 'cancelled' when p_status='PARTIAL_CANCELED' then 'partial_cancelled' when p_status in ('ABORTED','EXPIRED') then 'failed' else 'in_progress' end;
+  v_order_status := case when p_status='DONE' then 'paid' when p_status in ('CANCELED','PARTIAL_CANCELED') then 'refunded' when p_status in ('ABORTED','EXPIRED') then 'failed' else v_order.status end;
+  insert into public.payments (order_id,payment_key,method,amount,status,approved_at,cancelled_at)
+  values (v_order.id,p_payment_key,p_method,p_amount,v_payment_status,p_approved_at,case when p_status in ('CANCELED','PARTIAL_CANCELED') then now() else null end)
+  on conflict (order_id) do update set payment_key=excluded.payment_key,method=excluded.method,status=excluded.status,approved_at=coalesce(excluded.approved_at,public.payments.approved_at),cancelled_at=excluded.cancelled_at;
+  update public.orders set status=v_order_status where id=v_order.id;
+  if p_status='DONE' then
+    insert into public.course_enrollments(user_id,program_id,status,approved_at,last_studied_at) values(v_order.user_id,v_order.program_id,'active',p_approved_at,now())
+    on conflict(user_id,program_id) do update set status='active',approved_at=excluded.approved_at;
+  elsif p_status in ('CANCELED','PARTIAL_CANCELED') then
+    update public.course_enrollments set status='cancelled' where user_id=v_order.user_id and program_id=v_order.program_id and status in ('approved','active');
+  end if;
+  insert into public.payment_events(payment_id,order_id,event_type,payment_status,provider_event_id)
+  select id,v_order.id,'PAYMENT_WEBHOOK',v_payment_status,p_event_id from public.payments where order_id=v_order.id on conflict(provider_event_id) do nothing;
+end; $$;
+revoke all on function public.sync_edu_payment_webhook(text,text,text,integer,text,timestamptz,text) from public, anon, authenticated;
+grant execute on function public.sync_edu_payment_webhook(text,text,text,integer,text,timestamptz,text) to service_role;
+
+create or replace function public.get_edu_payment_overview()
+returns table(order_id uuid,order_code text,user_email text,program_id text,amount integer,order_status text,payment_status text,method text,approved_at timestamptz)
+language plpgsql security definer set search_path=pg_catalog,public,auth as $$
+begin
+  if not public.is_edu_admin() then raise exception '관리자 권한이 필요합니다.'; end if;
+  return query select o.id,o.order_code,u.email::text,o.program_id,o.amount,o.status,p.status,p.method,p.approved_at
+  from public.orders o join auth.users u on u.id=o.user_id left join public.payments p on p.order_id=o.id order by o.created_at desc;
+end; $$;
+revoke all on function public.get_edu_payment_overview() from public;
+grant execute on function public.get_edu_payment_overview() to authenticated;
 
 -- 학습자는 상태를 바꾸지 않고 자신의 마지막 학습 위치만 기록합니다.
 create or replace function public.record_edu_course_session(p_program_id text, p_session_id text)

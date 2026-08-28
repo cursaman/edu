@@ -23,8 +23,13 @@ const NotFoundPage = lazy(() => import('./pages/NotFoundPage.jsx'))
 const ProgramDetailPage = lazy(() => import('./pages/ProgramDetailPage.jsx'))
 const ProgramsPage = lazy(() => import('./pages/ProgramsPage.jsx'))
 const UserAuthPage = lazy(() => import('./pages/UserAuthPage.jsx'))
+const PaymentSuccessPage = lazy(() => import('./pages/PaymentSuccessPage.jsx'))
+const PaymentFailPage = lazy(() => import('./pages/PaymentFailPage.jsx'))
 
 function readCurrentRoute() {
+  const browserSearch = new URLSearchParams(window.location.search)
+  if (browserSearch.get('paymentResult') === 'success') return { pathname: '/payment/success', searchParams: browserSearch }
+  if (browserSearch.get('paymentResult') === 'fail') return { pathname: '/payment/fail', searchParams: browserSearch }
   const legacyRoutes = {
     home: '/',
     categories: '/categories',
@@ -141,6 +146,10 @@ export default function App() {
       page = <ProgramDetailPage programId={route.pathname.split('/')[2]} session={session} />
   } else if (route.pathname.startsWith('/checkout/')) {
     page = <CheckoutPage programId={route.pathname.split('/')[2]} session={session} />
+  } else if (route.pathname === '/payment/success') {
+    page = <PaymentSuccessPage searchParams={route.searchParams} session={session} />
+  } else if (route.pathname === '/payment/fail') {
+    page = <PaymentFailPage searchParams={route.searchParams} />
   } else if (route.pathname === '/lessons') {
     page = <LessonsPage
       selectedCategory={route.searchParams.get('category') || 'all'}
