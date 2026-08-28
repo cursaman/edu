@@ -455,6 +455,10 @@ insert into public.edu_programs (
 ('senior-payment-reliability','결제 시스템 안정화','backend','백엔드','고급','시니어','6주 · 주 1회','주문·승인·웹훅을 중복과 부분 실패에 견디도록 설계합니다.','서버 가격 검증, 멱등성, 상태 전이, 웹훅과 장애 복구를 실습합니다.','["결제 연동 개발자","분산 실패와 복구를 설계하려는 개발자"]','["서버 가격을 검증합니다.","중복 승인을 방지합니다.","복구 절차를 만듭니다."]','["금액 변조 차단","중복 주문 제어","승인 멱등성","부분 실패","웹훅 검증","대사와 복구"]','["Vercel 테스트 환경","토스 테스트 키","Supabase 프로젝트"]','[]','모집 예정','coral','103','/edu/images/program-backend.webp','주문과 결제 승인 상태를 검증하는 개발자')
 on conflict (id) do update set title=excluded.title,category_id=excluded.category_id,category=excluded.category,level=excluded.level,learning_track=excluded.learning_track,duration=excluded.duration,description=excluded.description,introduction=excluded.introduction,audience=excluded.audience,goals=excluded.goals,curriculum=excluded.curriculum,preparations=excluded.preparations,status=excluded.status,color=excluded.color,display_number=excluded.display_number,image_url=excluded.image_url,image_alt=excluded.image_alt;
 
+update public.edu_programs set duration='12주 · 주 1회', curriculum='["거대 컴포넌트 분리","파생 상태 제거","요청 경쟁 조건","성능 측정","오류 복구","PR 회귀 검증","접근성 컴포넌트 API","Context 결합도","서버 데이터 캐시","번들 경계","테스트 전략","아키텍처 최종 리뷰"]'::jsonb where id='senior-react-refactoring';
+update public.edu_programs set duration='12주 · 주 1회', curriculum='["UI 권한 우회","사용자 행 격리","관리자 상승 차단","Definer 함수","서비스 키 대응","RLS 회귀 테스트","세션과 토큰","다중 테넌트","Storage 정책","Auth 리디렉션","정책 성능","보안 사고 대응"]'::jsonb where id='senior-supabase-rls';
+update public.edu_programs set duration='12주 · 주 1회', curriculum='["금액 변조 차단","중복 주문 제어","승인 멱등성","부분 실패","웹훅 검증","대사와 복구","취소와 수강권","동시성 제어","타임아웃과 재시도","로그 최소화","부하와 요청 제한","운영 장애 훈련"]'::jsonb where id='senior-payment-reliability';
+
 -- 실행 결과 확인: 교육 프로그램 103개, 교육자료 100개, 공지사항 3개가 정상입니다.
 select '교육 프로그램' as item, count(*) as saved_count from public.edu_programs
 union all

@@ -281,8 +281,10 @@ React 상태관리·API 활용 과정 1~30회차는 프로젝트 점검부터 �
 
 - 프로그램은 `입문`, `실무`, `시니어` 학습 단계로 구분됩니다.
 - 프로그램 목록의 `학습 단계` 필터로 원하는 수준만 볼 수 있습니다.
-- 시니어 대표 과정은 React 리팩터링, Supabase 인증·RLS 보안, 결제 시스템 안정화 3개이며 각각 6회차입니다.
+- 시니어 대표 과정은 React 리팩터링, Supabase 인증·RLS 보안, 결제 시스템 안정화 3개이며 각각 12회차입니다.
 - 시니어 과정의 첫 회차는 무료로 열리고, 회차마다 문제 상황·개선 전후 코드·설계 이유·실행 결과·테스트·리뷰 질문을 제공합니다.
+- React 리팩터링 실무 1회차에서는 `public/practice/senior-react-refactoring`의 시작·완성 Vite 프로젝트 ZIP을 내려받아 `npm install`, `npm run dev`, `npm run build`로 실행할 수 있습니다.
+- 같은 실습 파일에서 `npm test`로 도메인 로직 자동 테스트 4개를 실행하고 `npm run perf`로 2만 개 자료 검색 성능을 재측정할 수 있습니다. 기준 측정 결과는 `performance/PERFORMANCE_RESULTS.md`에 기록했습니다.
 - Supabase SQL Editor에서 최신 `supabase/schema.sql`을 먼저 실행한 뒤 `supabase/seed.sql`을 실행해야 공동 데이터에도 `learning_track`과 신규 과정이 반영됩니다.
 - 기존 행은 삭제하지 않으며, 기존 난이도가 중급·실전·프로젝트·고급이면 `실무`, 나머지는 `입문`으로 초기 분류됩니다. 관리자는 프로그램 관리 화면에서 단계를 수정할 수 있습니다.
 

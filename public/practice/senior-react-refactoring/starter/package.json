@@ -1,0 +1,1 @@
+{"name":"edu-senior-react-starter","private":true,"version":"1.0.0","type":"module","scripts":{"dev":"vite","build":"vite build","test":"node --test","perf":"node scripts/performance.mjs"},"dependencies":{"@vitejs/plugin-react":"^6.1.0","vite":"^8.2.2","react":"^19.1.0","react-dom":"^19.1.0"},"devDependencies":{}}
