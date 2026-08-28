@@ -64,7 +64,7 @@ export default function Header({ currentPath, onLogout, session, supabaseConfigu
             </a>
           ))}
           {supabaseConfigured && (session?.user
-            ? <button className="nav-account-button" onClick={() => { setMenuOpen(false); onLogout?.() }} type="button">로그아웃</button>
+            ? <><a aria-current={currentPath === '/account' ? 'page' : undefined} className="nav-account-link" href="#/account" onClick={() => setMenuOpen(false)}>계정 관리</a><button className="nav-account-button" onClick={() => { setMenuOpen(false); onLogout?.() }} type="button">로그아웃</button></>
             : <a aria-current={currentPath === '/login' || currentPath === '/signup' ? 'page' : undefined} className="nav-account-link" href="#/login" onClick={() => setMenuOpen(false)}>로그인</a>)}
         </nav>
       </div>

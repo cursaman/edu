@@ -2216,6 +2216,13 @@ button:focus-visible {
 .auth-consents input { width: 18px !important; min-height: 18px !important; margin-top: 2px; }
 .auth-consents a { color: var(--primary); font-weight: 750; }
 .auth-consents small { color: var(--muted); line-height: 1.6; }
+.account-page { max-width: 920px; }
+.account-panel { margin-top: 24px; padding: clamp(22px, 4vw, 36px); border: 1px solid var(--line); border-radius: 20px; background: #fff; }
+.account-panel h2 { margin-top: 0; }
+.account-panel label { display: grid; gap: 8px; font-weight: 700; }
+.account-panel input { min-height: 46px; padding: 0 13px; border: 1px solid var(--line); border-radius: 10px; }
+.account-danger { border-color: #f1b8b8; background: #fffafa; }
+.consent-history { padding-left: 20px; color: var(--muted); line-height: 1.8; }
 
 @media (max-width: 960px) {
   .catalog-hero { grid-template-columns: 1fr; gap: 32px; padding: 42px; }

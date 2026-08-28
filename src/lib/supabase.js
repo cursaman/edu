@@ -21,3 +21,11 @@ export async function checkAdminAccess(user) {
 
   return !error && data?.is_admin === true
 }
+
+export async function checkCurrentLegalConsent(user, documentVersion) {
+  if (!supabase || !user?.id) return false
+  const { data, error } = await supabase.from('user_consents').select('document_type').eq('document_version', documentVersion)
+  if (error) return false
+  const types = new Set((data || []).map((item) => item.document_type))
+  return ['terms', 'privacy', 'age_confirmation'].every((type) => types.has(type))
+}

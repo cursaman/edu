@@ -124,6 +124,11 @@ create table if not exists public.orders (
   updated_at timestamptz not null default now()
 );
 
+-- 탈퇴 시 학습·동의 정보는 연쇄 삭제하되 법정 보존 대상 주문은 익명 상태로 유지합니다.
+alter table public.orders alter column user_id drop not null;
+alter table public.orders drop constraint if exists orders_user_id_fkey;
+alter table public.orders add constraint orders_user_id_fkey foreign key (user_id) references auth.users (id) on delete set null;
+
 create table if not exists public.payments (
   id uuid primary key default gen_random_uuid(),
   order_id uuid not null unique references public.orders (id) on delete restrict,
@@ -306,6 +311,25 @@ $$;
 revoke all on function public.is_edu_admin() from public;
 grant execute on function public.is_edu_admin() to authenticated;
 
+-- 화면 입력이 아닌 로그인 사용자와 서버 시각을 기준으로 최신 동의를 기록합니다.
+create or replace function public.record_current_edu_consents(p_document_version text)
+returns void
+language plpgsql
+security definer
+set search_path = pg_catalog, public
+as $$
+begin
+  if auth.uid() is null then raise exception 'AUTH_REQUIRED'; end if;
+  if p_document_version !~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}-v[0-9]+$' then raise exception 'INVALID_DOCUMENT_VERSION'; end if;
+  insert into public.user_consents (user_id, document_type, document_version, source)
+  select auth.uid(), document_type, p_document_version, 'policy_update'
+  from unnest(array['terms','privacy','age_confirmation']) as document_type
+  on conflict (user_id, document_type, document_version) do nothing;
+end;
+$$;
+revoke all on function public.record_current_edu_consents(text) from public;
+grant execute on function public.record_current_edu_consents(text) to authenticated;
+
 create or replace function public.finalize_edu_payment(p_order_code text, p_payment_key text, p_method text, p_amount integer, p_approved_at timestamptz, p_event_id text)
 returns void language plpgsql security definer set search_path = pg_catalog, public as $$
 declare v_order public.orders%rowtype;
@@ -358,8 +382,8 @@ returns table(order_id uuid,order_code text,user_email text,program_id text,amou
 language plpgsql security definer set search_path=pg_catalog,public,auth as $$
 begin
   if not public.is_edu_admin() then raise exception '관리자 권한이 필요합니다.'; end if;
-  return query select o.id,o.order_code,u.email::text,o.program_id,o.amount,o.status,p.status,p.method,p.approved_at
-  from public.orders o join auth.users u on u.id=o.user_id left join public.payments p on p.order_id=o.id order by o.created_at desc;
+  return query select o.id,o.order_code,coalesce(u.email::text, '탈퇴한 회원'),o.program_id,o.amount,o.status,p.status,p.method,p.approved_at
+  from public.orders o left join auth.users u on u.id=o.user_id left join public.payments p on p.order_id=o.id order by o.created_at desc;
 end; $$;
 revoke all on function public.get_edu_payment_overview() from public;
 grant execute on function public.get_edu_payment_overview() to authenticated;

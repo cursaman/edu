@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import Header from './components/Header.jsx'
+import { legalVersion as currentLegalVersion } from './data/legalDocuments.js'
 
 const isSupabaseConfigured = Boolean(
   import.meta.env.VITE_SUPABASE_URL?.trim()
@@ -26,6 +27,7 @@ const ProgramsPage = lazy(() => import('./pages/ProgramsPage.jsx'))
 const UserAuthPage = lazy(() => import('./pages/UserAuthPage.jsx'))
 const PaymentSuccessPage = lazy(() => import('./pages/PaymentSuccessPage.jsx'))
 const PaymentFailPage = lazy(() => import('./pages/PaymentFailPage.jsx'))
+const AccountPage = lazy(() => import('./pages/AccountPage.jsx'))
 
 function readCurrentRoute() {
   const browserSearch = new URLSearchParams(window.location.search)
@@ -52,6 +54,7 @@ export default function App() {
   const [adminAccess, setAdminAccess] = useState(false)
   const [checkingAccess, setCheckingAccess] = useState(isSupabaseConfigured)
   const [supabaseClient, setSupabaseClient] = useState(null)
+  const [legalConsentCurrent, setLegalConsentCurrent] = useState(true)
   const [, setContentVersion] = useState(0)
 
   useEffect(() => {
@@ -97,7 +100,7 @@ export default function App() {
     let active = true
     let subscription
 
-    void import('./lib/supabase.js').then(({ checkAdminAccess, supabase }) => {
+    void import('./lib/supabase.js').then(({ checkAdminAccess, checkCurrentLegalConsent, supabase }) => {
       if (!active || !supabase) return
       setSupabaseClient(supabase)
 
@@ -105,9 +108,13 @@ export default function App() {
         if (!active) return
         setSession(nextSession)
         setCheckingAccess(true)
-        const allowed = await checkAdminAccess(nextSession?.user)
+        const [allowed, consentCurrent] = await Promise.all([
+          checkAdminAccess(nextSession?.user),
+          nextSession?.user ? checkCurrentLegalConsent(nextSession.user, currentLegalVersion) : Promise.resolve(true),
+        ])
         if (!active) return
         setAdminAccess(allowed)
+        setLegalConsentCurrent(consentCurrent)
         setCheckingAccess(false)
       }
 
@@ -129,8 +136,11 @@ export default function App() {
   }, [])
 
   let page
+  const consentProtected = route.pathname.startsWith('/classroom') || route.pathname.startsWith('/checkout') || route.pathname.startsWith('/admin')
 
-  if (route.pathname === '/') {
+  if (session?.user && !legalConsentCurrent && consentProtected) {
+    page = <section className="content-page page-shell empty-state"><span className="section-eyebrow">POLICY UPDATE</span><h1>최신 약관 확인이 필요합니다</h1><p>계속 이용하려면 변경된 이용약관과 개인정보 처리 안내를 확인해 주세요.</p><a className="button button-primary" href="#/account">계정 관리에서 확인하기 →</a></section>
+  } else if (route.pathname === '/') {
     page = <HomePage />
   } else if (route.pathname === '/categories') {
     page = <CategoriesPage />
@@ -178,6 +188,8 @@ export default function App() {
   } else if (route.pathname === '/login' || route.pathname === '/signup') {
     const nextPath = route.searchParams.get('next')?.startsWith('/') ? route.searchParams.get('next') : '/classroom'
     page = <UserAuthPage mode={route.pathname === '/signup' ? 'signup' : 'login'} nextPath={nextPath} session={session} />
+  } else if (route.pathname === '/account') {
+    page = <AccountPage session={session} onConsentUpdated={setLegalConsentCurrent} />
   } else if (route.pathname === '/notice') {
     page = <NoticesPage />
   } else if (route.pathname.startsWith('/notice/')) {
@@ -217,7 +229,7 @@ export default function App() {
             <img className="footer-brand-logo" src={`${import.meta.env.BASE_URL}images/cursamanworks-logo.png`} alt="cursamanworks" />
             <span>AI와 함께 배우는 실전 웹개발 교육</span>
           </div>
-          <div className="footer-links"><span>한 번에 한 단계씩, 직접 만들고 확인합니다.</span><nav aria-label="법적 안내"><a href="#/terms">이용약관</a><a href="#/privacy">개인정보처리방침</a><a href="#/refund">취소·환불</a><a href="#/admin">{isSupabaseConfigured ? '관리자 로그인' : '관리자 체험'}</a></nav></div>
+          <div className="footer-links"><span>한 번에 한 단계씩, 직접 만들고 확인합니다.</span><nav aria-label="법적 안내"><a href="#/terms">이용약관</a><a href="#/privacy">개인정보처리방침</a><a href="#/refund">취소·환불</a>{session?.user && <a href="#/account">계정·탈퇴</a>}<a href="#/admin">{isSupabaseConfigured ? '관리자 로그인' : '관리자 체험'}</a></nav></div>
         </div>
       </footer>
     </>
